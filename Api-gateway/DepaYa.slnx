@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="../ms-auth/ms-auth.csproj" />
+  <Project Path="../ms-departamentos/ms-departamentos.csproj" />
+  <Project Path="../ms-pagos/ms-pagos.csproj" />
+  <Project Path="../ms-reservas/ms-reservas.csproj" />
+  <Project Path="../ms-usuarios/ms-usuarios.csproj" />
+  <Project Path="Api-gateway.csproj" />
+</Solution>

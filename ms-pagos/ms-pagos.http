@@ -1,0 +1,6 @@
+@ms_pagos_HostAddress = http://localhost:5055
+
+GET {{ms_pagos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

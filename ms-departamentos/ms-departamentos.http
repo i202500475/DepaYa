@@ -1,0 +1,6 @@
+@ms_departamentos_HostAddress = http://localhost:5233
+
+GET {{ms_departamentos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

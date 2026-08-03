@@ -1,0 +1,6 @@
+@ms_reservas_HostAddress = http://localhost:5198
+
+GET {{ms_reservas_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
