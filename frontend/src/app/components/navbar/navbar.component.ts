@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
-/**
- * Componente Navbar
- * Gestiona la navegación principal de la plataforma DepaYa.
- */
 @Component({
   selector: 'app-navbar',
   standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
-  isLogged: boolean = false;
+  isLogged: boolean = false; // Cambiar a true cuando manejes sesiones
 }

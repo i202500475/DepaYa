@@ -1,0 +1,22 @@
+.explorar-container {
+  padding: 2.5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.header-section {
+  margin-bottom: 2rem;
+}
+.header-section h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #222;
+}
+.header-section p {
+  color: #666;
+  font-size: 1rem;
+}
+.grid-departamentos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}

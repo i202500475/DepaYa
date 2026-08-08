@@ -1,0 +1,10 @@
+.auth-container { display: flex; justify-content: center; align-items: center; min-height: 75vh; background: #fafafa; padding: 1rem; }
+.auth-card { background: white; padding: 2.5rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 400px; }
+.auth-card h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.3rem; color: #222; }
+.auth-card p { color: #666; margin-bottom: 1.5rem; font-size: 0.9rem; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: #444; }
+.form-group input { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+.form-group input:focus { outline: none; border-color: #FF385C; box-shadow: 0 0 0 2px rgba(255, 56, 92, 0.2); }
+.btn-auth { width: 100%; background: #FF385C; color: white; border: none; padding: 0.85rem; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s; }
+.btn-auth:hover { background: #E00B41; }

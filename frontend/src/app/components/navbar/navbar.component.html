@@ -5,17 +5,13 @@
   </div>
 
   <ul class="navbar-menu">
-    <li><a href="#" class="active">Inicio</a></li>
-    <li><a href="#">Explorar</a></li>
-    <li><a href="#">Publicar Depa</a></li>
+    <li><a routerLink="/inicio" routerLinkActive="active">Inicio</a></li>
+    <li><a routerLink="/explorar" routerLinkActive="active">Explorar</a></li>
+    <li><a routerLink="/publicar" routerLinkActive="active">Publicar Depa</a></li>
   </ul>
 
   <div class="navbar-actions">
-    @if (!isLogged) {
-      <button class="btn-outline">Regístrate</button>
-      <button class="btn-primary">Iniciar Sesión</button>
-    } @else {
-      <button class="btn-profile">Mi Perfil</button>
-    }
+    <a routerLink="/registro" class="btn-outline">Regístrate</a>
+    <a routerLink="/login" class="btn-primary">Iniciar Sesión</a>
   </div>
 </nav>
