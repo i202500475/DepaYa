@@ -1,0 +1,21 @@
+<nav class="navbar-container">
+  <div class="navbar-logo">
+    <span class="logo-icon">🏢</span>
+    <h1>DepaYa</h1>
+  </div>
+
+  <ul class="navbar-menu">
+    <li><a href="#" class="active">Inicio</a></li>
+    <li><a href="#">Explorar</a></li>
+    <li><a href="#">Publicar Depa</a></li>
+  </ul>
+
+  <div class="navbar-actions">
+    @if (!isLogged) {
+      <button class="btn-outline">Regístrate</button>
+      <button class="btn-primary">Iniciar Sesión</button>
+    } @else {
+      <button class="btn-profile">Mi Perfil</button>
+    }
+  </div>
+</nav>

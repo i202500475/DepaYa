@@ -1,0 +1,46 @@
+<div class="publish-container">
+  <div class="form-header">
+    <h2>Publicar un Inmueble</h2>
+    <p>Ingresa los detalles para que miles de inquilinos lo vean.</p>
+  </div>
+
+  <form class="modern-form" (submit)="onSubmitProcess(); $event.preventDefault()">
+    <div class="input-group full-width">
+      <label>Título de la Publicación</label>
+      <input type="text" placeholder="Ej: Depa de estreno con balcón">
+    </div>
+
+    <div class="form-row">
+      <div class="input-group">
+        <label>Distrito</label>
+        <select>
+          <option>Miraflores</option>
+          <option>San Isidro</option>
+          <option>Barranco</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Precio por Noche (S/)</label>
+        <input type="number" placeholder="0.00">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="input-group">
+        <label>Capacidad</label>
+        <input type="number" placeholder="Cant. Personas">
+      </div>
+      <div class="input-group">
+        <label>Habitaciones</label>
+        <input type="number" placeholder="Ej: 2">
+      </div>
+    </div>
+
+    <div class="input-group full-width">
+      <label>Descripción detallada</label>
+      <textarea rows="4" placeholder="Describe las comodidades, áreas comunes, etc..."></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit">🚀 Publicar Ahora</button>
+  </form>
+</div>

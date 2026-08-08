@@ -1,0 +1,16 @@
+.footer-wrapper {
+  background-color: #0f172a; color: #f8fafc; padding: 4rem 5% 1rem;
+  font-family: 'Segoe UI', system-ui, sans-serif; margin-top: 4rem;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 3rem;
+  max-width: 1200px; margin: 0 auto; border-bottom: 1px solid #334155; padding-bottom: 2rem;
+}
+.footer-brand h2 { color: #38bdf8; margin-top: 0; }
+.footer-brand p { color: #94a3b8; line-height: 1.6; max-width: 80%; }
+.footer-links h3, .footer-contact h3 { color: #f8fafc; font-size: 1.1rem; margin-bottom: 1.5rem; }
+.footer-links a, .footer-contact a {
+  display: block; color: #cbd5e1; text-decoration: none; margin-bottom: 0.8rem; transition: color 0.2s;
+}
+.footer-links a:hover, .footer-contact a:hover { color: #38bdf8; }
+.footer-bottom { text-align: center; color: #64748b; padding-top: 1.5rem; font-size: 0.9rem; }

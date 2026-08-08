@@ -1,0 +1,23 @@
+<div class="property-card">
+  <div class="card-image-container">
+    <img [src]="property.URL_Imagen" [alt]="property.Titulo" class="property-img">
+    <span class="location-badge">📍 {{ property.Distrito }}</span>
+  </div>
+  <div class="card-content">
+    <h3 class="property-title">{{ property.Titulo }}</h3>
+
+    <div class="property-features">
+      <span>🛏️ {{ property.Habitaciones }} Hab.</span>
+      <span>🚿 {{ property.Banos }} Baños</span>
+    </div>
+
+    <div class="card-footer">
+      <div class="price-container">
+        <span class="currency">S/</span>
+        <span class="amount">{{ property.Precio_Noche }}</span>
+        <span class="period">/noche</span>
+      </div>
+      <button class="btn-view">Detalles</button>
+    </div>
+  </div>
+</div>

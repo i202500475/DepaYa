@@ -1,0 +1,19 @@
+.booking-widget {
+  background: white; padding: 1.5rem; border-radius: 12px; font-family: 'Segoe UI', system-ui, sans-serif;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; max-width: 350px;
+}
+.widget-header { margin-bottom: 1.5rem; }
+.price { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
+.price span { font-size: 1rem; font-weight: 400; color: #64748b; }
+.dates-container { display: flex; border: 1px solid #cbd5e1; border-radius: 8px 8px 0 0; }
+.date-input { flex: 1; padding: 10px; display: flex; flex-direction: column; }
+.border-right { border-right: 1px solid #cbd5e1; }
+.date-input label, .guest-input label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #0f172a; margin-bottom: 3px; }
+.date-input input { border: none; outline: none; background: transparent; cursor: pointer; color: #334155;}
+.guest-input { border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 8px 8px; padding: 10px; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+.guest-input select { border: none; outline: none; background: transparent; cursor: pointer; font-size: 1rem; }
+.btn-book { background: #e11d48; color: white; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.3s; }
+.btn-book:hover { background: #be123c; }
+.pricing-details { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 10px; color: #475569; }
+.pricing-row { display: flex; justify-content: space-between; font-size: 0.95rem; }
+.total { border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 5px; font-weight: 800; color: #0f172a; font-size: 1.1rem; }

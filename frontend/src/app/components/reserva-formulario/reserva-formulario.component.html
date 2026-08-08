@@ -1,0 +1,44 @@
+<div class="booking-widget">
+  <div class="widget-header">
+    <div class="price">S/ 280 <span>/ noche</span></div>
+  </div>
+
+  <form class="booking-form" (submit)="procesarReserva(); $event.preventDefault()">
+    <div class="dates-container">
+      <div class="date-input border-right">
+        <label>Llegada</label>
+        <input type="date">
+      </div>
+      <div class="date-input">
+        <label>Salida</label>
+        <input type="date">
+      </div>
+    </div>
+
+    <div class="guest-input">
+      <label>Huéspedes</label>
+      <select>
+        <option>1 huésped</option>
+        <option>2 huéspedes</option>
+        <option>3 huéspedes</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn-book">Reservar ahora</button>
+  </form>
+
+  <div class="pricing-details">
+    <div class="pricing-row">
+      <span>S/ 280 x 3 noches</span>
+      <span>S/ 840</span>
+    </div>
+    <div class="pricing-row">
+      <span>Tarifa de servicio</span>
+      <span>S/ 60</span>
+    </div>
+    <div class="pricing-row total">
+      <span>Total</span>
+      <span>S/ 900</span>
+    </div>
+  </div>
+</div>
