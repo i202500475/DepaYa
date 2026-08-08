@@ -1,6 +1,5 @@
 ﻿namespace ms_reservas.Models
 {
-
     public class Reserva
     {
         public int ID_Reserva { get; set; }
@@ -15,7 +14,7 @@
 
         public int Cantidad_Huespedes { get; set; }
 
-        public string Estado { get; set; } = string.Empty;
+        public string Estado { get; set; } = "Pendiente";
 
         public DateTime Fecha_Creacion { get; set; }
     }

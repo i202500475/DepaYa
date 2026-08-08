@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-reservas\\ms-reservas.csproj": {}
+    "C:\\Users\\SaraA\\OneDrive\\Documents\\Visual Studio 2017\\DepaYa\\ms-reservas\\ms-reservas.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-reservas\\ms-reservas.csproj": {
+    "C:\\Users\\SaraA\\OneDrive\\Documents\\Visual Studio 2017\\DepaYa\\ms-reservas\\ms-reservas.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-reservas\\ms-reservas.csproj",
+        "projectUniqueName": "C:\\Users\\SaraA\\OneDrive\\Documents\\Visual Studio 2017\\DepaYa\\ms-reservas\\ms-reservas.csproj",
         "projectName": "ms-reservas",
-        "projectPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-reservas\\ms-reservas.csproj",
+        "projectPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\Visual Studio 2017\\DepaYa\\ms-reservas\\ms-reservas.csproj",
         "packagesPath": "C:\\Users\\SaraA\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-reservas\\obj\\",
+        "outputPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\Visual Studio 2017\\DepaYa\\ms-reservas\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -63,6 +63,10 @@
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[7.0.2, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[10.2.3, )"
             }
           },
           "imports": [

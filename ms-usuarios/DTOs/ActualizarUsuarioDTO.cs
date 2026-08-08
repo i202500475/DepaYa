@@ -1,23 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ms_usuarios.DTOs
+﻿namespace ms_usuarios.DTOs
 {
     public class ActualizarUsuarioDTO
     {
-        [Required]
-        [StringLength(100)]
         public string Nombre { get; set; } = string.Empty;
 
-        [Required]
-        [StringLength(100)]
         public string Apellido { get; set; } = string.Empty;
 
-        [Required]
-        [EmailAddress]
+        public string Tipo_Documento { get; set; } = string.Empty;
+
+        public string Numero_Documento { get; set; } = string.Empty;
+
         public string Correo { get; set; } = string.Empty;
 
-        [Required]
-        [Phone]
         public string Telefono { get; set; } = string.Empty;
+
+        public string Rol { get; set; } = string.Empty;
     }
 }

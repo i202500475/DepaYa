@@ -1,73 +1,74 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ms_reservas.DTOs;
-using ms_reservas.Services;
+using ms_reservas.Interfaces;
 
 namespace ms_reservas.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReservasController : ControllerBase
+    public class ReservaController : ControllerBase
     {
-        private readonly ReservaService _reservaService;
+        private readonly IReservaService _service;
 
-        public ReservasController(ReservaService reservaService)
+        public ReservaController(IReservaService service)
         {
-            _reservaService = reservaService;
+            _service = service;
         }
 
-        // GET: api/reservas
         [HttpGet]
         public IActionResult Listar()
         {
-            var reservas = _reservaService.Listar();
-            return Ok(reservas);
+            return Ok(_service.Listar());
         }
 
-        // GET: api/reservas/5
         [HttpGet("{id}")]
         public IActionResult Obtener(int id)
         {
-            var reserva = _reservaService.Obtener(id);
+            var reserva = _service.Obtener(id);
 
             if (reserva == null)
-                return NotFound(new { mensaje = "Reserva no encontrada." });
+            {
+                return NotFound(new
+                {
+                    mensaje = "Reserva no encontrada"
+                });
+            }
 
             return Ok(reserva);
         }
 
-        // POST: api/reservas
         [HttpPost]
-        public IActionResult Registrar([FromBody] CrearReservaDTO reserva)
+        public IActionResult Registrar(CrearReservaDTO reserva)
         {
-            _reservaService.Registrar(reserva);
+            _service.Registrar(reserva);
 
             return Ok(new
             {
-                mensaje = "Reserva registrada correctamente."
+                mensaje = "Reserva registrada correctamente"
             });
         }
 
-        // PUT: api/reservas/5
         [HttpPut("{id}")]
-        public IActionResult Actualizar(int id, [FromBody] ActualizarReservaDTO reserva)
+        public IActionResult Actualizar(
+            int id,
+            ActualizarReservaDTO reserva)
         {
-            _reservaService.Actualizar(id, reserva);
+            _service.Actualizar(id, reserva);
 
             return Ok(new
             {
-                mensaje = "Reserva actualizada correctamente."
+                mensaje = "Reserva actualizada correctamente"
             });
         }
 
-        // DELETE: api/reservas/5
         [HttpDelete("{id}")]
         public IActionResult Eliminar(int id)
         {
-            _reservaService.Eliminar(id);
+            _service.Eliminar(id);
 
             return Ok(new
             {
-                mensaje = "Reserva eliminada correctamente."
+                mensaje = "Reserva eliminada correctamente"
             });
         }
     }

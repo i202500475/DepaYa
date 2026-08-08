@@ -1,21 +1,20 @@
 ﻿using ms_usuarios.DTOs;
 using ms_usuarios.Interfaces;
-using ms_usuarios.Models;
 
 namespace ms_usuarios.Services
 {
     public class UsuarioService : IUsuarioService
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioRepository _repository;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository)
+        public UsuarioService(IUsuarioRepository repository)
         {
-            _usuarioRepository = usuarioRepository;
+            _repository = repository;
         }
 
         public List<UsuarioDTO> Listar()
         {
-            var usuarios = _usuarioRepository.Listar();
+            var usuarios = _repository.Listar();
 
             return usuarios.Select(u => new UsuarioDTO
             {
@@ -27,14 +26,13 @@ namespace ms_usuarios.Services
                 Numero_Documento = u.Numero_Documento,
                 Correo = u.Correo,
                 Telefono = u.Telefono,
-                Rol = u.Rol,
-                Fecha_Registro = u.Fecha_Registro
+                Rol = u.Rol
             }).ToList();
         }
 
         public UsuarioDTO? Obtener(int id)
         {
-            var usuario = _usuarioRepository.Obtener(id);
+            var usuario = _repository.Obtener(id);
 
             if (usuario == null)
                 return null;
@@ -49,45 +47,23 @@ namespace ms_usuarios.Services
                 Numero_Documento = usuario.Numero_Documento,
                 Correo = usuario.Correo,
                 Telefono = usuario.Telefono,
-                Rol = usuario.Rol,
-                Fecha_Registro = usuario.Fecha_Registro
+                Rol = usuario.Rol
             };
         }
 
-        public void Registrar(CrearUsuarioDTO dto)
+        public void Registrar(CrearUsuarioDTO usuario)
         {
-            Usuario usuario = new Usuario
-            {
-                Nombre = dto.Nombre,
-                Apellido = dto.Apellido,
-                Tipo_Documento = dto.Tipo_Documento,
-                Numero_Documento = dto.Numero_Documento,
-                Correo = dto.Correo,
-                Telefono = dto.Telefono,
-                Rol = dto.Rol
-            };
-
-            _usuarioRepository.Registrar(usuario);
+            _repository.Registrar(usuario);
         }
 
-        public void Actualizar(int id, ActualizarUsuarioDTO dto)
+        public void Actualizar(int id, ActualizarUsuarioDTO usuario)
         {
-            Usuario? usuario = _usuarioRepository.Obtener(id);
-
-            if (usuario == null)
-                throw new Exception("El usuario no existe.");
-
-            usuario.Nombre = dto.Nombre;
-            usuario.Apellido = dto.Apellido;
-            usuario.Correo = dto.Correo;
-            usuario.Telefono = dto.Telefono;
-
-            _usuarioRepository.Actualizar(usuario);
+            _repository.Actualizar(id, usuario);
         }
 
         public void Eliminar(int id)
         {
-            _usuarioRepository.Eliminar(id);
+            _repository.Eliminar(id);
         }
     }
 }

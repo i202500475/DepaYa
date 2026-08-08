@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ms_usuarios.DTOs
+﻿namespace ms_usuarios.DTOs
 {
     public class UsuarioDTO
     {

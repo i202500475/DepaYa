@@ -1,6 +1,5 @@
 ﻿namespace ms_pagos.Models
 {
-
     public class Transaccion
     {
         public int ID_Pago { get; set; }
@@ -9,11 +8,11 @@
 
         public decimal Monto_Total { get; set; }
 
-        public string Moneda { get; set; } = string.Empty;
+        public string Moneda { get; set; } = "PEN";
 
         public string Metodo_Pago { get; set; } = string.Empty;
 
-        public string Estado_Pago { get; set; } = string.Empty;
+        public string Estado_Pago { get; set; } = "Procesando";
 
         public DateTime Fecha_Transaccion { get; set; }
 

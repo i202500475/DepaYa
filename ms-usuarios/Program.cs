@@ -1,19 +1,33 @@
 using ms_usuarios.Data;
+using ms_usuarios.Interfaces;
+using ms_usuarios.Repositorios;
+using ms_usuarios.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Controllers
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Base de datos
+builder.Services.AddScoped<ConexionBD>();
+
+// Repository
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+// Service
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Swagger
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -21,7 +35,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-builder.Services.AddScoped<ConexionBD>();
 
 app.Run();

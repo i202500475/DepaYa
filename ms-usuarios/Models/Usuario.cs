@@ -1,6 +1,5 @@
 ﻿namespace ms_usuarios.Models
 {
-
     public class Usuario
     {
         public int ID_Usuario { get; set; }
