@@ -46,9 +46,11 @@ namespace ms_usuarios.Repositorios
                 lista.Add(new Usuario
                 {
                     ID_Usuario = Convert.ToInt32(reader["ID_Usuario"]),
+
                     Azure_Object_ID = reader["Azure_Object_ID"] == DBNull.Value
                         ? null
                         : (Guid?)reader["Azure_Object_ID"],
+
                     Nombre = reader["Nombre"].ToString()!,
                     Apellido = reader["Apellido"].ToString()!,
                     Tipo_Documento = reader["Tipo_Documento"].ToString()!,
@@ -56,7 +58,9 @@ namespace ms_usuarios.Repositorios
                     Correo = reader["Correo"].ToString()!,
                     Telefono = reader["Telefono"].ToString()!,
                     Rol = reader["Rol"].ToString()!,
-                    Fecha_Registro = Convert.ToDateTime(reader["Fecha_Registro"])
+
+                    Fecha_Registro = Convert.ToDateTime(
+                        reader["Fecha_Registro"])
                 });
             }
 
@@ -96,9 +100,11 @@ namespace ms_usuarios.Repositorios
             return new Usuario
             {
                 ID_Usuario = Convert.ToInt32(reader["ID_Usuario"]),
+
                 Azure_Object_ID = reader["Azure_Object_ID"] == DBNull.Value
                     ? null
                     : (Guid?)reader["Azure_Object_ID"],
+
                 Nombre = reader["Nombre"].ToString()!,
                 Apellido = reader["Apellido"].ToString()!,
                 Tipo_Documento = reader["Tipo_Documento"].ToString()!,
@@ -106,7 +112,9 @@ namespace ms_usuarios.Repositorios
                 Correo = reader["Correo"].ToString()!,
                 Telefono = reader["Telefono"].ToString()!,
                 Rol = reader["Rol"].ToString()!,
-                Fecha_Registro = Convert.ToDateTime(reader["Fecha_Registro"])
+
+                Fecha_Registro = Convert.ToDateTime(
+                    reader["Fecha_Registro"])
             };
         }
 
@@ -146,13 +154,16 @@ namespace ms_usuarios.Repositorios
 
             command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
             command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
-            command.Parameters.AddWithValue("@Tipo_Documento", usuario.Tipo_Documento);
-            command.Parameters.AddWithValue("@Numero_Documento", usuario.Numero_Documento);
+            command.Parameters.AddWithValue(
+                "@Tipo_Documento", usuario.Tipo_Documento);
+            command.Parameters.AddWithValue(
+                "@Numero_Documento", usuario.Numero_Documento);
             command.Parameters.AddWithValue("@Correo", usuario.Correo);
             command.Parameters.AddWithValue("@Telefono", usuario.Telefono);
             command.Parameters.AddWithValue("@Rol", usuario.Rol);
 
             connection.Open();
+
             command.ExecuteNonQuery();
         }
 
@@ -177,13 +188,16 @@ namespace ms_usuarios.Repositorios
             command.Parameters.AddWithValue("@ID_Usuario", id);
             command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
             command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
-            command.Parameters.AddWithValue("@Tipo_Documento", usuario.Tipo_Documento);
-            command.Parameters.AddWithValue("@Numero_Documento", usuario.Numero_Documento);
+            command.Parameters.AddWithValue(
+                "@Tipo_Documento", usuario.Tipo_Documento);
+            command.Parameters.AddWithValue(
+                "@Numero_Documento", usuario.Numero_Documento);
             command.Parameters.AddWithValue("@Correo", usuario.Correo);
             command.Parameters.AddWithValue("@Telefono", usuario.Telefono);
             command.Parameters.AddWithValue("@Rol", usuario.Rol);
 
             connection.Open();
+
             command.ExecuteNonQuery();
         }
 
@@ -200,6 +214,7 @@ namespace ms_usuarios.Repositorios
             command.Parameters.AddWithValue("@ID_Usuario", id);
 
             connection.Open();
+
             command.ExecuteNonQuery();
         }
     }

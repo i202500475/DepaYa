@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ms-departamentos")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54e029ae0322cfa6e77a49988ed3ee93026e2463")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+76cd4c45eb75738d079288c7e2291310c4236ed9")]
 [assembly: System.Reflection.AssemblyProductAttribute("ms-departamentos")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ms-departamentos")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

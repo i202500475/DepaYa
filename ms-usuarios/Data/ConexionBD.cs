@@ -2,19 +2,24 @@
 
 namespace ms_usuarios.Data
 {
-    public class ConexionBD
+public class ConexionBD
+{
+private readonly IConfiguration _configuration;
+
+    public ConexionBD(IConfiguration configuration)
     {
-        private readonly string _connectionString;
-
-        public ConexionBD(IConfiguration configuration)
-        {
-            _connectionString =
-                configuration.GetConnectionString("DefaultConnection")!;
-        }
-
-        public SqlConnection ObtenerConexion()
-        {
-            return new SqlConnection(_connectionString);
-        }
+        _configuration = configuration;
     }
+
+    public SqlConnection ObtenerConexion()
+    {
+        string connectionString =
+            _configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException(
+                "No se encontró la cadena de conexión DefaultConnection.");
+
+        return new SqlConnection(connectionString);
+    }
+}
+
 }

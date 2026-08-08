@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ms_usuarios.DTOs;
-using ms_usuarios.Interfaces;
+using ms_usuarios.Services;
 
 namespace ms_usuarios.Controllers
 {
@@ -8,39 +8,39 @@ namespace ms_usuarios.Controllers
     [Route("api/[controller]")]
     public class UsuariosController : ControllerBase
     {
-        private readonly IUsuarioService _service;
+        private readonly UsuarioService _usuarioService;
 
-        public UsuariosController(IUsuarioService service)
+        public UsuariosController(UsuarioService usuarioService)
         {
-            _service = service;
+            _usuarioService = usuarioService;
         }
 
         [HttpGet]
         public IActionResult Listar()
         {
-            return Ok(_service.Listar());
+            var usuarios = _usuarioService.Listar();
+
+            return Ok(usuarios);
         }
 
         [HttpGet("{id}")]
         public IActionResult Obtener(int id)
         {
-            var usuario = _service.Obtener(id);
+            var usuario = _usuarioService.Obtener(id);
 
             if (usuario == null)
-            {
                 return NotFound(new
                 {
                     mensaje = "Usuario no encontrado"
                 });
-            }
 
             return Ok(usuario);
         }
 
         [HttpPost]
-        public IActionResult Registrar(CrearUsuarioDTO usuario)
+        public IActionResult Registrar([FromBody] CrearUsuarioDTO usuario)
         {
-            _service.Registrar(usuario);
+            _usuarioService.Registrar(usuario);
 
             return Ok(new
             {
@@ -51,9 +51,9 @@ namespace ms_usuarios.Controllers
         [HttpPut("{id}")]
         public IActionResult Actualizar(
             int id,
-            ActualizarUsuarioDTO usuario)
+            [FromBody] ActualizarUsuarioDTO usuario)
         {
-            _service.Actualizar(id, usuario);
+            _usuarioService.Actualizar(id, usuario);
 
             return Ok(new
             {
@@ -64,7 +64,7 @@ namespace ms_usuarios.Controllers
         [HttpDelete("{id}")]
         public IActionResult Eliminar(int id)
         {
-            _service.Eliminar(id);
+            _usuarioService.Eliminar(id);
 
             return Ok(new
             {

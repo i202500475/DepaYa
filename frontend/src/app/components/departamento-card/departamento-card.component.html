@@ -1,23 +1,38 @@
 <div class="property-card">
-  <div class="card-image-container">
-    <img [src]="property.URL_Imagen" [alt]="property.Titulo" class="property-img">
-    <span class="location-badge">📍 {{ property.Distrito }}</span>
-  </div>
-  <div class="card-content">
-    <h3 class="property-title">{{ property.Titulo }}</h3>
 
-    <div class="property-features">
-      <span>🛏️ {{ property.Habitaciones }} Hab.</span>
-      <span>🚿 {{ property.Banos }} Baños</span>
+  <img
+    [src]="departamento.URL_Imagen"
+    [alt]="departamento.Titulo"
+    class="property-img"
+
+  >
+
+  <div class="property-content">
+
+    <span class="location-badge">
+  📍 {{ departamento.Distrito }}
+</span>
+
+    <h3 class="property-title">
+      {{ departamento.Titulo }}
+    </h3>
+
+    <div class="property-details">
+      <span>🛏️ {{ departamento.Habitaciones }} Hab.</span>
+      <span>🚿 {{ departamento.Banos }} Baños</span>
     </div>
 
-    <div class="card-footer">
-      <div class="price-container">
-        <span class="currency">S/</span>
-        <span class="amount">{{ property.Precio_Noche }}</span>
-        <span class="period">/noche</span>
-      </div>
-      <button class="btn-view">Detalles</button>
+    <div class="property-price">
+  <span class="amount">
+    S/ {{ departamento.Precio_Noche }}
+  </span>
+
+      <span class="period">
+    / noche
+  </span>
     </div>
+
+
   </div>
+
 </div>

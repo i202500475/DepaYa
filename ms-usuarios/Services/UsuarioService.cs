@@ -1,5 +1,6 @@
 ﻿using ms_usuarios.DTOs;
 using ms_usuarios.Interfaces;
+using ms_usuarios.Models;
 
 namespace ms_usuarios.Services
 {
@@ -26,7 +27,8 @@ namespace ms_usuarios.Services
                 Numero_Documento = u.Numero_Documento,
                 Correo = u.Correo,
                 Telefono = u.Telefono,
-                Rol = u.Rol
+                Rol = u.Rol,
+                Fecha_Registro = u.Fecha_Registro
             }).ToList();
         }
 
@@ -47,7 +49,8 @@ namespace ms_usuarios.Services
                 Numero_Documento = usuario.Numero_Documento,
                 Correo = usuario.Correo,
                 Telefono = usuario.Telefono,
-                Rol = usuario.Rol
+                Rol = usuario.Rol,
+                Fecha_Registro = usuario.Fecha_Registro
             };
         }
 
