@@ -1,6 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
-namespace ms_usuarios.Data
+namespace ms_pagos.Data
 {
     public class ConexionBD
     {

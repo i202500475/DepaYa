@@ -1,4 +1,5 @@
-﻿using ms_usuarios.Models;
+﻿using ms_usuarios.DTOs;
+using ms_usuarios.Models;
 
 namespace ms_usuarios.Interfaces
 {
@@ -8,9 +9,9 @@ namespace ms_usuarios.Interfaces
 
         Usuario? Obtener(int id);
 
-        void Registrar(Usuario usuario);
+        void Registrar(CrearUsuarioDTO usuario);
 
-        void Actualizar(Usuario usuario);
+        void Actualizar(int id, ActualizarUsuarioDTO usuario);
 
         void Eliminar(int id);
     }

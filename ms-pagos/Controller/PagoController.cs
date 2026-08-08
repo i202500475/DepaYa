@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ms_reservas.DTOs;
-using ms_reservas.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using ms_pagos.DTOs;
+using ms_pagos.Interfaces;
 
-namespace ms_reservas.Controllers
+namespace ms_pagos.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReservaController : ControllerBase
+    public class PagoController : ControllerBase
     {
-        private readonly IReservaService _service;
+        private readonly IPagoService _service;
 
-        public ReservaController(IReservaService service)
+        public PagoController(IPagoService service)
         {
             _service = service;
         }
@@ -24,40 +24,40 @@ namespace ms_reservas.Controllers
         [HttpGet("{id}")]
         public IActionResult Obtener(int id)
         {
-            var reserva = _service.Obtener(id);
+            var pago = _service.Obtener(id);
 
-            if (reserva == null)
+            if (pago == null)
             {
                 return NotFound(new
                 {
-                    mensaje = "Reserva no encontrada"
+                    mensaje = "Pago no encontrado"
                 });
             }
 
-            return Ok(reserva);
+            return Ok(pago);
         }
 
         [HttpPost]
-        public IActionResult Registrar(CrearReservaDTO reserva)
+        public IActionResult Registrar(CrearPagoDTO pago)
         {
-            _service.Registrar(reserva);
+            _service.Registrar(pago);
 
             return Ok(new
             {
-                mensaje = "Reserva registrada correctamente"
+                mensaje = "Pago registrado correctamente"
             });
         }
 
         [HttpPut("{id}")]
         public IActionResult Actualizar(
             int id,
-            ActualizarReservaDTO reserva)
+            ActualizarPagoDTO pago)
         {
-            _service.Actualizar(id, reserva);
+            _service.Actualizar(id, pago);
 
             return Ok(new
             {
-                mensaje = "Reserva actualizada correctamente"
+                mensaje = "Pago actualizado correctamente"
             });
         }
 
@@ -68,7 +68,7 @@ namespace ms_reservas.Controllers
 
             return Ok(new
             {
-                mensaje = "Reserva eliminada correctamente"
+                mensaje = "Pago eliminado correctamente"
             });
         }
     }

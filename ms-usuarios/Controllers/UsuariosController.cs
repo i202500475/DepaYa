@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ms_usuarios.DTOs;
-using ms_usuarios.Services;
+using ms_usuarios.Interfaces;
 
 namespace ms_usuarios.Controllers
 {
@@ -8,66 +8,67 @@ namespace ms_usuarios.Controllers
     [Route("api/[controller]")]
     public class UsuariosController : ControllerBase
     {
-        private readonly UsuarioService _usuarioService;
+        private readonly IUsuarioService _service;
 
-        public UsuariosController(UsuarioService usuarioService)
+        public UsuariosController(IUsuarioService service)
         {
-            _usuarioService = usuarioService;
+            _service = service;
         }
 
-        // GET: api/usuarios
         [HttpGet]
-        public IActionResult ObtenerTodos()
+        public IActionResult Listar()
         {
-            var usuarios = _usuarioService.ObtenerTodos();
-            return Ok(usuarios);
+            return Ok(_service.Listar());
         }
 
-        // GET: api/usuarios/5
         [HttpGet("{id}")]
-        public IActionResult ObtenerPorId(int id)
+        public IActionResult Obtener(int id)
         {
-            var usuario = _usuarioService.ObtenerPorId(id);
+            var usuario = _service.Obtener(id);
 
             if (usuario == null)
-                return NotFound(new { mensaje = "Usuario no encontrado." });
+            {
+                return NotFound(new
+                {
+                    mensaje = "Usuario no encontrado"
+                });
+            }
 
             return Ok(usuario);
         }
 
-        // POST: api/usuarios
         [HttpPost]
-        public IActionResult Registrar([FromBody] CrearUsuarioDTO usuario)
+        public IActionResult Registrar(CrearUsuarioDTO usuario)
         {
-            _usuarioService.Registrar(usuario);
+            _service.Registrar(usuario);
 
             return Ok(new
             {
-                mensaje = "Usuario registrado correctamente."
+                mensaje = "Usuario registrado correctamente"
             });
         }
 
-        // PUT: api/usuarios/5
         [HttpPut("{id}")]
-        public IActionResult Actualizar(int id, [FromBody] ActualizarUsuarioDTO usuario)
+        public IActionResult Actualizar(
+            int id,
+            ActualizarUsuarioDTO usuario)
         {
-            _usuarioService.Actualizar(id, usuario);
+            _service.Actualizar(id, usuario);
 
             return Ok(new
             {
-                mensaje = "Usuario actualizado correctamente."
+                mensaje = "Usuario actualizado correctamente"
             });
         }
 
-        // DELETE: api/usuarios/5
         [HttpDelete("{id}")]
         public IActionResult Eliminar(int id)
         {
-            _usuarioService.Eliminar(id);
+            _service.Eliminar(id);
 
             return Ok(new
             {
-                mensaje = "Usuario eliminado correctamente."
+                mensaje = "Usuario eliminado correctamente"
             });
         }
     }
