@@ -1,6 +1,6 @@
-﻿namespace ms_departamentos.Models
+namespace ms_departamentos.DTOs
 {
-    public class Departamento
+    public class DepartamentoDTO
     {
         public int ID_Departamento { get; set; }
 
@@ -26,6 +26,6 @@
 
         public int Banos { get; set; }
 
-        public string Estado { get; set; } = "Disponible";
+        public string Estado { get; set; } = string.Empty;
     }
 }

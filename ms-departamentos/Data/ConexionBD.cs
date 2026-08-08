@@ -1,7 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.SqlClient;
 
-namespace ms_auth.Data
+namespace ms_departamentos.Data
 {
     public class ConexionBD
     {

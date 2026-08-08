@@ -1,22 +1,19 @@
+using ms_departamentos.Data;
+using ms_departamentos.Interfaces;
+using ms_departamentos.Repositorios;
+using ms_departamentos.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<ConexionBD>();
+builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

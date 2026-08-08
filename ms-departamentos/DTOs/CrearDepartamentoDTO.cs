@@ -1,9 +1,7 @@
-﻿namespace ms_departamentos.Models
+namespace ms_departamentos.DTOs
 {
-    public class Departamento
+    public class CrearDepartamentoDTO
     {
-        public int ID_Departamento { get; set; }
-
         public int ID_Propietario { get; set; }
 
         public string Titulo { get; set; } = string.Empty;
