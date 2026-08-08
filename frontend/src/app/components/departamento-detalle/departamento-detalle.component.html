@@ -1,0 +1,27 @@
+<div class="detalle-container" *ngIf="departamento">
+  <h1>{{ departamento.Titulo }}</h1>
+  <p class="ubicacion">📍 {{ departamento.Distrito }}, Lima, Perú</p>
+
+  <div class="imagen-principal">
+    <img [src]="departamento.URL_Imagen" [alt]="departamento.Titulo">
+  </div>
+
+  <div class="info-grid">
+    <div class="detalles-principales">
+      <h2>Acerca de este espacio</h2>
+      <p>{{ departamento.Descripcion }}</p>
+      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid #eee;">
+      <ul class="caracteristicas">
+        <li>🛏️ {{ departamento.Habitaciones }} Habitaciones</li>
+        <li>🚿 {{ departamento.Banos }} Baños</li>
+      </ul>
+    </div>
+
+    <div class="card-reserva">
+      <div class="precio">
+        <span class="monto">S/ {{ departamento.Precio_Noche | number:'1.2-2' }}</span> <span class="noche">noche</span>
+      </div>
+      <button class="btn-reservar">Reservar Ahora</button>
+    </div>
+  </div>
+</div>

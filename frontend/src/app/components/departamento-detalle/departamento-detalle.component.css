@@ -1,0 +1,85 @@
+.detalle-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family: sans-serif;
+  color: #222;
+}
+.detalle-container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.ubicacion {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 1.05rem;
+}
+.imagen-principal img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.info-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.detalles-principales h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+}
+.detalles-principales p {
+  color: #444;
+  line-height: 1.6;
+}
+.caracteristicas {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+.card-reserva {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  background: #fff;
+  position: sticky;
+  top: 2rem;
+}
+.precio {
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+}
+.monto {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #222;
+}
+.noche {
+  color: #666;
+  font-size: 1rem;
+}
+.btn-reservar {
+  width: 100%;
+  background: #FF385C;
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.2s;
+}
+.btn-reservar:hover {
+  background: #E00B41;
+}

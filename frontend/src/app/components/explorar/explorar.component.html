@@ -1,0 +1,12 @@
+<div class="explorar-container">
+  <div class="header-section">
+    <h2>Alojamientos disponibles</h2>
+    <p>Descubre los mejores lugares para hospedarte, con estilo y comodidad.</p>
+  </div>
+
+  <div class="grid-departamentos">
+    @for (depa of listaDepartamentos; track depa.Titulo) {
+      <app-departamento-card [departamento]="depa"></app-departamento-card>
+    }
+  </div>
+</div>
