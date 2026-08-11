@@ -15,6 +15,10 @@ namespace ms_usuarios.Repositorios
             _conexion = conexion;
         }
 
+        // =========================================================
+        // LISTAR USUARIOS
+        // GET /api/Usuarios
+        // =========================================================
         public List<Usuario> Listar()
         {
             var lista = new List<Usuario>();
@@ -43,30 +47,16 @@ namespace ms_usuarios.Repositorios
 
             while (reader.Read())
             {
-                lista.Add(new Usuario
-                {
-                    ID_Usuario = Convert.ToInt32(reader["ID_Usuario"]),
-
-                    Azure_Object_ID = reader["Azure_Object_ID"] == DBNull.Value
-                        ? null
-                        : (Guid?)reader["Azure_Object_ID"],
-
-                    Nombre = reader["Nombre"].ToString()!,
-                    Apellido = reader["Apellido"].ToString()!,
-                    Tipo_Documento = reader["Tipo_Documento"].ToString()!,
-                    Numero_Documento = reader["Numero_Documento"].ToString()!,
-                    Correo = reader["Correo"].ToString()!,
-                    Telefono = reader["Telefono"].ToString()!,
-                    Rol = reader["Rol"].ToString()!,
-
-                    Fecha_Registro = Convert.ToDateTime(
-                        reader["Fecha_Registro"])
-                });
+                lista.Add(MapearUsuario(reader));
             }
 
             return lista;
         }
 
+        // =========================================================
+        // OBTENER USUARIO
+        // GET /api/Usuarios/{id}
+        // =========================================================
         public Usuario? Obtener(int id)
         {
             using var connection = _conexion.ObtenerConexion();
@@ -88,36 +78,27 @@ namespace ms_usuarios.Repositorios
 
             using var command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@ID_Usuario", id);
+            command.Parameters.Add(
+                "@ID_Usuario",
+                System.Data.SqlDbType.Int
+            ).Value = id;
 
             connection.Open();
 
             using var reader = command.ExecuteReader();
 
             if (!reader.Read())
-                return null;
-
-            return new Usuario
             {
-                ID_Usuario = Convert.ToInt32(reader["ID_Usuario"]),
+                return null;
+            }
 
-                Azure_Object_ID = reader["Azure_Object_ID"] == DBNull.Value
-                    ? null
-                    : (Guid?)reader["Azure_Object_ID"],
-
-                Nombre = reader["Nombre"].ToString()!,
-                Apellido = reader["Apellido"].ToString()!,
-                Tipo_Documento = reader["Tipo_Documento"].ToString()!,
-                Numero_Documento = reader["Numero_Documento"].ToString()!,
-                Correo = reader["Correo"].ToString()!,
-                Telefono = reader["Telefono"].ToString()!,
-                Rol = reader["Rol"].ToString()!,
-
-                Fecha_Registro = Convert.ToDateTime(
-                    reader["Fecha_Registro"])
-            };
+            return MapearUsuario(reader);
         }
 
+        // =========================================================
+        // REGISTRAR USUARIO
+        // POST /api/Usuarios
+        // =========================================================
         public void Registrar(CrearUsuarioDTO usuario)
         {
             using var connection = _conexion.ObtenerConexion();
@@ -148,25 +129,62 @@ namespace ms_usuarios.Repositorios
 
             using var command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue(
+            command.Parameters.Add(
                 "@Azure_Object_ID",
-                usuario.Azure_Object_ID ?? (object)DBNull.Value);
+                System.Data.SqlDbType.UniqueIdentifier
+            ).Value = usuario.Azure_Object_ID ?? (object)DBNull.Value;
 
-            command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
-            command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
-            command.Parameters.AddWithValue(
-                "@Tipo_Documento", usuario.Tipo_Documento);
-            command.Parameters.AddWithValue(
-                "@Numero_Documento", usuario.Numero_Documento);
-            command.Parameters.AddWithValue("@Correo", usuario.Correo);
-            command.Parameters.AddWithValue("@Telefono", usuario.Telefono);
-            command.Parameters.AddWithValue("@Rol", usuario.Rol);
+            command.Parameters.Add(
+                "@Nombre",
+                System.Data.SqlDbType.NVarChar,
+                100
+            ).Value = usuario.Nombre;
+
+            command.Parameters.Add(
+                "@Apellido",
+                System.Data.SqlDbType.NVarChar,
+                100
+            ).Value = usuario.Apellido;
+
+            command.Parameters.Add(
+                "@Tipo_Documento",
+                System.Data.SqlDbType.NVarChar,
+                20
+            ).Value = usuario.Tipo_Documento;
+
+            command.Parameters.Add(
+                "@Numero_Documento",
+                System.Data.SqlDbType.NVarChar,
+                20
+            ).Value = usuario.Numero_Documento;
+
+            command.Parameters.Add(
+                "@Correo",
+                System.Data.SqlDbType.NVarChar,
+                150
+            ).Value = usuario.Correo;
+
+            command.Parameters.Add(
+                "@Telefono",
+                System.Data.SqlDbType.NVarChar,
+                15
+            ).Value = usuario.Telefono;
+
+            command.Parameters.Add(
+                "@Rol",
+                System.Data.SqlDbType.NVarChar,
+                20
+            ).Value = usuario.Rol;
 
             connection.Open();
 
             command.ExecuteNonQuery();
         }
 
+        // =========================================================
+        // ACTUALIZAR USUARIO
+        // PUT /api/Usuarios/{id}
+        // =========================================================
         public void Actualizar(int id, ActualizarUsuarioDTO usuario)
         {
             using var connection = _conexion.ObtenerConexion();
@@ -185,22 +203,62 @@ namespace ms_usuarios.Repositorios
 
             using var command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@ID_Usuario", id);
-            command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
-            command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
-            command.Parameters.AddWithValue(
-                "@Tipo_Documento", usuario.Tipo_Documento);
-            command.Parameters.AddWithValue(
-                "@Numero_Documento", usuario.Numero_Documento);
-            command.Parameters.AddWithValue("@Correo", usuario.Correo);
-            command.Parameters.AddWithValue("@Telefono", usuario.Telefono);
-            command.Parameters.AddWithValue("@Rol", usuario.Rol);
+            command.Parameters.Add(
+                "@ID_Usuario",
+                System.Data.SqlDbType.Int
+            ).Value = id;
+
+            command.Parameters.Add(
+                "@Nombre",
+                System.Data.SqlDbType.NVarChar,
+                100
+            ).Value = usuario.Nombre;
+
+            command.Parameters.Add(
+                "@Apellido",
+                System.Data.SqlDbType.NVarChar,
+                100
+            ).Value = usuario.Apellido;
+
+            command.Parameters.Add(
+                "@Tipo_Documento",
+                System.Data.SqlDbType.NVarChar,
+                20
+            ).Value = usuario.Tipo_Documento;
+
+            command.Parameters.Add(
+                "@Numero_Documento",
+                System.Data.SqlDbType.NVarChar,
+                20
+            ).Value = usuario.Numero_Documento;
+
+            command.Parameters.Add(
+                "@Correo",
+                System.Data.SqlDbType.NVarChar,
+                150
+            ).Value = usuario.Correo;
+
+            command.Parameters.Add(
+                "@Telefono",
+                System.Data.SqlDbType.NVarChar,
+                15
+            ).Value = usuario.Telefono;
+
+            command.Parameters.Add(
+                "@Rol",
+                System.Data.SqlDbType.NVarChar,
+                20
+            ).Value = usuario.Rol;
 
             connection.Open();
 
             command.ExecuteNonQuery();
         }
 
+        // =========================================================
+        // ELIMINAR USUARIO
+        // DELETE /api/Usuarios/{id}
+        // =========================================================
         public void Eliminar(int id)
         {
             using var connection = _conexion.ObtenerConexion();
@@ -211,11 +269,54 @@ namespace ms_usuarios.Repositorios
 
             using var command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@ID_Usuario", id);
+            command.Parameters.Add(
+                "@ID_Usuario",
+                System.Data.SqlDbType.Int
+            ).Value = id;
 
             connection.Open();
 
             command.ExecuteNonQuery();
+        }
+
+        // =========================================================
+        // MAPEAR DATOS DE SQL SERVER → OBJETO USUARIO
+        // =========================================================
+        private Usuario MapearUsuario(SqlDataReader reader)
+        {
+            return new Usuario
+            {
+                ID_Usuario = Convert.ToInt32(
+                    reader["ID_Usuario"]
+                ),
+
+                Azure_Object_ID =
+                    reader["Azure_Object_ID"] == DBNull.Value
+                        ? null
+                        : (Guid?)reader["Azure_Object_ID"],
+
+                Nombre = reader["Nombre"].ToString() ?? string.Empty,
+
+                Apellido = reader["Apellido"].ToString() ?? string.Empty,
+
+                Tipo_Documento =
+                    reader["Tipo_Documento"].ToString() ?? string.Empty,
+
+                Numero_Documento =
+                    reader["Numero_Documento"].ToString() ?? string.Empty,
+
+                Correo =
+                    reader["Correo"].ToString() ?? string.Empty,
+
+                Telefono =
+                    reader["Telefono"].ToString() ?? string.Empty,
+
+                Rol =
+                    reader["Rol"].ToString() ?? string.Empty,
+
+                Fecha_Registro =
+                    Convert.ToDateTime(reader["Fecha_Registro"])
+            };
         }
     }
 }

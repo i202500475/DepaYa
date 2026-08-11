@@ -13,6 +13,9 @@ namespace ms_usuarios.Services
             _repository = repository;
         }
 
+        // =========================================================
+        // LISTAR
+        // =========================================================
         public List<UsuarioDTO> Listar()
         {
             var usuarios = _repository.Listar();
@@ -32,12 +35,17 @@ namespace ms_usuarios.Services
             }).ToList();
         }
 
+        // =========================================================
+        // OBTENER
+        // =========================================================
         public UsuarioDTO? Obtener(int id)
         {
             var usuario = _repository.Obtener(id);
 
             if (usuario == null)
+            {
                 return null;
+            }
 
             return new UsuarioDTO
             {
@@ -54,18 +62,45 @@ namespace ms_usuarios.Services
             };
         }
 
+        // =========================================================
+        // REGISTRAR
+        // =========================================================
         public void Registrar(CrearUsuarioDTO usuario)
         {
             _repository.Registrar(usuario);
         }
 
+        // =========================================================
+        // ACTUALIZAR
+        // =========================================================
         public void Actualizar(int id, ActualizarUsuarioDTO usuario)
         {
+            var existente = _repository.Obtener(id);
+
+            if (existente == null)
+            {
+                throw new KeyNotFoundException(
+                    "El usuario que intenta actualizar no existe."
+                );
+            }
+
             _repository.Actualizar(id, usuario);
         }
 
+        // =========================================================
+        // ELIMINAR
+        // =========================================================
         public void Eliminar(int id)
         {
+            var existente = _repository.Obtener(id);
+
+            if (existente == null)
+            {
+                throw new KeyNotFoundException(
+                    "El usuario que intenta eliminar no existe."
+                );
+            }
+
             _repository.Eliminar(id);
         }
     }
