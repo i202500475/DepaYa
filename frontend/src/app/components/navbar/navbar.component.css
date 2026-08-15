@@ -1,18 +1,611 @@
-.navbar-container {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 1rem 5%; background: white;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  position: sticky; top: 0; z-index: 100;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+/* ============================================================
+   NAVBAR PRINCIPAL
+============================================================ */
+
+.navbar {
+  width: 100%;
+  height: 82px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 22px;
+
+  padding: 0 32px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e5e7eb;
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.04);
 }
-.navbar-logo { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.navbar-logo h1 { margin: 0; color: #0284c7; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
-.logo-icon { font-size: 1.5rem; }
-.navbar-menu { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
-.navbar-menu a { text-decoration: none; color: #64748b; font-weight: 600; transition: color 0.2s; }
-.navbar-menu a:hover, .navbar-menu a.active { color: #0284c7; }
-.navbar-actions { display: flex; gap: 1rem; }
-.btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #475569; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
-.btn-outline:hover { border-color: #0284c7; color: #0284c7; }
-.btn-primary { background: #0284c7; color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: background 0.2s; box-shadow: 0 2px 4px rgba(2, 132, 199, 0.3); }
-.btn-primary:hover { background: #0369a1; }
+
+
+/* ============================================================
+   LOGO
+============================================================ */
+
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  color: #ff385c;
+
+  font-size: 27px;
+  font-weight: 800;
+
+  letter-spacing: -1px;
+
+  text-decoration: none;
+
+  cursor: pointer;
+}
+
+.nav-logo:hover {
+  color: #e31c5f;
+}
+
+
+/* ============================================================
+   LINKS DEL PROPIETARIO / INQUILINO
+============================================================ */
+
+.nav-links {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+}
+
+.nav-link {
+  min-height: 44px;
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 16px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #5f6368;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nav-link:hover {
+  background: #f8fafc;
+  color: #111827;
+}
+
+.nav-link.active {
+  color: #111827;
+
+  background: #ffffff;
+
+  border-color: #111827;
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ============================================================
+   BUSCADOR
+============================================================ */
+
+.nav-search {
+  width: 315px;
+  height: 48px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+
+  background: #ffffff;
+
+  border: 1px solid #d8dce2;
+  border-radius: 30px;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.08);
+
+  overflow: hidden;
+
+  flex-shrink: 1;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nav-search:focus-within {
+  border-color: #ff385c;
+
+  box-shadow:
+    0 0 0 3px rgba(255, 56, 92, 0.1);
+}
+
+.search-input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 100%;
+
+  box-sizing: border-box;
+
+  padding: 0 10px 0 20px;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #333333;
+
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: #7b7b7b;
+}
+
+
+/* ============================================================
+   BOTÓN DE BÚSQUEDA
+============================================================ */
+
+.search-icon-btn {
+  width: 38px;
+  height: 38px;
+
+  margin-right: 5px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #ff385c;
+  color: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.search-icon-btn:hover {
+  background: #e31c5f;
+
+  transform: scale(1.05);
+}
+
+
+/* ============================================================
+   ACCIONES DERECHA
+============================================================ */
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   PUBLICAR MI DEPA
+============================================================ */
+
+.nav-host-link {
+  min-height: 48px;
+
+  box-sizing: border-box;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 28px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #ff385c;
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+}
+
+.nav-host-link:hover {
+  background: #e31c5f;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 5px 12px rgba(255, 56, 92, 0.2);
+}
+
+.nav-host-link.active-host {
+  background: #d91349;
+}
+
+
+/* ============================================================
+   CONTENEDOR MENÚ USUARIO
+============================================================ */
+
+.nav-user-wrap {
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+
+/* ============================================================
+   BOTÓN HAMBURGUESA
+============================================================ */
+
+.nav-user-menu {
+  width: 48px;
+  height: 48px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #d8dce2;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.nav-user-menu:hover {
+  background: #f8fafc;
+
+  border-color: #b9bec6;
+
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ============================================================
+   DROPDOWN
+============================================================ */
+
+.dropdown-menu {
+  width: 290px;
+
+  position: absolute;
+
+  top: calc(100% + 12px);
+  right: 0;
+
+  z-index: 1200;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.16);
+
+  animation:
+    dropdownEntrada 0.18s ease;
+}
+
+@keyframes dropdownEntrada {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(-7px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+
+/* ============================================================
+   DATOS DEL USUARIO
+============================================================ */
+
+.dropdown-user-info {
+  padding: 17px 19px;
+
+  background: #fafafa;
+}
+
+.dropdown-user-info strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.dropdown-user-info span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+
+  word-break: break-word;
+}
+
+.dropdown-user-info small {
+  display: inline-flex;
+
+  margin-top: 9px;
+
+  padding: 4px 9px;
+
+  border-radius: 20px;
+
+  background: #dbeafe;
+
+  color: #1d4ed8;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+/* ============================================================
+   ITEMS DEL DROPDOWN
+============================================================ */
+
+.dropdown-item {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 14px 18px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #222222;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+
+  text-align: left;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background: #f7f7f7;
+}
+
+.dropdown-item.bold {
+  font-weight: 700;
+}
+
+.dropdown-item.logout {
+  color: #e11d48;
+
+  font-weight: 700;
+}
+
+.dropdown-item.logout:hover {
+  background: #fff1f2;
+}
+
+
+/* ============================================================
+   DIVISOR
+============================================================ */
+
+.dropdown-divider {
+  width: 100%;
+  height: 1px;
+
+  background: #eeeeee;
+}
+
+
+/* ============================================================
+   BACKDROP
+============================================================ */
+
+.backdrop {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 900;
+
+  background: transparent;
+}
+
+
+/* ============================================================
+   TABLET
+============================================================ */
+
+@media (max-width: 1150px) {
+
+  .navbar {
+    padding: 0 20px;
+
+    gap: 12px;
+  }
+
+  .nav-link {
+    padding-left: 11px;
+    padding-right: 11px;
+
+    font-size: 14px;
+  }
+
+  .nav-search {
+    width: 250px;
+  }
+
+  .nav-host-link {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+
+/* ============================================================
+   TABLET PEQUEÑA
+============================================================ */
+
+@media (max-width: 900px) {
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-search {
+    flex: 1;
+
+    max-width: 330px;
+
+    margin-left: auto;
+  }
+}
+
+
+/* ============================================================
+   MÓVIL
+============================================================ */
+
+@media (max-width: 650px) {
+
+  .navbar {
+    height: 70px;
+
+    padding: 0 14px;
+
+    gap: 10px;
+  }
+
+  .nav-logo {
+    font-size: 22px;
+  }
+
+  .nav-search {
+    display: none;
+  }
+
+  .nav-host-link {
+    min-height: 42px;
+
+    padding: 0 13px;
+
+    font-size: 12px;
+  }
+
+  .nav-user-menu {
+    width: 42px;
+    height: 42px;
+  }
+
+  .dropdown-menu {
+    position: fixed;
+
+    top: 76px;
+    right: 12px;
+
+    width: calc(100vw - 24px);
+
+    max-width: 320px;
+  }
+}

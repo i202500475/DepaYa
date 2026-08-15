@@ -1,25 +1,312 @@
-<div class="auth-container">
+<div class="auth-wrapper">
   <div class="auth-card">
-    <h2>Crear Cuenta</h2>
-    <p>Regístrate para empezar a publicar o alquilar</p>
 
-    <form (ngSubmit)="onRegistro()">
-      <div class="form-group">
-        <label>Nombre Completo</label>
-        <input type="text" [(ngModel)]="usuario.nombre" name="nombre" placeholder="Tu nombre" required>
+    <!-- ============================= -->
+    <!-- ENCABEZADO -->
+    <!-- ============================= -->
+
+    <div class="auth-header">
+      <h2>Crea tu cuenta en DepaYa</h2>
+      <div class="header-divider"></div>
+      <p class="auth-subtitle">
+        Rápido, gratis y seguro
+      </p>
+    </div>
+
+    <!-- ============================= -->
+    <!-- FORMULARIO -->
+    <!-- ============================= -->
+
+    <form (ngSubmit)="registrar()">
+
+      <!-- NOMBRE Y APELLIDO -->
+
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="nombre">
+            Nombre
+          </label>
+
+          <input
+            id="nombre"
+            type="text"
+            [(ngModel)]="nombre"
+            name="nombre"
+            placeholder="Tu nombre"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="apellido">
+            Apellido
+          </label>
+
+          <input
+            id="apellido"
+            type="text"
+            [(ngModel)]="apellido"
+            name="apellido"
+            placeholder="Tu apellido"
+            required
+          />
+        </div>
+
       </div>
 
-      <div class="form-group">
-        <label>Correo Electrónico</label>
-        <input type="email" [(ngModel)]="usuario.email" name="email" placeholder="correo@ejemplo.com" required>
-      </div>
+      <!-- ============================= -->
+      <!-- CORREO -->
+      <!-- ============================= -->
 
       <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" [(ngModel)]="usuario.password" name="password" placeholder="••••••••" required>
+
+        <label for="email">
+          Correo electrónico
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="nombre@ejemplo.com"
+          required
+        />
+
       </div>
 
-      <button type="submit" class="btn-auth">Registrarse</button>
+      <!-- ============================= -->
+      <!-- TELÉFONO -->
+      <!-- ============================= -->
+
+      <div class="form-group">
+
+        <label for="telefono">
+          Teléfono
+        </label>
+
+        <input
+          id="telefono"
+          type="tel"
+          [(ngModel)]="telefono"
+          name="telefono"
+          placeholder="9XXXXXXXX"
+        />
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- TIPO DOCUMENTO -->
+      <!-- ============================= -->
+
+      <div class="form-row">
+
+        <div class="form-group">
+
+          <label for="tipoDoc">
+            Tipo de documento
+          </label>
+
+          <select
+            id="tipoDoc"
+            [(ngModel)]="tipoDoc"
+            name="tipoDoc"
+          >
+
+            <option value="DNI">
+              DNI
+            </option>
+
+            <option value="CE">
+              Carné de Extranjería
+            </option>
+
+            <option value="Pasaporte">
+              Pasaporte
+            </option>
+
+          </select>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="nroDoc">
+            N° Documento
+          </label>
+
+          <input
+            id="nroDoc"
+            type="text"
+            [(ngModel)]="nroDoc"
+            name="nroDoc"
+            placeholder="Número de documento"
+            required
+          />
+
+        </div>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- CONTRASEÑA -->
+      <!-- ============================= -->
+
+      <div class="form-group">
+
+        <label for="password">
+          Contraseña
+        </label>
+
+        <div class="password-wrapper">
+
+          <input
+            id="password"
+            [type]="mostrarPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Mínimo 6 caracteres"
+            required
+          />
+
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="alternarPassword()"
+          >
+            {{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- CONFIRMAR CONTRASEÑA -->
+      <!-- ============================= -->
+
+      <div class="form-group">
+
+        <label for="confirmarPassword">
+          Confirmar contraseña
+        </label>
+
+        <div class="password-wrapper">
+
+          <input
+            id="confirmarPassword"
+            [type]="mostrarConfirmarPassword ? 'text' : 'password'"
+            [(ngModel)]="confirmarPassword"
+            name="confirmarPassword"
+            placeholder="Repite tu contraseña"
+            required
+          />
+
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="alternarConfirmarPassword()"
+          >
+            {{ mostrarConfirmarPassword ? 'Ocultar' : 'Mostrar' }}
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- ROL -->
+      <!-- ============================= -->
+
+      <div class="form-group">
+
+        <label for="rol">
+          Quiero usar DepaYa como
+        </label>
+
+        <select
+          id="rol"
+          [(ngModel)]="rol"
+          name="rol"
+          required
+        >
+
+          <option value="INQUILINO">
+            Inquilino
+          </option>
+
+          <option value="PROPIETARIO">
+            Propietario
+          </option>
+
+        </select>
+
+      </div>
+
+      <!-- ============================= -->
+      <!-- INFORMACIÓN DEL ROL -->
+      <!-- ============================= -->
+
+      @if (rol === 'PROPIETARIO') {
+
+      <div class="rol-info propietario-info">
+
+        <strong>Propietario</strong>
+
+        <p>
+          Podrás publicar tus departamentos,
+          administrar tus alquileres y consultar
+          tus ingresos.
+        </p>
+
+      </div>
+
+      } @else {
+
+      <div class="rol-info inquilino-info">
+
+        <strong>Inquilino</strong>
+
+        <p>
+          Podrás explorar departamentos,
+          realizar reservas y consultar
+          tus alquileres.
+        </p>
+
+      </div>
+
+      }
+
+      <!-- ============================= -->
+      <!-- BOTÓN REGISTRAR -->
+      <!-- ============================= -->
+
+      <button
+        type="submit"
+        class="btn-submit"
+      >
+        Crear cuenta
+      </button>
+
     </form>
+
+    <!-- ============================= -->
+    <!-- VOLVER AL LOGIN -->
+    <!-- ============================= -->
+
+    <p class="auth-footer">
+
+      ¿Ya tienes cuenta?
+
+      <a
+        href="javascript:void(0)"
+        (click)="irALogin()"
+      >
+        Inicia sesión
+      </a>
+
+    </p>
+
   </div>
 </div>

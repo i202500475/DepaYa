@@ -1,0 +1,180 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="label">
+        PROPIETARIO
+      </span>
+
+      <h1>
+        Mis alquileres
+      </h1>
+
+      <p>
+        Reservas realizadas únicamente sobre tus departamentos.
+      </p>
+
+    </div>
+
+
+    <div class="contador">
+
+      <strong>
+        {{ alquileres.length }}
+      </strong>
+
+      <span>
+        reservas
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="lista"
+    *ngIf="alquileres.length > 0"
+  >
+
+    <article
+      class="alquiler-card"
+      *ngFor="let alquiler of alquileres"
+    >
+
+      <div class="card-header">
+
+        <div>
+
+          <span class="departamento-label">
+            DEPARTAMENTO
+          </span>
+
+          <h2>
+            {{ alquiler.departamento }}
+          </h2>
+
+          <p>
+            📍 {{ alquiler.ciudad }}
+          </p>
+
+        </div>
+
+
+        <span
+          class="estado"
+          [ngClass]="claseEstado(alquiler.estado)"
+        >
+          {{ alquiler.estado }}
+        </span>
+
+      </div>
+
+
+      <div class="inquilino">
+
+        <span>
+          Inquilino
+        </span>
+
+        <strong>
+          {{ alquiler.inquilinoNombre }}
+        </strong>
+
+        <small>
+          {{ alquiler.inquilinoEmail }}
+        </small>
+
+      </div>
+
+
+      <div class="datos">
+
+        <div>
+
+          <span>
+            Ingreso
+          </span>
+
+          <strong>
+            {{ alquiler.fechaInicio | date:'dd/MM/yyyy' }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Salida
+          </span>
+
+          <strong>
+            {{ alquiler.fechaFin | date:'dd/MM/yyyy' }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Noches
+          </span>
+
+          <strong>
+            {{ alquiler.noches }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Total
+          </span>
+
+          <strong class="monto">
+            S/ {{ alquiler.total | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="fecha-reserva">
+
+        Reserva registrada:
+        {{ alquiler.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <div
+    class="empty"
+    *ngIf="alquileres.length === 0"
+  >
+
+    <div>
+      📅
+    </div>
+
+    <h2>
+      Aún no tienes alquileres
+    </h2>
+
+    <p>
+      Cuando un inquilino reserve uno de tus departamentos aparecerá aquí.
+    </p>
+
+  </div>
+
+</div>

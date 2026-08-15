@@ -15,10 +15,18 @@ namespace ms_auth.Controllers
             _authService = authService;
         }
 
+        // Simulación de autenticación mediante Azure Object ID
+        // Ejemplo:
+        // GET /api/Auth/usuario/{azureObjectId}
+
         [HttpGet("usuario/{azureObjectId}")]
-        public async Task<ActionResult<AuthResponseDTO>> Autenticar(Guid azureObjectId)
+        public async Task<ActionResult<AuthResponseDTO>> Autenticar(
+            Guid azureObjectId)
         {
-            var usuario = await _authService.AutenticarAsync(azureObjectId);
+            var usuario =
+                await _authService.AutenticarAsync(
+                    azureObjectId
+                );
 
             if (usuario == null)
             {

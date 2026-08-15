@@ -1,44 +1,537 @@
-<div class="booking-widget">
-  <div class="widget-header">
-    <div class="price">S/ 280 <span>/ noche</span></div>
+<div class="reserva-page">
+
+  <div class="reserva-header">
+
+    <button
+      type="button"
+      class="back-button"
+      (click)="volverExplorar()"
+    >
+      ← Volver a explorar
+    </button>
+
+    <span>DEPAYA</span>
+
+    <h1>
+      Reserva y paga tu estadía
+    </h1>
+
+    <p>
+      Tu reserva será confirmada únicamente después de validar el pago.
+    </p>
+
   </div>
 
-  <form class="booking-form" (submit)="procesarReserva(); $event.preventDefault()">
-    <div class="dates-container">
-      <div class="date-input border-right">
-        <label>Llegada</label>
-        <input type="date">
+
+  <div
+    class="reserva-container"
+    *ngIf="departamento"
+  >
+
+    <!-- ========================================
+         DEPARTAMENTO
+    ========================================= -->
+
+    <section class="departamento-preview">
+
+      <img
+        [src]="departamento.URL_Imagen"
+        [alt]="departamento.Titulo"
+      >
+
+      <div class="preview-info">
+
+        <span class="categoria">
+          {{ departamento.Categoria }}
+        </span>
+
+        <h2>
+          {{ departamento.Titulo }}
+        </h2>
+
+        <p class="ubicacion">
+          📍 {{ departamento.Distrito }}, Lima
+        </p>
+
+
+        <div class="detalles">
+
+          <span>
+            🛏️ {{ departamento.Habitaciones }}
+            habitaciones
+          </span>
+
+          <span>
+            🚿 {{ departamento.Banos }}
+            baños
+          </span>
+
+        </div>
+
+
+        <div class="precio">
+
+          <strong>
+            S/
+            {{ departamento.Precio_Noche | number:'1.2-2' }}
+          </strong>
+
+          <span>
+            por noche
+          </span>
+
+        </div>
+
       </div>
-      <div class="date-input">
-        <label>Salida</label>
-        <input type="date">
+
+    </section>
+
+
+    <!-- ========================================
+         RESERVA + PAGO
+    ========================================= -->
+
+    <section class="reserva-card">
+
+      <div class="step-badge">
+        1
       </div>
-    </div>
 
-    <div class="guest-input">
-      <label>Huéspedes</label>
-      <select>
-        <option>1 huésped</option>
-        <option>2 huéspedes</option>
-        <option>3 huéspedes</option>
-      </select>
-    </div>
+      <h2>
+        Datos de tu reserva
+      </h2>
 
-    <button type="submit" class="btn-book">Reservar ahora</button>
-  </form>
+      <p class="form-description">
+        Selecciona tus fechas.
+      </p>
 
-  <div class="pricing-details">
-    <div class="pricing-row">
-      <span>S/ 280 x 3 noches</span>
-      <span>S/ 840</span>
-    </div>
-    <div class="pricing-row">
-      <span>Tarifa de servicio</span>
-      <span>S/ 60</span>
-    </div>
-    <div class="pricing-row total">
-      <span>Total</span>
-      <span>S/ 900</span>
-    </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label for="fechaInicio">
+            Fecha de ingreso
+          </label>
+
+          <input
+            id="fechaInicio"
+            type="date"
+            [(ngModel)]="fechaInicio"
+            (change)="calcularTotal()"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="fechaFin">
+            Fecha de salida
+          </label>
+
+          <input
+            id="fechaFin"
+            type="date"
+            [(ngModel)]="fechaFin"
+            (change)="calcularTotal()"
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="huespedes">
+          Huéspedes
+        </label>
+
+        <input
+          id="huespedes"
+          type="number"
+          min="1"
+          [(ngModel)]="huespedes"
+        >
+
+      </div>
+
+
+      <!-- RESUMEN -->
+
+      <div class="resumen">
+
+        <div class="resumen-line">
+
+          <span>
+            Precio por noche
+          </span>
+
+          <strong>
+            S/
+            {{ departamento.Precio_Noche | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="resumen-line">
+
+          <span>
+            Noches
+          </span>
+
+          <strong>
+            {{ noches }}
+          </strong>
+
+        </div>
+
+
+        <div class="resumen-line total-line">
+
+          <span>
+            Total a pagar
+          </span>
+
+          <strong>
+            S/
+            {{ total | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- ========================================
+           PASO 2
+      ========================================= -->
+
+      <div class="payment-divider"></div>
+
+
+      <div class="payment-heading">
+
+        <div class="step-badge">
+          2
+        </div>
+
+        <div>
+
+          <h2>
+            Método de pago
+          </h2>
+
+          <p>
+            Elige cómo quieres pagar.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- MÉTODOS -->
+
+      <div class="payment-methods">
+
+
+        <!-- YAPE -->
+
+        <button
+          type="button"
+          class="payment-option yape"
+          [class.selected]="metodoPago === 'YAPE'"
+          (click)="seleccionarMetodo('YAPE')"
+        >
+
+          <div class="payment-logo">
+            Y
+          </div>
+
+          <span>
+            Yape
+          </span>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </button>
+
+
+        <!-- PLIN -->
+
+        <button
+          type="button"
+          class="payment-option plin"
+          [class.selected]="metodoPago === 'PLIN'"
+          (click)="seleccionarMetodo('PLIN')"
+        >
+
+          <div class="payment-logo">
+            P
+          </div>
+
+          <span>
+            Plin
+          </span>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </button>
+
+
+        <!-- VISA -->
+
+        <button
+          type="button"
+          class="payment-option"
+          [class.selected]="metodoPago === 'VISA'"
+          (click)="seleccionarMetodo('VISA')"
+        >
+
+          <div class="payment-logo visa-logo">
+            VISA
+          </div>
+
+          <span>
+            Visa
+          </span>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </button>
+
+
+        <!-- MASTERCARD -->
+
+        <button
+          type="button"
+          class="payment-option"
+          [class.selected]="metodoPago === 'MASTERCARD'"
+          (click)="seleccionarMetodo('MASTERCARD')"
+        >
+
+          <div class="payment-logo">
+            💳
+          </div>
+
+          <span>
+            Mastercard
+          </span>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <!-- ========================================
+           QR
+      ========================================= -->
+
+      <div
+        class="qr-payment"
+        *ngIf="esPagoQR"
+      >
+
+        <span class="payment-demo">
+          MODO DEMOSTRACIÓN
+        </span>
+
+        <h3>
+          Escanea con
+          {{ metodoPago === 'YAPE' ? 'Yape' : 'Plin' }}
+        </h3>
+
+        <p>
+          Paga exactamente
+          <strong>
+            S/ {{ total | number:'1.2-2' }}
+          </strong>
+        </p>
+
+
+        <div class="qr-wrapper">
+
+          <img
+            [src]="qrPago"
+            alt="Código QR de pago"
+          >
+
+        </div>
+
+
+        <small>
+          Después de realizar el pago presiona
+          “Ya pagué”.
+        </small>
+
+      </div>
+
+
+      <!-- ========================================
+           TARJETA
+      ========================================= -->
+
+      <div
+        class="card-payment"
+        *ngIf="esTarjeta"
+      >
+
+        <span class="payment-demo">
+          PAGO SEGURO · DEMOSTRACIÓN
+        </span>
+
+
+        <div class="form-group">
+
+          <label for="numeroTarjeta">
+            Número de tarjeta
+          </label>
+
+          <input
+            id="numeroTarjeta"
+            type="text"
+            maxlength="19"
+            [(ngModel)]="numeroTarjeta"
+            placeholder="0000 0000 0000 0000"
+            autocomplete="off"
+          >
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="titular">
+            Titular de la tarjeta
+          </label>
+
+          <input
+            id="titular"
+            type="text"
+            [(ngModel)]="titularTarjeta"
+            placeholder="Nombre y apellido"
+            autocomplete="off"
+          >
+
+        </div>
+
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label for="vencimiento">
+              Vencimiento
+            </label>
+
+            <input
+              id="vencimiento"
+              type="text"
+              maxlength="5"
+              [(ngModel)]="vencimiento"
+              placeholder="MM/AA"
+              autocomplete="off"
+            >
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label for="cvv">
+              CVV
+            </label>
+
+            <input
+              id="cvv"
+              type="password"
+              maxlength="4"
+              [(ngModel)]="cvv"
+              placeholder="•••"
+              autocomplete="off"
+            >
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- MENSAJES -->
+
+      <div
+        class="payment-error"
+        *ngIf="errorPago"
+      >
+        {{ errorPago }}
+      </div>
+
+
+      <div
+        class="payment-success"
+        *ngIf="mensajePago"
+      >
+        {{ mensajePago }}
+      </div>
+
+
+      <!-- ========================================
+           PAGAR
+      ========================================= -->
+
+      <button
+        type="button"
+        class="confirm-button"
+        [disabled]="validandoPago"
+        (click)="procesarPago()"
+      >
+
+        <span
+          class="payment-spinner"
+          *ngIf="validandoPago"
+        ></span>
+
+
+        <ng-container *ngIf="!validandoPago">
+
+          {{
+          esPagoQR
+          ? 'Ya pagué · Validar pago'
+          : esTarjeta
+          ? 'Pagar y confirmar reserva'
+          : 'Selecciona un método de pago'
+          }}
+
+        </ng-container>
+
+
+        <ng-container *ngIf="validandoPago">
+          Validando pago...
+        </ng-container>
+
+      </button>
+
+
+      <p class="secure-message">
+        🔒 La reserva solo se confirma después de validar el pago.
+      </p>
+
+    </section>
+
   </div>
+
 </div>

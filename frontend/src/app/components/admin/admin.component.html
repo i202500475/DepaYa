@@ -1,0 +1,1031 @@
+<div class="admin-container">
+
+  <!-- ==========================================
+       HEADER
+  =========================================== -->
+
+  <header class="admin-header">
+
+    <div>
+
+      <h1>
+        Panel de Administración
+      </h1>
+
+      <p>
+        Gestión general de DepaYa
+      </p>
+
+    </div>
+
+    <div class="admin-badge">
+      ADMIN
+    </div>
+
+  </header>
+
+
+  <!-- ==========================================
+       MENSAJES
+  =========================================== -->
+
+  <div
+    class="alert success"
+    *ngIf="mensaje"
+  >
+    {{ mensaje }}
+  </div>
+
+  <div
+    class="alert error"
+    *ngIf="error"
+  >
+    {{ error }}
+  </div>
+
+
+  <!-- ==========================================
+       DASHBOARD
+  =========================================== -->
+
+  <section class="dashboard-cards">
+
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        👥
+      </div>
+
+      <div>
+        <span>Usuarios</span>
+        <strong>
+          {{ totalUsuarios }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        🏠
+      </div>
+
+      <div>
+        <span>Departamentos</span>
+        <strong>
+          {{ totalDepartamentos }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        📅
+      </div>
+
+      <div>
+        <span>Reservas</span>
+        <strong>
+          {{ totalReservas }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="dashboard-card">
+
+      <div class="card-icon">
+        💳
+      </div>
+
+      <div>
+        <span>Pagos</span>
+        <strong>
+          {{ totalPagos }}
+        </strong>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       USUARIOS
+  =========================================== -->
+
+  <section class="admin-section">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>
+          Usuarios
+        </h2>
+
+        <p>
+          Administración de usuarios registrados en DepaYa
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="abrirCrear()"
+      >
+        + Nuevo usuario
+      </button>
+
+    </div>
+
+
+    <div
+      class="loading"
+      *ngIf="cargando"
+    >
+      Cargando información...
+    </div>
+
+
+    <div
+      class="table-container"
+      *ngIf="!cargando"
+    >
+
+      <table>
+
+        <thead>
+
+        <tr>
+
+          <th>#</th>
+
+          <th>Nombre</th>
+
+          <th>Documento</th>
+
+          <th>Correo</th>
+
+          <th>Teléfono</th>
+
+          <th>Rol</th>
+
+          <th>Fecha registro</th>
+
+          <th class="center">
+            Acciones
+          </th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+              let usuario of usuarios;
+              let i = index
+            "
+        >
+
+          <td class="numero-tabla">
+            {{ i + 1 }}
+          </td>
+
+
+          <td>
+
+            <strong>
+              {{ usuario.nombre }}
+              {{ usuario.apellido || '' }}
+            </strong>
+
+          </td>
+
+
+          <td>
+
+            {{ usuario.tipoDoc || '-' }}
+
+            <br>
+
+            <small>
+              {{ usuario.nroDoc || 'Sin documento' }}
+            </small>
+
+          </td>
+
+
+          <td class="correo">
+            {{ usuario.email }}
+          </td>
+
+
+          <td>
+            {{ usuario.telefono || '-' }}
+          </td>
+
+
+          <td>
+
+              <span
+                class="rol"
+                [ngClass]="
+                  obtenerClaseRol(
+                    usuario.rol
+                  )
+                "
+              >
+
+                {{
+                  obtenerNombreRol(
+                    usuario.rol
+                  )
+                }}
+
+              </span>
+
+          </td>
+
+
+          <td>
+            {{ usuario.fecha || '-' }}
+          </td>
+
+
+          <td>
+
+            <div class="actions">
+
+              <button
+                type="button"
+                class="btn-edit"
+                title="Editar"
+                (click)="
+                    abrirEditar(usuario)
+                  "
+              >
+                ✏️
+              </button>
+
+
+              <button
+                type="button"
+                class="btn-delete"
+                title="Eliminar"
+                [disabled]="
+                    usuario.email.toLowerCase()
+                    ===
+                    'admin@depaya.com'
+                  "
+                (click)="
+                    eliminarUsuario(usuario)
+                  "
+              >
+                🗑️
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+
+        <tr
+          *ngIf="
+              usuarios.length === 0
+            "
+        >
+
+          <td
+            colspan="8"
+            class="empty"
+          >
+            No hay usuarios registrados.
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       DEPARTAMENTOS
+  =========================================== -->
+
+  <section class="admin-section">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>
+          Departamentos publicados
+        </h2>
+
+        <p>
+          Propiedades publicadas por los propietarios
+        </p>
+
+      </div>
+
+      <div class="section-count">
+        {{ totalDepartamentos }}
+      </div>
+
+    </div>
+
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+          <th>#</th>
+          <th>Departamento</th>
+          <th>Distrito</th>
+          <th>Categoría</th>
+          <th>Habitaciones</th>
+          <th>Baños</th>
+          <th>Precio / noche</th>
+          <th>Propietario</th>
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+              let departamento of departamentos;
+              let i = index
+            "
+        >
+
+          <td class="numero-tabla">
+            {{ i + 1 }}
+          </td>
+
+
+          <td>
+
+            <div class="departamento-info">
+
+              <img
+                *ngIf="departamento.URL_Imagen"
+                [src]="departamento.URL_Imagen"
+                [alt]="departamento.Titulo"
+                class="departamento-img"
+              >
+
+              <strong>
+                {{ departamento.Titulo }}
+              </strong>
+
+            </div>
+
+          </td>
+
+
+          <td>
+            {{ departamento.Distrito }}
+          </td>
+
+
+          <td>
+            {{ departamento.Categoria }}
+          </td>
+
+
+          <td>
+            {{ departamento.Habitaciones }}
+          </td>
+
+
+          <td>
+            {{ departamento.Banos }}
+          </td>
+
+
+          <td class="precio">
+            S/ {{ departamento.Precio_Noche | number:'1.2-2' }}
+          </td>
+
+
+          <td class="correo">
+            {{ departamento.propietarioEmail }}
+          </td>
+
+        </tr>
+
+
+        <tr
+          *ngIf="
+              departamentos.length === 0
+            "
+        >
+
+          <td
+            colspan="8"
+            class="empty"
+          >
+            No hay departamentos publicados.
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       RESERVAS / ALQUILERES
+  =========================================== -->
+
+  <section class="admin-section">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>
+          Reservas / Alquileres
+        </h2>
+
+        <p>
+          Reservas realizadas por los inquilinos
+        </p>
+
+      </div>
+
+      <div class="section-count">
+        {{ totalReservas }}
+      </div>
+
+    </div>
+
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+          <th>#</th>
+          <th>Departamento</th>
+          <th>Inquilino</th>
+          <th>Propietario</th>
+          <th>Ingreso</th>
+          <th>Salida</th>
+          <th>Noches</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Reservado</th>
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+              let reserva of reservas;
+              let i = index
+            "
+        >
+
+          <td class="numero-tabla">
+            {{ i + 1 }}
+          </td>
+
+
+          <td>
+            <strong>
+              {{ reserva.departamento }}
+            </strong>
+
+            <br>
+
+            <small>
+              {{ reserva.ciudad }}
+            </small>
+          </td>
+
+
+          <td>
+
+            <strong>
+              {{ reserva.inquilinoNombre }}
+            </strong>
+
+            <br>
+
+            <small>
+              {{ reserva.inquilinoEmail }}
+            </small>
+
+          </td>
+
+
+          <td class="correo">
+            {{ reserva.propietarioEmail }}
+          </td>
+
+
+          <td>
+            {{ reserva.fechaInicio | date:'dd/MM/yyyy' }}
+          </td>
+
+
+          <td>
+            {{ reserva.fechaFin | date:'dd/MM/yyyy' }}
+          </td>
+
+
+          <td>
+            {{ reserva.noches }}
+          </td>
+
+
+          <td class="precio">
+            S/ {{ reserva.total | number:'1.2-2' }}
+          </td>
+
+
+          <td>
+
+              <span
+                class="estado"
+                [ngClass]="
+                  obtenerClaseReserva(
+                    reserva.estado
+                  )
+                "
+              >
+                {{ reserva.estado }}
+              </span>
+
+          </td>
+
+
+          <td>
+            {{ reserva.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+
+        </tr>
+
+
+        <tr
+          *ngIf="
+              reservas.length === 0
+            "
+        >
+
+          <td
+            colspan="10"
+            class="empty"
+          >
+            Todavía no hay reservas registradas.
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  <!-- ==========================================
+       PAGOS
+  =========================================== -->
+
+  <section class="admin-section">
+
+    <div class="section-header">
+
+      <div>
+
+        <h2>
+          Pagos
+        </h2>
+
+        <p>
+          Pagos generados por las reservas del sistema
+        </p>
+
+      </div>
+
+      <div class="ingresos-box">
+
+        <span>
+          Ingresos registrados
+        </span>
+
+        <strong>
+          S/ {{ totalIngresos | number:'1.2-2' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="table-container">
+
+      <table>
+
+        <thead>
+
+        <tr>
+          <th>#</th>
+          <th>Departamento</th>
+          <th>Inquilino</th>
+          <th>Propietario</th>
+          <th>Monto</th>
+          <th>Método</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        <tr
+          *ngFor="
+              let pago of pagos;
+              let i = index
+            "
+        >
+
+          <td class="numero-tabla">
+            {{ i + 1 }}
+          </td>
+
+
+          <td>
+            <strong>
+              {{ pago.departamento }}
+            </strong>
+          </td>
+
+
+          <td>
+
+            <strong>
+              {{ pago.inquilinoNombre }}
+            </strong>
+
+            <br>
+
+            <small>
+              {{ pago.inquilinoEmail }}
+            </small>
+
+          </td>
+
+
+          <td class="correo">
+            {{ pago.propietarioEmail }}
+          </td>
+
+
+          <td class="precio">
+            S/ {{ pago.monto | number:'1.2-2' }}
+          </td>
+
+
+          <td>
+            {{ pago.metodo }}
+          </td>
+
+
+          <td>
+
+              <span
+                class="estado"
+                [ngClass]="
+                  obtenerClasePago(
+                    pago.estado
+                  )
+                "
+              >
+                {{ pago.estado }}
+              </span>
+
+          </td>
+
+
+          <td>
+            {{ pago.fecha | date:'dd/MM/yyyy HH:mm' }}
+          </td>
+
+        </tr>
+
+
+        <tr
+          *ngIf="
+              pagos.length === 0
+            "
+        >
+
+          <td
+            colspan="8"
+            class="empty"
+          >
+            Todavía no hay pagos registrados.
+          </td>
+
+        </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL USUARIO
+============================================================ -->
+
+<div
+  class="modal-backdrop"
+  *ngIf="modalVisible"
+  (click)="cerrarModal()"
+>
+
+  <div
+    class="modal-usuario"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+
+          {{
+          modoEdicion
+          ? 'Editar usuario'
+          : 'Nuevo usuario'
+          }}
+
+        </h2>
+
+        <p>
+
+          {{
+          modoEdicion
+          ? 'Actualiza la información del usuario'
+          : 'Registra un nuevo usuario en DepaYa'
+          }}
+
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        (click)="cerrarModal()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+
+      <div class="form-group">
+
+        <label>
+          Nombre *
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="form.nombre"
+          placeholder="Nombre"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Apellido
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="form.apellido"
+          placeholder="Apellido"
+        >
+
+      </div>
+
+
+      <div class="form-group full">
+
+        <label>
+          Correo electrónico *
+        </label>
+
+        <input
+          type="email"
+          [(ngModel)]="form.email"
+          placeholder="correo@ejemplo.com"
+          [disabled]="
+            modoEdicion &&
+            form.email?.toLowerCase()
+            ===
+            'admin@depaya.com'
+          "
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Teléfono
+        </label>
+
+        <input
+          type="text"
+          maxlength="9"
+          [(ngModel)]="form.telefono"
+          placeholder="9XXXXXXXX"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Tipo de documento
+        </label>
+
+        <select
+          [(ngModel)]="form.tipoDoc"
+        >
+
+          <option
+            *ngFor="
+              let tipo of tiposDocs
+            "
+            [value]="tipo"
+          >
+            {{ tipo }}
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          N° Documento
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="form.nroDoc"
+          placeholder="Número de documento"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>
+          Rol *
+        </label>
+
+        <select
+          [(ngModel)]="form.rol"
+          [disabled]="
+            modoEdicion &&
+            form.email?.toLowerCase()
+            ===
+            'admin@depaya.com'
+          "
+        >
+
+          <option
+            *ngFor="
+              let rol of roles
+            "
+            [value]="rol.valor"
+          >
+            {{ rol.texto }}
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group full">
+
+        <label>
+          Contraseña *
+        </label>
+
+        <input
+          type="password"
+          [(ngModel)]="form.password"
+          placeholder="Mínimo 6 caracteres"
+        >
+
+      </div>
+
+
+      <div
+        class="modal-error full"
+        *ngIf="error"
+      >
+        {{ error }}
+      </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="btn-cancelar"
+        (click)="cerrarModal()"
+      >
+        Cancelar
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-guardar"
+        (click)="guardarUsuario()"
+      >
+
+        {{
+        modoEdicion
+        ? 'Guardar cambios'
+        : 'Crear usuario'
+        }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,19 +1,745 @@
-.booking-widget {
-  background: white; padding: 1.5rem; border-radius: 12px; font-family: 'Segoe UI', system-ui, sans-serif;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; max-width: 350px;
+:host {
+  display: block;
 }
-.widget-header { margin-bottom: 1.5rem; }
-.price { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
-.price span { font-size: 1rem; font-weight: 400; color: #64748b; }
-.dates-container { display: flex; border: 1px solid #cbd5e1; border-radius: 8px 8px 0 0; }
-.date-input { flex: 1; padding: 10px; display: flex; flex-direction: column; }
-.border-right { border-right: 1px solid #cbd5e1; }
-.date-input label, .guest-input label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #0f172a; margin-bottom: 3px; }
-.date-input input { border: none; outline: none; background: transparent; cursor: pointer; color: #334155;}
-.guest-input { border: 1px solid #cbd5e1; border-top: none; border-radius: 0 0 8px 8px; padding: 10px; display: flex; flex-direction: column; margin-bottom: 1.5rem; }
-.guest-input select { border: none; outline: none; background: transparent; cursor: pointer; font-size: 1rem; }
-.btn-book { background: #e11d48; color: white; width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.3s; }
-.btn-book:hover { background: #be123c; }
-.pricing-details { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 10px; color: #475569; }
-.pricing-row { display: flex; justify-content: space-between; font-size: 0.95rem; }
-.total { border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 5px; font-weight: 800; color: #0f172a; font-size: 1.1rem; }
+
+* {
+  box-sizing: border-box;
+}
+
+.reserva-page {
+  min-height: 100vh;
+
+  padding: 38px 5% 70px;
+
+  background:
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(37, 99, 235, 0.07),
+      transparent 25%
+    ),
+    #f7f9fc;
+
+  font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+}
+
+
+/* HEADER */
+
+.reserva-header {
+  max-width: 1180px;
+
+  margin: 0 auto 28px;
+}
+
+.reserva-header > span {
+  color: #ff385c;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  letter-spacing: 2px;
+}
+
+.reserva-header h1 {
+  margin: 7px 0;
+
+  color: #0f172a;
+
+  font-size: 34px;
+
+  letter-spacing: -1px;
+}
+
+.reserva-header p {
+  margin: 0;
+
+  color: #64748b;
+}
+
+.back-button {
+  display: block;
+
+  margin-bottom: 20px;
+
+  padding: 0;
+
+  border: none;
+
+  background: none;
+
+  color: #2563eb;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* LAYOUT */
+
+.reserva-container {
+  max-width: 1180px;
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    0.9fr 1.1fr;
+
+  gap: 28px;
+
+  align-items: start;
+}
+
+
+/* DEPARTAMENTO */
+
+.departamento-preview {
+  overflow: hidden;
+
+  position: sticky;
+  top: 105px;
+
+  background: white;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+
+  box-shadow:
+    0 12px 35px
+    rgba(15, 23, 42, 0.07);
+}
+
+.departamento-preview > img {
+  width: 100%;
+  height: 330px;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.preview-info {
+  padding: 24px;
+}
+
+.categoria {
+  color: #2563eb;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+.preview-info h2 {
+  margin: 8px 0;
+
+  color: #111827;
+
+  font-size: 24px;
+}
+
+.ubicacion {
+  color: #64748b;
+}
+
+.detalles {
+  display: flex;
+  gap: 17px;
+
+  margin-top: 18px;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.precio {
+  display: flex;
+  align-items: baseline;
+
+  gap: 5px;
+
+  margin-top: 23px;
+
+  padding-top: 18px;
+
+  border-top: 1px solid #edf0f4;
+}
+
+.precio strong {
+  color: #111827;
+
+  font-size: 25px;
+}
+
+.precio span {
+  color: #94a3b8;
+
+  font-size: 12px;
+}
+
+
+/* RESERVA */
+
+.reserva-card {
+  padding: 30px;
+
+  background: white;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+
+  box-shadow:
+    0 12px 35px
+    rgba(15, 23, 42, 0.07);
+}
+
+.step-badge {
+  width: 28px;
+  height: 28px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 10px;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2563eb,
+      #0ea5e9
+    );
+
+  color: white;
+
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.reserva-card h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 22px;
+}
+
+.form-description {
+  margin: 6px 0 23px;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+
+/* CAMPOS */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 15px;
+}
+
+.form-group {
+  margin-bottom: 17px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #374151;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.form-group input {
+  width: 100%;
+
+  padding: 12px 13px;
+
+  border: 1px solid #d5dce5;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #f8fafc;
+
+  color: #111827;
+
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.form-group input:focus {
+  border-color: #2563eb;
+
+  background: white;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.08);
+}
+
+
+/* RESUMEN */
+
+.resumen {
+  padding: 18px;
+
+  border: 1px solid #e7ebf0;
+  border-radius: 13px;
+
+  background: #f8fafc;
+}
+
+.resumen-line {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 9px 0;
+
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.resumen-line strong {
+  color: #334155;
+}
+
+.total-line {
+  margin-top: 14px;
+
+  padding-top: 14px;
+
+  border-top: 1px solid #dce2e9;
+}
+
+.total-line span,
+.total-line strong {
+  color: #111827;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+
+/* PAGO */
+
+.payment-divider {
+  height: 1px;
+
+  margin: 29px 0;
+
+  background: #e5e7eb;
+}
+
+.payment-heading {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 12px;
+
+  margin-bottom: 19px;
+}
+
+.payment-heading .step-badge {
+  flex-shrink: 0;
+
+  margin: 0;
+}
+
+.payment-heading p {
+  margin: 5px 0 0;
+
+  color: #64748b;
+
+  font-size: 12px;
+}
+
+
+/* MÉTODOS */
+
+.payment-methods {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 11px;
+
+  margin-bottom: 22px;
+}
+
+.payment-option {
+  position: relative;
+
+  min-height: 70px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #dce2e8;
+  border-radius: 12px;
+
+  background: white;
+
+  color: #334155;
+
+  font-family: inherit;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.payment-option:hover {
+  transform: translateY(-2px);
+
+  border-color: #93c5fd;
+
+  box-shadow:
+    0 6px 16px
+    rgba(15, 23, 42, 0.06);
+}
+
+.payment-option.selected {
+  border-color: #2563eb;
+
+  background: #eff6ff;
+
+  box-shadow:
+    0 0 0 2px
+    rgba(37, 99, 235, 0.08);
+}
+
+.payment-logo {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #f1f5f9;
+
+  color: #111827;
+
+  font-weight: 900;
+}
+
+.yape .payment-logo {
+  background: #742284;
+
+  color: white;
+}
+
+.plin .payment-logo {
+  background: #00b8c8;
+
+  color: white;
+}
+
+.visa-logo {
+  color: #1434cb;
+
+  font-size: 11px;
+}
+
+.check {
+  width: 20px;
+  height: 20px;
+
+  margin-left: auto;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 10px;
+}
+
+.payment-option.selected .check {
+  display: flex;
+}
+
+
+/* QR */
+
+.qr-payment {
+  margin: 20px 0;
+
+  padding: 24px;
+
+  text-align: center;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff,
+      #f8fafc
+    );
+}
+
+.payment-demo {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  padding: 4px 8px;
+
+  border-radius: 20px;
+
+  background: #fff7ed;
+
+  color: #c2410c;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+.qr-payment h3 {
+  margin: 3px 0 7px;
+
+  color: #111827;
+}
+
+.qr-payment p {
+  color: #64748b;
+
+  font-size: 13px;
+}
+
+.qr-payment p strong {
+  color: #111827;
+}
+
+.qr-wrapper {
+  width: 230px;
+
+  margin: 20px auto;
+
+  padding: 10px;
+
+  border-radius: 16px;
+
+  background: white;
+
+  box-shadow:
+    0 8px 25px
+    rgba(15, 23, 42, 0.10);
+}
+
+.qr-wrapper img {
+  width: 100%;
+
+  display: block;
+}
+
+.qr-payment small {
+  color: #94a3b8;
+}
+
+
+/* TARJETA */
+
+.card-payment {
+  margin: 20px 0;
+
+  padding: 22px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 15px;
+
+  background: #f8fafc;
+}
+
+
+/* MENSAJES */
+
+.payment-error,
+.payment-success {
+  margin-top: 17px;
+
+  padding: 11px 13px;
+
+  border-radius: 9px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.payment-error {
+  border: 1px solid #fecaca;
+
+  background: #fff1f2;
+
+  color: #be123c;
+}
+
+.payment-success {
+  border: 1px solid #bbf7d0;
+
+  background: #f0fdf4;
+
+  color: #15803d;
+}
+
+
+/* BOTÓN */
+
+.confirm-button {
+  width: 100%;
+
+  min-height: 55px;
+
+  margin-top: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  border: none;
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      100deg,
+      #2563eb,
+      #0284c7,
+      #0ea5e9
+    );
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 850;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 9px 24px
+    rgba(37, 99, 235, 0.20);
+
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.confirm-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 14px 30px
+    rgba(37, 99, 235, 0.28);
+}
+
+.confirm-button:disabled {
+  opacity: 0.7;
+
+  cursor: wait;
+}
+
+.payment-spinner {
+  width: 17px;
+  height: 17px;
+
+  border: 2px solid
+  rgba(255,255,255,0.4);
+
+  border-top-color: white;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.secure-message {
+  margin: 13px 0 0;
+
+  text-align: center;
+
+  color: #94a3b8;
+
+  font-size: 10px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+  .reserva-container {
+    grid-template-columns: 1fr;
+  }
+
+  .departamento-preview {
+    position: static;
+  }
+}
+
+@media (max-width: 550px) {
+
+  .reserva-page {
+    padding:
+      25px 14px 45px;
+  }
+
+  .reserva-card {
+    padding: 21px;
+  }
+
+  .form-grid,
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+}

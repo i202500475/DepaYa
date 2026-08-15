@@ -1,28 +1,23 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
-namespace ms\_usuarios.Data
+namespace ms_usuarios.Data
 {
-public class ConexionBD
-{
-private readonly IConfiguration \_configuration;
+    public class ConexionBD
+    {
+        private readonly IConfiguration _configuration;
 
-```
-public ConexionBD(IConfiguration configuration)
-{
-    _configuration = configuration;
-}
+        public ConexionBD(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
 
-public SqlConnection ObtenerConexion()
-{
-    string connectionString =
-        _configuration.GetConnectionString("DefaultConnection")
-        ?? throw new InvalidOperationException(
-            "No se encontró la cadena de conexión DefaultConnection.");
+        public SqlConnection ObtenerConexion()
+        {
+            string? connectionString =
+                _configuration.GetConnectionString("DefaultConnection");
 
-    return new SqlConnection(connectionString);
-}
-```
-
-}
-
+            return new SqlConnection(connectionString);
+        }
+    }
 }

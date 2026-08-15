@@ -1,20 +1,511 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2>Iniciar Sesión</h2>
-    <p>Bienvenido de nuevo a DepaYa</p>
+<div class="login-page">
 
-    <form (ngSubmit)="onLogin()">
-      <div class="form-group">
-        <label>Correo Electrónico</label>
-        <input type="email" [(ngModel)]="credenciales.email" name="email" placeholder="correo@ejemplo.com" required>
+  <!-- FONDO ANIMADO -->
+  <div class="background-grid"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+  <div class="orb orb-three"></div>
+
+
+  <main class="login-layout">
+
+    <!-- ======================================================
+         LADO IZQUIERDO
+    ======================================================= -->
+
+    <section class="presentation-panel">
+
+      <div class="presentation-content">
+
+        <div class="brand-chip">
+          <span class="brand-dot"></span>
+          DEPAYA
+        </div>
+
+
+        <h1>
+          Tu próximo hogar
+          <span>empieza aquí.</span>
+        </h1>
+
+
+        <p class="presentation-description">
+          Encuentra departamentos, administra tus propiedades
+          y realiza reservas desde una sola plataforma.
+        </p>
+
+
+        <!-- BENEFICIOS -->
+
+        <div class="features">
+
+          <div class="feature">
+            <div class="feature-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>
+                Fácil y rápido
+              </strong>
+
+              <span>
+                Encuentra el lugar ideal en minutos.
+              </span>
+            </div>
+          </div>
+
+
+          <div class="feature">
+            <div class="feature-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>
+                Todo conectado
+              </strong>
+
+              <span>
+                Propiedades, reservas y pagos en un solo lugar.
+              </span>
+            </div>
+          </div>
+
+
+          <div class="feature">
+            <div class="feature-icon">
+              ✓
+            </div>
+
+            <div>
+              <strong>
+                Seguro
+              </strong>
+
+              <span>
+                Acceso personalizado según tu perfil.
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+
+        <!-- MINI CARD -->
+
+        <div class="floating-property">
+
+          <div class="property-icon">
+            🏠
+          </div>
+
+          <div>
+
+            <span>
+              Encuentra tu espacio
+            </span>
+
+            <strong>
+              Lima, Perú
+            </strong>
+
+          </div>
+
+
+          <div class="property-status">
+            Disponible
+          </div>
+
+        </div>
+
       </div>
 
-      <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" [(ngModel)]="credenciales.password" name="password" placeholder="••••••••" required>
+    </section>
+
+
+    <!-- ======================================================
+         LOGIN
+    ======================================================= -->
+
+    <section class="login-section">
+
+      <div class="login-card">
+
+
+        <!-- MARCA MOBILE -->
+
+        <div class="mobile-brand">
+          🏠
+          <span>DepaYa</span>
+        </div>
+
+
+        <!-- ENCABEZADO -->
+
+        <div class="login-header">
+
+          <div class="welcome-badge">
+            BIENVENIDO
+          </div>
+
+          <h2>
+            Inicia sesión
+          </h2>
+
+          <p>
+            Ingresa tus datos para continuar en DepaYa.
+          </p>
+
+        </div>
+
+
+        <!-- FORMULARIO -->
+
+        <form
+          class="login-form"
+          (ngSubmit)="iniciarSesion()"
+        >
+
+
+          <!-- CORREO -->
+
+          <div class="form-field">
+
+            <label for="email">
+              Correo electrónico
+            </label>
+
+
+            <div class="input-container">
+
+              <span class="field-icon">
+
+                <svg
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+                  />
+
+                  <polyline
+                    points="22,6 12,13 2,6"
+                  />
+                </svg>
+
+              </span>
+
+
+              <input
+                id="email"
+                type="email"
+                name="email"
+                [(ngModel)]="email"
+                placeholder="nombre@depaya.com"
+                autocomplete="email"
+                required
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- CONTRASEÑA -->
+
+          <div class="form-field">
+
+            <div class="field-header">
+
+              <label for="password">
+                Contraseña
+              </label>
+
+            </div>
+
+
+            <div class="input-container">
+
+              <span class="field-icon">
+
+                <svg
+                  width="19"
+                  height="19"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+
+                  <rect
+                    x="3"
+                    y="11"
+                    width="18"
+                    height="10"
+                    rx="2"
+                  />
+
+                  <path
+                    d="M7 11V7a5 5 0 0 1 10 0v4"
+                  />
+
+                </svg>
+
+              </span>
+
+
+              <input
+                id="password"
+                [type]="mostrarPassword ? 'text' : 'password'"
+                name="password"
+                [(ngModel)]="password"
+                placeholder="Tu contraseña"
+                autocomplete="current-password"
+                required
+              >
+
+
+              <button
+                type="button"
+                class="password-button"
+                (click)="alternarPassword()"
+                [attr.aria-label]="
+                  mostrarPassword
+                    ? 'Ocultar contraseña'
+                    : 'Mostrar contraseña'
+                "
+              >
+
+                @if (!mostrarPassword) {
+
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+
+                  <path
+                    d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"
+                  />
+
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                  />
+
+                </svg>
+
+                } @else {
+
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12"
+                  />
+
+                  <path
+                    d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8"
+                  />
+
+                  <line
+                    x1="1"
+                    y1="1"
+                    x2="23"
+                    y2="23"
+                  />
+
+                </svg>
+
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <!-- OPCIONES -->
+
+          <div class="login-options">
+
+            <label class="remember">
+
+              <input type="checkbox">
+
+              <span class="custom-checkbox"></span>
+
+              <span>
+                Recordarme
+              </span>
+
+            </label>
+
+
+            <button
+              type="button"
+              class="forgot-password"
+              (click)="recuperarPassword()"
+            >
+              ¿Olvidaste tu contraseña?
+            </button>
+
+          </div>
+
+
+          <!-- ERROR -->
+
+          @if (mensaje) {
+
+          <div class="error-box">
+
+            <div class="error-icon">
+              !
+            </div>
+
+            <span>
+                {{ mensaje }}
+              </span>
+
+          </div>
+
+          }
+
+
+          <!-- BOTÓN -->
+
+          <button
+            type="submit"
+            class="login-button"
+            [disabled]="cargando"
+          >
+
+            <span class="button-glow"></span>
+
+
+            @if (cargando) {
+
+            <span class="spinner"></span>
+
+            <span>
+                Ingresando...
+              </span>
+
+            } @else {
+
+            <span>
+                Iniciar sesión
+              </span>
+
+            <svg
+              class="arrow"
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+
+              <line
+                x1="5"
+                y1="12"
+                x2="19"
+                y2="12"
+              />
+
+              <polyline
+                points="12 5 19 12 12 19"
+              />
+
+            </svg>
+
+            }
+
+          </button>
+
+        </form>
+
+
+        <!-- SEPARADOR -->
+
+        <div class="divider">
+
+          <span>
+            ¿Nuevo en DepaYa?
+          </span>
+
+        </div>
+
+
+        <!-- CREAR CUENTA -->
+
+        <button
+          type="button"
+          class="register-button"
+          (click)="irARegistro()"
+        >
+
+          <span class="register-icon">
+            +
+          </span>
+
+          Crear una cuenta
+
+        </button>
+
+
+        <!-- SEGURIDAD -->
+
+        <div class="secure-login">
+
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+
+            <rect
+              x="3"
+              y="11"
+              width="18"
+              height="10"
+              rx="2"
+            />
+
+            <path
+              d="M7 11V7a5 5 0 0 1 10 0v4"
+            />
+
+          </svg>
+
+          Acceso protegido y seguro
+
+        </div>
+
       </div>
 
-      <button type="submit" class="btn-auth">Entrar</button>
-    </form>
-  </div>
+    </section>
+
+  </main>
+
 </div>

@@ -6,10 +6,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './departamento-card.component.html',
-  styleUrls: ['./departamento-card.component.css']
+  styleUrls: ['./departamento-card.component.css'],
 })
 export class DepartamentoCardComponent {
-
-  @Input() departamento: any = null;
-
+  @Input() departamento: any;
 }

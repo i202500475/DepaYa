@@ -1,23 +1,88 @@
 <div class="property-card">
-  <div class="card-image-container">
-    <img [src]="property.URL_Imagen" [alt]="property.Titulo" class="property-img">
-    <span class="location-badge">📍 {{ property.Distrito }}</span>
-  </div>
-  <div class="card-content">
-    <h3 class="property-title">{{ property.Titulo }}</h3>
 
-    <div class="property-features">
-      <span>🛏️ {{ property.Habitaciones }} Hab.</span>
-      <span>🚿 {{ property.Banos }} Baños</span>
+  <!-- IMAGEN -->
+  <div class="card-image-wrap">
+
+    <img
+      [src]="departamento.URL_Imagen"
+      [alt]="departamento.Titulo"
+      class="card-img"
+    />
+
+    <!-- FAVORITO -->
+    <button
+      class="heart-btn"
+      type="button"
+      aria-label="Guardar departamento"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        stroke-width="2"
+      >
+        <path
+          d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+        />
+      </svg>
+    </button>
+
+    <!-- DISPONIBILIDAD -->
+    <div class="availability-badge">
+      Disponible
     </div>
 
-    <div class="card-footer">
-      <div class="price-container">
-        <span class="currency">S/</span>
-        <span class="amount">{{ property.Precio_Noche }}</span>
-        <span class="period">/noche</span>
-      </div>
-      <button class="btn-view">Detalles</button>
-    </div>
   </div>
+
+  <!-- INFORMACIÓN -->
+  <div class="card-info">
+
+    <div class="card-location-row">
+
+      <span class="card-location">
+        📍 {{ departamento.Distrito }}, Lima
+      </span>
+
+      <span class="card-rating">
+        ★ 4.92
+      </span>
+
+    </div>
+
+    <h3 class="card-title">
+      {{ departamento.Titulo }}
+    </h3>
+
+    <p class="card-description">
+      {{ departamento.Categoria }}
+    </p>
+
+    <div class="card-details">
+
+      <span>
+        🛏️ {{ departamento.Habitaciones }} habitaciones
+      </span>
+
+      <span>
+        🚿 {{ departamento.Banos }} baños
+      </span>
+
+    </div>
+
+    <div class="card-price">
+
+      <strong>
+        S/ {{ departamento.Precio_Noche | number:'1.0-0' }}
+      </strong>
+
+      <span>
+        / noche
+      </span>
+
+    </div>
+
+  </div>
+
 </div>

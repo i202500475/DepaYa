@@ -1,0 +1,293 @@
+.mis-reservas-page {
+  min-height: calc(100vh - 80px);
+  padding: 40px 6%;
+  background: #f7f8fa;
+}
+
+/* ENCABEZADO */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #222;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 8px 0 0;
+  color: #777;
+  font-size: 15px;
+}
+
+/* BOTÓN */
+
+.btn-explorar {
+  border: none;
+  background: #111827;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-explorar:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+/* RESUMEN */
+
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.resumen-card {
+  background: white;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+  border: 1px solid #eee;
+}
+
+.resumen-card span {
+  display: block;
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.resumen-card strong {
+  font-size: 28px;
+  color: #222;
+}
+
+/* LISTA */
+
+.reservas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* CARD */
+
+.reserva-card {
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  border: 1px solid #eee;
+  transition: 0.2s;
+}
+
+.reserva-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.09);
+}
+
+.reserva-contenido {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  min-height: 190px;
+}
+
+/* IMAGEN */
+
+.reserva-imagen {
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  object-fit: cover;
+}
+
+/* INFORMACIÓN */
+
+.reserva-info {
+  padding: 22px 25px;
+}
+
+.reserva-titulo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.reserva-titulo h2 {
+  margin: 0;
+  font-size: 21px;
+  color: #222;
+}
+
+.reserva-ubicacion {
+  color: #777;
+  margin: 7px 0 20px;
+  font-size: 14px;
+}
+
+/* ESTADO */
+
+.estado {
+  padding: 7px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.estado-confirmada {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.estado-pendiente {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.estado-cancelada {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* FECHAS */
+
+.reserva-fechas {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.fecha-box {
+  background: #f8f9fb;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.fecha-box span {
+  display: block;
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.fecha-box strong {
+  color: #222;
+  font-size: 14px;
+}
+
+/* PRECIO */
+
+.reserva-footer {
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reserva-noches {
+  color: #777;
+  font-size: 14px;
+}
+
+.reserva-total {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* SIN RESERVAS */
+
+.sin-reservas {
+  background: white;
+  border-radius: 18px;
+  padding: 70px 20px;
+  text-align: center;
+  border: 1px solid #eee;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.05);
+}
+
+.sin-reservas-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.sin-reservas h2 {
+  margin: 0 0 10px;
+  color: #222;
+}
+
+.sin-reservas p {
+  margin: 0 0 25px;
+  color: #777;
+}
+
+.sin-reservas button {
+  border: none;
+  background: #111827;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+
+  .resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .reserva-contenido {
+    grid-template-columns: 1fr;
+  }
+
+  .reserva-imagen {
+    height: 220px;
+  }
+
+  .reserva-fechas {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 550px) {
+
+  .mis-reservas-page {
+    padding: 25px 15px;
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+  }
+
+  .reserva-titulo {
+    flex-direction: column;
+  }
+
+  .reserva-info {
+    padding: 18px;
+  }
+}

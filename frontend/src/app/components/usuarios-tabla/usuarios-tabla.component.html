@@ -1,0 +1,416 @@
+<div class="tabla-page">
+
+  <!-- ENCABEZADO -->
+  <div class="tabla-header">
+    <div>
+      <h2>Usuarios</h2>
+      <p class="tabla-sub">
+        Listado de usuarios registrados en el sistema
+      </p>
+    </div>
+
+    <button
+      class="btn-nuevo"
+      type="button"
+      (click)="abrirCrear()"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+      >
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+
+      Nuevo usuario
+    </button>
+  </div>
+
+
+  <!-- TABLA -->
+  <div class="tabla-wrap">
+
+    <table>
+
+      <thead>
+      <tr>
+        <th class="id-col">#</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Doc.</th>
+        <th>N° Doc.</th>
+        <th>Rol</th>
+        <th>Registro</th>
+        <th class="center">Acciones</th>
+      </tr>
+      </thead>
+
+
+      <tbody>
+
+      @for (u of usuarios; track u.id; let i = $index) {
+
+      <tr>
+
+        <!--
+          IMPORTANTE:
+          $index + 1 hace que la numeración siempre sea:
+          1, 2, 3, 4...
+          aunque se elimine un usuario.
+        -->
+        <td class="id-col">
+          {{ i + 1 }}
+        </td>
+
+
+        <!-- NOMBRE -->
+        <td>
+          <strong>
+            {{ u.nombre }} {{ u.apellido }}
+          </strong>
+        </td>
+
+
+        <!-- CORREO -->
+        <td class="email-col">
+          {{ u.correo }}
+        </td>
+
+
+        <!-- TELÉFONO -->
+        <td class="mono">
+          {{ u.telefono }}
+        </td>
+
+
+        <!-- TIPO DOCUMENTO -->
+        <td>
+          {{ u.tipoDoc }}
+        </td>
+
+
+        <!-- NÚMERO DOCUMENTO -->
+        <td class="mono">
+          {{ u.nroDoc }}
+        </td>
+
+
+        <!-- ROL -->
+        <td>
+
+          @if (u.rol === 'Propietario') {
+
+          <span class="badge badge-blue">
+                  {{ u.rol }}
+                </span>
+
+          }
+          @else if (u.rol === 'ADMIN') {
+
+          <span class="badge badge-red">
+                  Administrador
+                </span>
+
+          }
+          @else {
+
+          <span class="badge badge-green">
+                  {{ u.rol }}
+                </span>
+
+          }
+
+        </td>
+
+
+        <!-- FECHA -->
+        <td class="fecha-col">
+          {{ u.fecha }}
+        </td>
+
+
+        <!-- ACCIONES -->
+        <td class="acciones-col">
+
+          <button
+            type="button"
+            class="btn-accion btn-editar"
+            (click)="abrirEditar(u)"
+          >
+            Editar
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-accion btn-eliminar"
+            (click)="eliminar(u.id)"
+          >
+            Eliminar
+          </button>
+
+        </td>
+
+      </tr>
+
+      }
+
+      @if (usuarios.length === 0) {
+
+      <tr>
+
+        <td
+          colspan="9"
+          class="tabla-vacia"
+        >
+
+          No hay usuarios registrados.
+
+        </td>
+
+      </tr>
+
+      }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+
+<!-- ==========================================
+     MODAL
+========================================== -->
+
+@if (modalVisible) {
+
+<div
+  class="modal-backdrop"
+  (click)="cerrarModal()"
+></div>
+
+
+<div
+  class="modal"
+  (click)="$event.stopPropagation()"
+>
+
+  <!-- CABECERA MODAL -->
+  <div class="modal-header">
+
+    <h3>
+      {{
+      modoEdicion
+      ? 'Editar usuario'
+      : 'Nuevo usuario'
+      }}
+    </h3>
+
+
+    <button
+      type="button"
+      class="modal-close"
+      (click)="cerrarModal()"
+    >
+
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <line
+          x1="18"
+          y1="6"
+          x2="6"
+          y2="18"
+        />
+
+        <line
+          x1="6"
+          y1="6"
+          x2="18"
+          y2="18"
+        />
+      </svg>
+
+    </button>
+
+  </div>
+
+
+  <!-- CUERPO MODAL -->
+  <div class="modal-body">
+
+
+    <!-- NOMBRE -->
+    <div class="form-group">
+
+      <label>
+        Nombre
+      </label>
+
+      <input
+        type="text"
+        [(ngModel)]="form.nombre"
+        placeholder="Nombre"
+      >
+
+    </div>
+
+
+    <!-- APELLIDO -->
+    <div class="form-group">
+
+      <label>
+        Apellido
+      </label>
+
+      <input
+        type="text"
+        [(ngModel)]="form.apellido"
+        placeholder="Apellido"
+      >
+
+    </div>
+
+
+    <!-- CORREO -->
+    <div class="form-group full">
+
+      <label>
+        Correo
+      </label>
+
+      <input
+        type="email"
+        [(ngModel)]="form.correo"
+        placeholder="correo@ejemplo.com"
+      >
+
+    </div>
+
+
+    <!-- TELÉFONO -->
+    <div class="form-group">
+
+      <label>
+        Teléfono
+      </label>
+
+      <input
+        type="text"
+        [(ngModel)]="form.telefono"
+        placeholder="9XXXXXXXX"
+      >
+
+    </div>
+
+
+    <!-- TIPO DOCUMENTO -->
+    <div class="form-group">
+
+      <label>
+        Tipo de doc.
+      </label>
+
+      <select
+        [(ngModel)]="form.tipoDoc"
+      >
+
+        @for (t of tiposDocs; track t) {
+
+        <option [value]="t">
+          {{ t }}
+        </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    <!-- NÚMERO DOCUMENTO -->
+    <div class="form-group">
+
+      <label>
+        N° Documento
+      </label>
+
+      <input
+        type="text"
+        [(ngModel)]="form.nroDoc"
+        placeholder="Número de documento"
+      >
+
+    </div>
+
+
+    <!-- ROL -->
+    <div class="form-group">
+
+      <label>
+        Rol
+      </label>
+
+      <select
+        [(ngModel)]="form.rol"
+      >
+
+        @for (r of roles; track r) {
+
+        <option [value]="r">
+          {{ r }}
+        </option>
+
+        }
+
+      </select>
+
+    </div>
+
+  </div>
+
+
+  <!-- PIE MODAL -->
+  <div class="modal-footer">
+
+    <button
+      type="button"
+      class="btn-cancelar"
+      (click)="cerrarModal()"
+    >
+      Cancelar
+    </button>
+
+
+    <button
+      type="button"
+      class="btn-guardar"
+      (click)="guardar()"
+    >
+
+      {{
+      modoEdicion
+      ? 'Guardar cambios'
+      : 'Crear'
+      }}
+
+    </button>
+
+  </div>
+
+</div>
+
+}

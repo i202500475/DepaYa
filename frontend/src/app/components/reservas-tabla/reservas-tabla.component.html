@@ -1,0 +1,92 @@
+<div class="tabla-page">
+  <div class="tabla-header">
+    <div>
+      <h2>Reservas</h2>
+      <p class="tabla-sub">Listado de reservas registradas en el sistema</p>
+    </div>
+  </div>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="id-col">#</th>
+          <th>ID Depa</th>
+          <th>ID Inquilino</th>
+          <th>Ingreso</th>
+          <th>Salida</th>
+          <th class="center">Huésp.</th>
+          <th>Estado</th>
+          <th>Creación</th>
+          <th class="center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of reservas; track r.id) {
+          <tr>
+            <td class="id-col">{{ r.id }}</td>
+            <td class="mono">#{{ r.idDepa }}</td>
+            <td class="mono">#{{ r.idInquilino }}</td>
+            <td class="fecha-col">{{ r.ingreso }}</td>
+            <td class="fecha-col">{{ r.salida }}</td>
+            <td class="center mono">{{ r.huespedes }}</td>
+            <td>
+              @if (r.estado === 'Confirmada') { <span class="badge badge-green">{{ r.estado }}</span> }
+              @else if (r.estado === 'Pendiente') { <span class="badge badge-amber">{{ r.estado }}</span> }
+              @else { <span class="badge badge-red">{{ r.estado }}</span> }
+            </td>
+            <td class="fecha-col">{{ r.creacion }}</td>
+            <td class="acciones-col">
+              <button class="btn-accion btn-editar" (click)="abrirEditar(r)">Editar</button>
+              <button class="btn-accion btn-eliminar" (click)="eliminar(r.id)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (modalVisible) {
+  <div class="modal-backdrop" (click)="cerrarModal()"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <h3>{{ modoEdicion ? 'Editar reserva' : 'Nueva reserva' }}</h3>
+      <button class="modal-close" (click)="cerrarModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>ID Departamento</label>
+        <input type="number" [(ngModel)]="form.idDepa" min="1">
+      </div>
+      <div class="form-group">
+        <label>ID Inquilino</label>
+        <input type="number" [(ngModel)]="form.idInquilino" min="1">
+      </div>
+      <div class="form-group">
+        <label>Fecha ingreso</label>
+        <input type="text" [(ngModel)]="form.ingreso" placeholder="DD/MM/AAAA">
+      </div>
+      <div class="form-group">
+        <label>Fecha salida</label>
+        <input type="text" [(ngModel)]="form.salida" placeholder="DD/MM/AAAA">
+      </div>
+      <div class="form-group">
+        <label>Huéspedes</label>
+        <input type="number" [(ngModel)]="form.huespedes" min="1">
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select [(ngModel)]="form.estado">
+          @for (e of estados; track e) { <option [value]="e">{{ e }}</option> }
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardar()">{{ modoEdicion ? 'Guardar cambios' : 'Crear' }}</button>
+    </div>
+  </div>
+}

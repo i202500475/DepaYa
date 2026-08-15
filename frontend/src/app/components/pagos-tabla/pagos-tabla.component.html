@@ -1,0 +1,95 @@
+<div class="tabla-page">
+  <div class="tabla-header">
+    <div>
+      <h2>Pagos</h2>
+      <p class="tabla-sub">Listado de pagos registrados en el sistema</p>
+    </div>
+
+  </div>
+
+  <div class="tabla-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="id-col">#</th>
+          <th>ID Reserva</th>
+          <th>Monto</th>
+          <th>Moneda</th>
+          <th>Método</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th class="center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of pagos; track p.id) {
+          <tr>
+            <td class="id-col">{{ p.id }}</td>
+            <td class="mono">#{{ p.idReserva }}</td>
+            <td class="mono monto">S/ {{ p.monto | number:'1.2-2' }}</td>
+            <td>{{ p.moneda }}</td>
+            <td>{{ p.metodo }}</td>
+            <td>
+              @if (p.estado === 'Completado') { <span class="badge badge-green">{{ p.estado }}</span> }
+              @else if (p.estado === 'Procesando') { <span class="badge badge-amber">{{ p.estado }}</span> }
+              @else { <span class="badge badge-red">{{ p.estado }}</span> }
+            </td>
+            <td class="fecha-col">{{ p.fecha }}</td>
+            <td class="acciones-col">
+              <button class="btn-accion btn-editar" (click)="abrirEditar(p)">Editar</button>
+              <button class="btn-accion btn-eliminar" (click)="eliminar(p.id)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+@if (modalVisible) {
+  <div class="modal-backdrop" (click)="cerrarModal()"></div>
+  <div class="modal">
+    <div class="modal-header">
+      <h3>{{ modoEdicion ? 'Editar pago' : 'Nuevo pago' }}</h3>
+      <button class="modal-close" (click)="cerrarModal()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>ID Reserva</label>
+        <input type="number" [(ngModel)]="form.idReserva" min="1">
+      </div>
+      <div class="form-group">
+        <label>Monto</label>
+        <input type="number" [(ngModel)]="form.monto" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Moneda</label>
+        <select [(ngModel)]="form.moneda">
+          @for (m of monedas; track m) { <option [value]="m">{{ m }}</option> }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Método de pago</label>
+        <select [(ngModel)]="form.metodo">
+          @for (m of metodos; track m) { <option [value]="m">{{ m }}</option> }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Estado</label>
+        <select [(ngModel)]="form.estado">
+          @for (e of estados; track e) { <option [value]="e">{{ e }}</option> }
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fecha</label>
+        <input type="text" [(ngModel)]="form.fecha" placeholder="DD/MM/AAAA">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+      <button class="btn-guardar" (click)="guardar()">{{ modoEdicion ? 'Guardar cambios' : 'Crear' }}</button>
+    </div>
+  </div>
+}

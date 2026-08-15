@@ -1,0 +1,104 @@
+<div class="mis-reservas-page">
+
+  <div class="page-header">
+
+    <h1>Mis reservas</h1>
+
+    <p>
+      Aquí puedes consultar todas tus reservas.
+    </p>
+
+  </div>
+
+  <div
+    class="reservas-grid"
+    *ngIf="reservas.length > 0"
+  >
+
+    <div
+      class="reserva-card"
+      *ngFor="let reserva of reservas"
+    >
+
+      <div class="reserva-header">
+
+        <div>
+
+          <h3>
+            {{ reserva.departamento }}
+          </h3>
+
+          <span>
+            {{ reserva.ciudad }}
+          </span>
+
+        </div>
+
+        <span
+          class="estado"
+          [class.confirmada]="
+            reserva.estado === 'CONFIRMADA'
+          "
+        >
+          {{ reserva.estado }}
+        </span>
+
+      </div>
+
+      <div class="reserva-info">
+
+        <div>
+          <strong>Ingreso</strong>
+          <span>
+            {{ reserva.fechaInicio }}
+          </span>
+        </div>
+
+        <div>
+          <strong>Salida</strong>
+          <span>
+            {{ reserva.fechaFin }}
+          </span>
+        </div>
+
+        <div>
+          <strong>Noches</strong>
+          <span>
+            {{ reserva.noches }}
+          </span>
+        </div>
+
+        <div>
+          <strong>Total</strong>
+          <span>
+            S/ {{ reserva.total | number:'1.2-2' }}
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div
+    class="empty"
+    *ngIf="reservas.length === 0"
+  >
+
+    <div class="empty-icon">
+      📅
+    </div>
+
+    <h2>
+      Aún no tienes reservas
+    </h2>
+
+    <p>
+      Explora nuestros departamentos
+      y encuentra tu próximo hogar.
+    </p>
+
+  </div>
+
+</div>

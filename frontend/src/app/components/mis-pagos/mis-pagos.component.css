@@ -1,0 +1,86 @@
+.page {
+  min-height: calc(100vh - 80px);
+  background: #f7f8fa;
+  padding: 60px 20px;
+}
+
+.dashboard {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.label {
+  color: #ff385c;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.dashboard h1 {
+  margin: 6px 0;
+  color: #111827;
+  font-size: 34px;
+}
+
+.dashboard > p {
+  margin: 0 0 35px;
+  color: #6b7280;
+}
+
+.income-card {
+  min-height: 300px;
+  border-radius: 24px;
+  padding: 45px;
+  box-sizing: border-box;
+  background:
+    linear-gradient(
+      135deg,
+      #111827,
+      #1f2937
+    );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow:
+    0 20px 50px
+    rgba(15, 23, 42, 0.2);
+}
+
+.icon {
+  font-size: 42px;
+  margin-bottom: 25px;
+}
+
+.income-label {
+  color: #cbd5e1;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.income-card strong {
+  display: block;
+  margin: 8px 0;
+  font-size: 55px;
+  line-height: 1.1;
+}
+
+.income-card small {
+  margin-top: 14px;
+  color: #94a3b8;
+}
+
+@media (max-width: 600px) {
+  .page {
+    padding: 35px 15px;
+  }
+
+  .income-card {
+    padding: 30px 25px;
+    min-height: 250px;
+  }
+
+  .income-card strong {
+    font-size: 40px;
+  }
+}

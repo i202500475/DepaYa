@@ -1,46 +1,317 @@
-<div class="publish-container">
-  <div class="form-header">
-    <h2>Publicar un Inmueble</h2>
-    <p>Ingresa los detalles para que miles de inquilinos lo vean.</p>
+<div class="publish-page">
+
+  <div class="publish-container">
+
+    <!-- HEADER -->
+
+    <div class="form-header">
+
+      <span class="form-label">
+        PROPIETARIO
+      </span>
+
+      <h2>
+        Publicar un inmueble
+      </h2>
+
+      <p>
+        Ingresa los detalles para que los inquilinos puedan encontrar tu departamento.
+      </p>
+
+    </div>
+
+
+    <!-- MENSAJE -->
+
+    <div
+      class="mensaje exito"
+      *ngIf="mensaje"
+    >
+      ✓ {{ mensaje }}
+    </div>
+
+
+    <div
+      class="mensaje error"
+      *ngIf="error"
+    >
+      {{ error }}
+    </div>
+
+
+    <form
+      class="modern-form"
+      (ngSubmit)="publicar()"
+    >
+
+      <!-- TÍTULO -->
+
+      <div class="input-group full-width">
+
+        <label>
+          Título de la publicación *
+        </label>
+
+        <input
+          type="text"
+          name="titulo"
+          [(ngModel)]="titulo"
+          placeholder="Ej: Departamento moderno con balcón"
+        >
+
+      </div>
+
+
+      <!-- DISTRITO / PRECIO -->
+
+      <div class="form-row">
+
+        <div class="input-group">
+
+          <label>
+            Distrito *
+          </label>
+
+          <select
+            name="distrito"
+            [(ngModel)]="distrito"
+          >
+
+            <option value="">
+              Seleccionar distrito
+            </option>
+
+            <option
+              *ngFor="let item of distritos"
+              [value]="item"
+            >
+              {{ item }}
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="input-group">
+
+          <label>
+            Precio por noche (S/) *
+          </label>
+
+          <input
+            type="number"
+            name="precio"
+            [(ngModel)]="precioNoche"
+            min="1"
+            placeholder="0.00"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- CAPACIDAD / HABITACIONES -->
+
+      <div class="form-row">
+
+        <div class="input-group">
+
+          <label>
+            Capacidad *
+          </label>
+
+          <input
+            type="number"
+            name="capacidad"
+            [(ngModel)]="capacidad"
+            min="1"
+            placeholder="Cantidad de personas"
+          >
+
+        </div>
+
+
+        <div class="input-group">
+
+          <label>
+            Habitaciones *
+          </label>
+
+          <input
+            type="number"
+            name="habitaciones"
+            [(ngModel)]="habitaciones"
+            min="1"
+            placeholder="Ej: 2"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- BAÑOS / CATEGORÍA -->
+
+      <div class="form-row">
+
+        <div class="input-group">
+
+          <label>
+            Baños *
+          </label>
+
+          <input
+            type="number"
+            name="banos"
+            [(ngModel)]="banos"
+            min="1"
+            placeholder="Ej: 2"
+          >
+
+        </div>
+
+
+        <div class="input-group">
+
+          <label>
+            Categoría *
+          </label>
+
+          <select
+            name="categoria"
+            [(ngModel)]="categoria"
+          >
+
+            <option value="">
+              Seleccionar categoría
+            </option>
+
+            <option
+              *ngFor="let item of categorias"
+              [value]="item"
+            >
+              {{ item }}
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- DESCRIPCIÓN -->
+
+      <div class="input-group full-width">
+
+        <label>
+          Descripción detallada *
+        </label>
+
+        <textarea
+          rows="4"
+          name="descripcion"
+          [(ngModel)]="descripcion"
+          placeholder="Describe las comodidades, ubicación, áreas comunes, servicios, etc."
+        ></textarea>
+
+      </div>
+
+
+      <!-- FOTO -->
+
+      <div class="input-group full-width">
+
+        <label>
+          Fotografía del inmueble *
+        </label>
+
+        <div
+          class="upload-box"
+          *ngIf="!imagenBase64"
+        >
+
+          <div class="upload-icon">
+            📷
+          </div>
+
+          <strong>
+            Carga una fotografía
+          </strong>
+
+          <span>
+            JPG, JPEG o PNG
+          </span>
+
+          <label class="btn-seleccionar">
+
+            Seleccionar imagen
+
+            <input
+              #inputImagen
+              type="file"
+              accept="image/*"
+              (change)="seleccionarImagen($event)"
+            >
+
+          </label>
+
+        </div>
+
+
+        <!-- PREVIEW -->
+
+        <div
+          class="image-preview"
+          *ngIf="imagenBase64"
+        >
+
+          <img
+            [src]="imagenBase64"
+            alt="Vista previa del departamento"
+          >
+
+          <div class="preview-footer">
+
+            <span>
+              {{ nombreImagen }}
+            </span>
+
+            <button
+              type="button"
+              class="btn-quitar"
+              (click)="quitarImagen()"
+            >
+              Quitar foto
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- BOTÓN -->
+
+      <button
+        type="submit"
+        class="btn-submit"
+        [disabled]="publicando"
+      >
+
+        {{
+        publicando
+        ? 'Publicando...'
+        : 'Publicar ahora'
+        }}
+
+      </button>
+
+    </form>
+
   </div>
 
-  <form class="modern-form" (submit)="onSubmitProcess(); $event.preventDefault()">
-    <div class="input-group full-width">
-      <label>Título de la Publicación</label>
-      <input type="text" placeholder="Ej: Depa de estreno con balcón">
-    </div>
-
-    <div class="form-row">
-      <div class="input-group">
-        <label>Distrito</label>
-        <select>
-          <option>Miraflores</option>
-          <option>San Isidro</option>
-          <option>Barranco</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label>Precio por Noche (S/)</label>
-        <input type="number" placeholder="0.00">
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="input-group">
-        <label>Capacidad</label>
-        <input type="number" placeholder="Cant. Personas">
-      </div>
-      <div class="input-group">
-        <label>Habitaciones</label>
-        <input type="number" placeholder="Ej: 2">
-      </div>
-    </div>
-
-    <div class="input-group full-width">
-      <label>Descripción detallada</label>
-      <textarea rows="4" placeholder="Describe las comodidades, áreas comunes, etc..."></textarea>
-    </div>
-
-    <button type="submit" class="btn-submit">🚀 Publicar Ahora</button>
-  </form>
 </div>

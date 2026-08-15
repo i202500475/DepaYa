@@ -1,12 +1,222 @@
 <div class="explorar-container">
-  <div class="header-section">
-    <h2>Alojamientos disponibles</h2>
-    <p>Descubre los mejores lugares para hospedarte, con estilo y comodidad.</p>
-  </div>
 
-  <div class="grid-departamentos">
-    @for (depa of listaDepartamentos; track depa.Titulo) {
-      <app-departamento-card [departamento]="depa"></app-departamento-card>
-    }
-  </div>
+  <!-- ENCABEZADO -->
+
+  <section class="explorar-header">
+
+    <div>
+
+      <span class="welcome-label">
+        DEPAYA
+      </span>
+
+      <h1>
+        Encuentra tu próximo hogar
+      </h1>
+
+      <p>
+        Explora departamentos disponibles en Lima
+        y encuentra el espacio perfecto para ti.
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- BUSCADOR -->
+
+  <section class="search-section">
+
+    <div class="search-box">
+
+      <span class="search-icon">
+        🔍
+      </span>
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="buscar()"
+        placeholder="Buscar por departamento, distrito o categoría..."
+      />
+
+      <button
+        type="button"
+        (click)="buscar()"
+      >
+        Buscar
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- FILTROS -->
+
+  <section class="filters-section">
+
+    <div class="filter-group">
+
+      <label>
+        Distrito
+      </label>
+
+      <select
+        [(ngModel)]="ciudadSeleccionada"
+        (change)="buscar()"
+      >
+
+        <option value="">
+          Todos los distritos
+        </option>
+
+        <option
+          *ngFor="let ciudad of ciudades"
+          [value]="ciudad"
+        >
+          {{ ciudad }}
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="category-section">
+
+      <span class="category-title">
+        Categorías
+      </span>
+
+      <div class="category-buttons">
+
+        <button
+          *ngFor="let categoria of categorias"
+          type="button"
+          [class.active]="
+            categoriaSeleccionada === categoria
+          "
+          (click)="
+            seleccionarCategoria(categoria)
+          "
+        >
+          {{ categoria }}
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="clear-button"
+      (click)="limpiarFiltros()"
+    >
+      Limpiar filtros
+    </button>
+
+  </section>
+
+
+  <!-- RESULTADOS -->
+
+  <section class="results-header">
+
+    <div>
+
+      <h2>
+        Departamentos disponibles
+      </h2>
+
+      <p>
+        {{ departamentosFiltrados.length }}
+        propiedades encontradas
+      </p>
+
+    </div>
+
+  </section>
+
+
+  <!-- LISTADO -->
+
+  <section
+    class="departamentos-grid"
+    *ngIf="departamentosFiltrados.length > 0"
+  >
+
+    <div
+      *ngFor="
+        let departamento of departamentosFiltrados
+      "
+      class="departamento-item"
+    >
+
+      <app-departamento-card
+        [departamento]="departamento"
+      >
+      </app-departamento-card>
+
+
+      <div class="card-actions">
+
+        <button
+          type="button"
+          class="detail-button"
+          (click)="
+            verDetalle(departamento)
+          "
+        >
+          Ver detalle
+        </button>
+
+        <button
+          type="button"
+          class="reserve-button"
+          (click)="
+            reservar(departamento)
+          "
+        >
+          Reservar ahora
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- SIN RESULTADOS -->
+
+  <section
+    class="no-results"
+    *ngIf="departamentosFiltrados.length === 0"
+  >
+
+    <div class="no-results-icon">
+      🔍
+    </div>
+
+    <h2>
+      No encontramos departamentos
+    </h2>
+
+    <p>
+      Intenta cambiar los filtros
+      o realizar otra búsqueda.
+    </p>
+
+    <button
+      type="button"
+      (click)="limpiarFiltros()"
+    >
+      Ver todos los departamentos
+    </button>
+
+  </section>
+
 </div>

@@ -1,0 +1,132 @@
+<div class="page">
+
+  <div class="page-header">
+
+    <div>
+
+      <span class="label">
+        PROPIETARIO
+      </span>
+
+      <h1>
+        Mis departamentos
+      </h1>
+
+      <p>
+        Publicaciones asociadas a {{ propietarioEmail }}
+      </p>
+
+    </div>
+
+
+    <div class="contador">
+
+      <strong>
+        {{ departamentos.length }}
+      </strong>
+
+      <span>
+        publicados
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="grid"
+    *ngIf="departamentos.length > 0"
+  >
+
+    <article
+      class="departamento-card"
+      *ngFor="let departamento of departamentos"
+    >
+
+      <img
+        [src]="departamento.URL_Imagen"
+        [alt]="departamento.Titulo"
+      >
+
+
+      <div class="card-body">
+
+        <span class="categoria">
+          {{ departamento.Categoria }}
+        </span>
+
+        <h2>
+          {{ departamento.Titulo }}
+        </h2>
+
+        <p class="ubicacion">
+          📍 {{ departamento.Distrito }}, Lima
+        </p>
+
+
+        <div class="detalles">
+
+          <span>
+            🛏️ {{ departamento.Habitaciones }}
+          </span>
+
+          <span>
+            🚿 {{ departamento.Banos }}
+          </span>
+
+          <span>
+            👥 {{ departamento.Capacidad || '-' }}
+          </span>
+
+        </div>
+
+
+        <div class="card-footer">
+
+          <div>
+
+            <strong>
+              S/ {{ departamento.Precio_Noche | number:'1.2-2' }}
+            </strong>
+
+            <span>
+              / noche
+            </span>
+
+          </div>
+
+
+          <span class="publicado">
+            Publicado
+          </span>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <div
+    class="empty"
+    *ngIf="departamentos.length === 0"
+  >
+
+    <div>
+      🏠
+    </div>
+
+    <h2>
+      Aún no tienes departamentos publicados
+    </h2>
+
+    <p>
+      Utiliza “Publicar mi depa” para agregar tu primer inmueble.
+    </p>
+
+  </div>
+
+</div>
