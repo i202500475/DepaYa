@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
 import { CommonModule } from '@angular/common';
-
 import { FormsModule } from '@angular/forms';
-
 import { Router } from '@angular/router';
 
 import { Reserva, ReservaService } from '../../services/reserva.service';
@@ -25,22 +22,40 @@ import { AuthService } from '../../services/auth.service';
 })
 export class ReservaFormularioComponent implements OnInit {
   // ============================================================
-  // DATOS
+  // DATOS GENERALES
   // ============================================================
 
   departamento: any = null;
 
   usuarioActual: any = null;
 
+  // ============================================================
+  // FECHAS
+  // ============================================================
+
   fechaInicio = '';
 
   fechaFin = '';
+
+  fechaMinima = '';
 
   huespedes = 1;
 
   noches = 0;
 
   total = 0;
+
+  // ============================================================
+  // DISPONIBILIDAD
+  // ============================================================
+
+  departamentoDisponible: boolean | null = null;
+
+  verificandoDisponibilidad = false;
+
+  mensajeDisponibilidad = '';
+
+  conflictosDisponibilidad: Reserva[] = [];
 
   // ============================================================
   // PAGO
@@ -62,6 +77,10 @@ export class ReservaFormularioComponent implements OnInit {
 
   errorPago = '';
 
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
   constructor(
     private reservaService: ReservaService,
 
@@ -77,11 +96,15 @@ export class ReservaFormularioComponent implements OnInit {
   // ============================================================
 
   ngOnInit(): void {
+    this.fechaMinima = this.obtenerFechaHoyLocal();
+
     this.usuarioActual = this.authService.obtenerUsuarioActual();
 
     const datos = localStorage.getItem('departamentoSeleccionado');
 
     if (!datos) {
+      this.errorPago = 'No se encontró el departamento seleccionado.';
+
       return;
     }
 
@@ -91,43 +114,163 @@ export class ReservaFormularioComponent implements OnInit {
       console.error('Error cargando departamento:', error);
 
       this.departamento = null;
+
+      this.errorPago = 'No se pudo cargar la información del departamento.';
     }
   }
 
   // ============================================================
-  // TOTAL
+  // FECHA ACTUAL LOCAL
+  // ============================================================
+
+  private obtenerFechaHoyLocal(): string {
+    const ahora = new Date();
+
+    const anio = ahora.getFullYear();
+
+    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+
+    const dia = String(ahora.getDate()).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+  }
+
+  // ============================================================
+  // EVENTO CAMBIO DE FECHAS
+  //
+  // Puedes llamar este método desde el HTML:
+  //
+  // (ngModelChange)="actualizarReserva()"
+  // ============================================================
+
+  actualizarReserva(): void {
+    this.errorPago = '';
+
+    this.mensajePago = '';
+
+    this.calcularTotal();
+
+    this.verificarDisponibilidad();
+  }
+
+  // ============================================================
+  // CALCULAR TOTAL
   // ============================================================
 
   calcularTotal(): void {
-    if (!this.fechaInicio || !this.fechaFin || !this.departamento) {
-      this.noches = 0;
-      this.total = 0;
+    this.noches = 0;
 
+    this.total = 0;
+
+    if (!this.fechaInicio || !this.fechaFin || !this.departamento) {
       return;
     }
 
-    const inicio = new Date(`${this.fechaInicio}T00:00:00`);
-
-    const fin = new Date(`${this.fechaFin}T00:00:00`);
-
-    const diferencia = fin.getTime() - inicio.getTime();
-
-    this.noches = Math.ceil(diferencia / (1000 * 60 * 60 * 24));
+    this.noches = this.reservaService.calcularNoches(this.fechaInicio, this.fechaFin);
 
     if (this.noches <= 0) {
-      this.noches = 0;
-      this.total = 0;
-
       return;
     }
 
-    const precio = Number(this.departamento.Precio_Noche ?? this.departamento.precio ?? 0);
+    const precio = this.obtenerPrecioNoche();
 
     this.total = this.noches * precio;
   }
 
   // ============================================================
-  // MÉTODO
+  // PRECIO POR NOCHE
+  // ============================================================
+
+  private obtenerPrecioNoche(): number {
+    return Number(
+      this.departamento?.Precio_Noche ??
+        this.departamento?.precio ??
+        this.departamento?.precioNoche ??
+        0,
+    );
+  }
+
+  // ============================================================
+  // CAPACIDAD
+  // ============================================================
+
+  get capacidadMaxima(): number {
+    return Number(this.departamento?.Capacidad ?? this.departamento?.capacidad ?? 0);
+  }
+
+  // ============================================================
+  // VERIFICAR DISPONIBILIDAD
+  // ============================================================
+
+  verificarDisponibilidad(): void {
+    this.departamentoDisponible = null;
+
+    this.mensajeDisponibilidad = '';
+
+    this.conflictosDisponibilidad = [];
+
+    if (!this.departamento || !this.fechaInicio || !this.fechaFin) {
+      return;
+    }
+
+    if (!this.reservaService.fechasValidas(this.fechaInicio, this.fechaFin)) {
+      this.departamentoDisponible = false;
+
+      this.mensajeDisponibilidad = 'La fecha de salida debe ser posterior a la fecha de ingreso.';
+
+      return;
+    }
+
+    this.verificandoDisponibilidad = true;
+
+    const departamentoId = Number(this.departamento.id);
+
+    const conflictos = this.reservaService.obtenerConflictos(
+      departamentoId,
+      this.fechaInicio,
+      this.fechaFin,
+    );
+
+    this.conflictosDisponibilidad = conflictos;
+
+    if (conflictos.length > 0) {
+      this.departamentoDisponible = false;
+
+      const conflicto = conflictos[0];
+
+      this.mensajeDisponibilidad = `No disponible. Este departamento ya está reservado del ${this.formatearFecha(
+        conflicto.fechaInicio,
+      )} al ${this.formatearFecha(conflicto.fechaFin)}.`;
+    } else {
+      this.departamentoDisponible = true;
+
+      this.mensajeDisponibilidad = 'Disponible para las fechas seleccionadas.';
+    }
+
+    this.verificandoDisponibilidad = false;
+  }
+
+  // ============================================================
+  // FORMATEAR FECHA
+  // yyyy-mm-dd -> dd/mm/yyyy
+  // ============================================================
+
+  formatearFecha(fecha: string): string {
+    if (!fecha) {
+      return '';
+    }
+
+    const partes = fecha.split('-');
+
+    if (partes.length !== 3) {
+      return fecha;
+    }
+
+    return `${partes[2]}/` + `${partes[1]}/` + `${partes[0]}`;
+  }
+
+  // ============================================================
+  // MÉTODO DE PAGO
   // ============================================================
 
   seleccionarMetodo(metodo: MetodoPago): void {
@@ -136,6 +279,21 @@ export class ReservaFormularioComponent implements OnInit {
     this.errorPago = '';
 
     this.mensajePago = '';
+
+    /*
+      Limpiar tarjeta si cambia
+      a Yape o Plin.
+    */
+
+    if (metodo === 'YAPE' || metodo === 'PLIN') {
+      this.numeroTarjeta = '';
+
+      this.titularTarjeta = '';
+
+      this.vencimiento = '';
+
+      this.cvv = '';
+    }
   }
 
   // ============================================================
@@ -155,7 +313,7 @@ export class ReservaFormularioComponent implements OnInit {
   }
 
   // ============================================================
-  // QR
+  // GENERAR QR DEMO
   // ============================================================
 
   get qrPago(): string {
@@ -165,9 +323,13 @@ export class ReservaFormularioComponent implements OnInit {
 
     const contenido = [
       'DEPAYA',
+
       this.metodoPago,
+
       this.departamento?.Titulo || '',
+
       `S/${this.total.toFixed(2)}`,
+
       this.usuarioActual?.email || '',
     ].join('|');
 
@@ -181,15 +343,25 @@ export class ReservaFormularioComponent implements OnInit {
   }
 
   // ============================================================
-  // VALIDAR DATOS
+  // VALIDAR RESERVA
   // ============================================================
 
   private validarReserva(): boolean {
+    this.errorPago = '';
+
+    // ----------------------------------------------------------
+    // DEPARTAMENTO
+    // ----------------------------------------------------------
+
     if (!this.departamento) {
       this.errorPago = 'No se encontró el departamento.';
 
       return false;
     }
+
+    // ----------------------------------------------------------
+    // USUARIO
+    // ----------------------------------------------------------
 
     if (!this.usuarioActual) {
       this.router.navigate(['/login']);
@@ -197,11 +369,19 @@ export class ReservaFormularioComponent implements OnInit {
       return false;
     }
 
+    // ----------------------------------------------------------
+    // ROL
+    // ----------------------------------------------------------
+
     if (this.usuarioActual.rol !== 'INQUILINO') {
       this.errorPago = 'Solo los inquilinos pueden realizar reservas.';
 
       return false;
     }
+
+    // ----------------------------------------------------------
+    // FECHAS
+    // ----------------------------------------------------------
 
     if (!this.fechaInicio || !this.fechaFin) {
       this.errorPago = 'Selecciona las fechas de la reserva.';
@@ -209,13 +389,94 @@ export class ReservaFormularioComponent implements OnInit {
       return false;
     }
 
-    this.calcularTotal();
+    // ----------------------------------------------------------
+    // FECHA PASADA
+    // ----------------------------------------------------------
 
-    if (this.noches <= 0) {
+    if (this.fechaInicio < this.fechaMinima) {
+      this.errorPago = 'La fecha de ingreso no puede ser anterior a hoy.';
+
+      return false;
+    }
+
+    // ----------------------------------------------------------
+    // SALIDA POSTERIOR
+    // ----------------------------------------------------------
+
+    if (!this.reservaService.fechasValidas(this.fechaInicio, this.fechaFin)) {
       this.errorPago = 'La fecha de salida debe ser posterior a la fecha de ingreso.';
 
       return false;
     }
+
+    // ----------------------------------------------------------
+    // TOTAL
+    // ----------------------------------------------------------
+
+    this.calcularTotal();
+
+    if (this.noches <= 0) {
+      this.errorPago = 'Selecciona un rango de fechas válido.';
+
+      return false;
+    }
+
+    // ----------------------------------------------------------
+    // HUÉSPEDES
+    // ----------------------------------------------------------
+
+    if (!this.huespedes || this.huespedes < 1) {
+      this.errorPago = 'Debe ingresar al menos un huésped.';
+
+      return false;
+    }
+
+    if (this.capacidadMaxima > 0 && this.huespedes > this.capacidadMaxima) {
+      this.errorPago = `Este departamento admite como máximo ${this.capacidadMaxima} huésped(es).`;
+
+      return false;
+    }
+
+    // ----------------------------------------------------------
+    // DISPONIBILIDAD
+    // ----------------------------------------------------------
+
+    const disponible = this.reservaService.estaDisponible(
+      Number(this.departamento.id),
+      this.fechaInicio,
+      this.fechaFin,
+    );
+
+    if (!disponible) {
+      this.departamentoDisponible = false;
+
+      const conflictos = this.reservaService.obtenerConflictos(
+        Number(this.departamento.id),
+        this.fechaInicio,
+        this.fechaFin,
+      );
+
+      this.conflictosDisponibilidad = conflictos;
+
+      if (conflictos.length > 0) {
+        const conflicto = conflictos[0];
+
+        this.mensajeDisponibilidad = `No disponible del ${this.formatearFecha(
+          conflicto.fechaInicio,
+        )} al ${this.formatearFecha(conflicto.fechaFin)}.`;
+      }
+
+      this.errorPago =
+        'Este departamento ya está reservado en las fechas seleccionadas. Elige otras fechas.';
+
+      return false;
+    }
+
+    this.departamentoDisponible = true;
+
+    // ----------------------------------------------------------
+    // MÉTODO DE PAGO
+    // ----------------------------------------------------------
 
     if (!this.metodoPago) {
       this.errorPago = 'Selecciona un método de pago.';
@@ -235,6 +496,10 @@ export class ReservaFormularioComponent implements OnInit {
       return true;
     }
 
+    // ----------------------------------------------------------
+    // NÚMERO
+    // ----------------------------------------------------------
+
     const numero = this.numeroTarjeta.replace(/\s/g, '');
 
     if (!/^\d{16}$/.test(numero)) {
@@ -243,17 +508,52 @@ export class ReservaFormularioComponent implements OnInit {
       return false;
     }
 
+    // ----------------------------------------------------------
+    // TITULAR
+    // ----------------------------------------------------------
+
     if (!this.titularTarjeta.trim()) {
-      this.errorPago = 'Ingrese el nombre del titular.';
+      this.errorPago = 'Ingrese el nombre del titular de la tarjeta.';
 
       return false;
     }
+
+    // ----------------------------------------------------------
+    // VENCIMIENTO
+    // ----------------------------------------------------------
 
     if (!/^\d{2}\/\d{2}$/.test(this.vencimiento)) {
       this.errorPago = 'Ingrese el vencimiento en formato MM/AA.';
 
       return false;
     }
+
+    const [mesTexto, anioTexto] = this.vencimiento.split('/');
+
+    const mes = Number(mesTexto);
+
+    const anio = 2000 + Number(anioTexto);
+
+    if (mes < 1 || mes > 12) {
+      this.errorPago = 'El mes de vencimiento no es válido.';
+
+      return false;
+    }
+
+    const ahora = new Date();
+
+    const tarjetaVencida =
+      anio < ahora.getFullYear() || (anio === ahora.getFullYear() && mes < ahora.getMonth() + 1);
+
+    if (tarjetaVencida) {
+      this.errorPago = 'La tarjeta se encuentra vencida.';
+
+      return false;
+    }
+
+    // ----------------------------------------------------------
+    // CVV
+    // ----------------------------------------------------------
 
     if (!/^\d{3,4}$/.test(this.cvv)) {
       this.errorPago = 'Ingrese un CVV válido.';
@@ -265,6 +565,26 @@ export class ReservaFormularioComponent implements OnInit {
   }
 
   // ============================================================
+  // SABER SI PUEDE PAGAR
+  //
+  // Puedes usarlo en HTML:
+  //
+  // [disabled]="!puedePagar"
+  // ============================================================
+
+  get puedePagar(): boolean {
+    return (
+      !!this.departamento &&
+      !!this.fechaInicio &&
+      !!this.fechaFin &&
+      this.noches > 0 &&
+      this.departamentoDisponible === true &&
+      !!this.metodoPago &&
+      !this.validandoPago
+    );
+  }
+
+  // ============================================================
   // PAGAR Y CONFIRMAR
   // ============================================================
 
@@ -273,9 +593,17 @@ export class ReservaFormularioComponent implements OnInit {
 
     this.mensajePago = '';
 
+    // ----------------------------------------------------------
+    // VALIDAR RESERVA
+    // ----------------------------------------------------------
+
     if (!this.validarReserva()) {
       return;
     }
+
+    // ----------------------------------------------------------
+    // VALIDAR TARJETA
+    // ----------------------------------------------------------
 
     if (!this.validarTarjeta()) {
       return;
@@ -285,23 +613,54 @@ export class ReservaFormularioComponent implements OnInit {
       return;
     }
 
+    /*
+      MUY IMPORTANTE:
+
+      Volvemos a revisar disponibilidad
+      inmediatamente antes de guardar.
+
+      Así evitamos que el usuario tenga
+      la pantalla abierta y otra persona
+      reserve mientras tanto.
+    */
+
+    const disponibleAhora = this.reservaService.estaDisponible(
+      Number(this.departamento.id),
+      this.fechaInicio,
+      this.fechaFin,
+    );
+
+    if (!disponibleAhora) {
+      this.departamentoDisponible = false;
+
+      this.verificarDisponibilidad();
+
+      this.errorPago =
+        'Lo sentimos. Estas fechas acaban de dejar de estar disponibles. Selecciona otras fechas.';
+
+      return;
+    }
+
     this.validandoPago = true;
 
-    this.mensajePago = 'Validando pago...';
+    this.mensajePago = 'Validando disponibilidad y procesando pago...';
 
     // ==========================================================
-    // CREAR RESERVA COMO PENDIENTE
+    // DATOS RESERVA
     // ==========================================================
 
-    const precio = Number(this.departamento.Precio_Noche ?? this.departamento.precio ?? 0);
+    const precio = this.obtenerPrecioNoche();
 
     const reservaPendiente: Reserva = {
       id: 0,
 
-      departamentoId: this.departamento.id,
+      departamentoId: Number(this.departamento.id),
 
       departamento:
-        this.departamento.Titulo ?? this.departamento.titulo ?? this.departamento.nombre,
+        this.departamento.Titulo ??
+        this.departamento.titulo ??
+        this.departamento.nombre ??
+        'Departamento',
 
       ciudad: this.departamento.Distrito ?? this.departamento.distrito ?? '',
 
@@ -309,8 +668,9 @@ export class ReservaFormularioComponent implements OnInit {
 
       inquilinoEmail: this.usuarioActual.email,
 
-      inquilinoNombre:
-        `${this.usuarioActual.nombre || ''} ${this.usuarioActual.apellido || ''}`.trim(),
+      inquilinoNombre: `${this.usuarioActual.nombre || ''} ${
+        this.usuarioActual.apellido || ''
+      }`.trim(),
 
       fechaInicio: this.fechaInicio,
 
@@ -327,63 +687,163 @@ export class ReservaFormularioComponent implements OnInit {
       fechaReserva: new Date().toISOString(),
     };
 
-    const reservaCreada = this.reservaService.guardar(reservaPendiente);
-
-    const pago = this.pagoService.crearPagoPendiente(reservaCreada, this.metodoPago!);
-
     // ==========================================================
-    // VALIDACIÓN SIMULADA
+    // CREAR RESERVA
     // ==========================================================
 
-    setTimeout(() => {
-      const pagoConfirmado = this.pagoService.confirmarPago(pago.id);
+    let reservaCreada: Reserva;
 
-      if (!pagoConfirmado) {
-        this.validandoPago = false;
+    try {
+      /*
+        ReservaService vuelve a comprobar
+        internamente que las fechas estén
+        libres.
+      */
 
-        this.mensajePago = '';
+      reservaCreada = this.reservaService.guardar(reservaPendiente);
+    } catch (error: any) {
+      this.validandoPago = false;
 
-        this.errorPago = 'No se pudo validar el pago.';
+      this.mensajePago = '';
 
-        return;
-      }
+      this.departamentoDisponible = false;
 
-      const reservaConfirmada = this.reservaService.actualizarEstado(
-        reservaCreada.id,
-        'CONFIRMADA',
-      );
+      this.verificarDisponibilidad();
 
-      if (!reservaConfirmada) {
-        this.validandoPago = false;
+      this.errorPago =
+        error?.message || 'No se pudo crear la reserva porque las fechas ya no están disponibles.';
 
-        this.mensajePago = '';
+      return;
+    }
 
-        this.errorPago = 'El pago fue registrado, pero no se pudo confirmar la reserva.';
+    // ==========================================================
+    // CREAR PAGO PENDIENTE
+    // ==========================================================
 
-        return;
-      }
+    let pago: any;
+
+    try {
+      pago = this.pagoService.crearPagoPendiente(reservaCreada, this.metodoPago!);
+    } catch (error) {
+      /*
+        Si falla la creación del pago,
+        cancelar la reserva para liberar
+        inmediatamente las fechas.
+      */
+
+      this.reservaService.cancelarReserva(reservaCreada.id);
 
       this.validandoPago = false;
 
-      this.mensajePago = 'Pago validado. Reserva confirmada correctamente.';
+      this.mensajePago = '';
 
-      localStorage.removeItem('departamentoSeleccionado');
+      this.errorPago = 'No se pudo iniciar el proceso de pago. Inténtalo nuevamente.';
 
-      // NO guardamos número,
-      // CVV ni datos sensibles.
-      this.numeroTarjeta = '';
-      this.cvv = '';
-      this.vencimiento = '';
-      this.titularTarjeta = '';
+      return;
+    }
 
-      setTimeout(() => {
-        this.router.navigate(['/mis-reservas']);
-      }, 900);
+    // ==========================================================
+    // VALIDACIÓN SIMULADA DEL PAGO
+    // ==========================================================
+
+    setTimeout(() => {
+      try {
+        const pagoConfirmado = this.pagoService.confirmarPago(pago.id);
+
+        // ----------------------------------------------------
+        // PAGO FALLÓ
+        // ----------------------------------------------------
+
+        if (!pagoConfirmado) {
+          /*
+              Liberar fechas.
+            */
+
+          this.reservaService.cancelarReserva(reservaCreada.id);
+
+          this.validandoPago = false;
+
+          this.mensajePago = '';
+
+          this.errorPago = 'No se pudo validar el pago. La reserva fue liberada.';
+
+          this.verificarDisponibilidad();
+
+          return;
+        }
+
+        // ----------------------------------------------------
+        // CONFIRMAR RESERVA
+        // ----------------------------------------------------
+
+        const reservaConfirmada = this.reservaService.actualizarEstado(
+          reservaCreada.id,
+          'CONFIRMADA',
+        );
+
+        if (!reservaConfirmada) {
+          this.validandoPago = false;
+
+          this.mensajePago = '';
+
+          this.errorPago = 'El pago fue registrado, pero no se pudo confirmar la reserva.';
+
+          return;
+        }
+
+        // ====================================================
+        // ÉXITO
+        // ====================================================
+
+        this.validandoPago = false;
+
+        this.departamentoDisponible = false;
+
+        this.mensajeDisponibilidad = 'Estas fechas quedaron reservadas para ti.';
+
+        this.mensajePago = 'Pago validado. Reserva confirmada correctamente.';
+
+        localStorage.removeItem('departamentoSeleccionado');
+
+        /*
+            Nunca guardar datos sensibles
+            de tarjeta.
+          */
+
+        this.numeroTarjeta = '';
+
+        this.cvv = '';
+
+        this.vencimiento = '';
+
+        this.titularTarjeta = '';
+
+        setTimeout(() => {
+          this.router.navigate(['/mis-reservas']);
+        }, 900);
+      } catch (error) {
+        console.error('Error procesando pago:', error);
+
+        /*
+            En caso de error inesperado
+            liberar la reserva pendiente.
+          */
+
+        this.reservaService.cancelarReserva(reservaCreada.id);
+
+        this.validandoPago = false;
+
+        this.mensajePago = '';
+
+        this.errorPago = 'Ocurrió un problema procesando el pago. Inténtalo nuevamente.';
+
+        this.verificarDisponibilidad();
+      }
     }, 1600);
   }
 
   // ============================================================
-  // VOLVER
+  // VOLVER A EXPLORAR
   // ============================================================
 
   volverExplorar(): void {

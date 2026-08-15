@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uqF0C8Ahq24=",
+  "dgSpecHash": "vZ9lDwrDNKI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\SaraA\\OneDrive\\Documents\\Visual Studio 2017\\DepaYa\\ms-usuarios\\ms-usuarios.csproj",
+  "projectFilePath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-usuarios\\ms-usuarios.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SaraA\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.10\\microsoft.aspnetcore.authentication.jwtbearer.10.0.10.nupkg.sha512",
     "C:\\Users\\SaraA\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.10\\microsoft.aspnetcore.openapi.10.0.10.nupkg.sha512",

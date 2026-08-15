@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\Api-gateway\\Api-gateway.csproj": {}
+    "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\Api-gateway\\Api-gateway.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\Api-gateway\\Api-gateway.csproj": {
+    "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\Api-gateway\\Api-gateway.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\Api-gateway\\Api-gateway.csproj",
+        "projectUniqueName": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\Api-gateway\\Api-gateway.csproj",
         "projectName": "Api-gateway",
-        "projectPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\Api-gateway\\Api-gateway.csproj",
+        "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\Api-gateway\\Api-gateway.csproj",
         "packagesPath": "C:\\Users\\SaraA\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\Api-gateway\\obj\\",
+        "outputPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\Api-gateway\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,6 +51,12 @@
         "net10.0": {
           "framework": "net10.0",
           "targetAlias": "net10.0",
+          "dependencies": {
+            "Yarp.ReverseProxy": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

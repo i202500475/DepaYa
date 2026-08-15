@@ -1,5 +1,9 @@
 <div class="reserva-page">
 
+  <!-- =========================================================
+       HEADER
+  ========================================================== -->
+
   <div class="reserva-header">
 
     <button
@@ -17,27 +21,40 @@
     </h1>
 
     <p>
-      Tu reserva será confirmada únicamente después de validar el pago.
+      Verificamos la disponibilidad antes de procesar el pago.
     </p>
 
   </div>
 
+
+  <!-- =========================================================
+       CONTENIDO
+  ========================================================== -->
 
   <div
     class="reserva-container"
     *ngIf="departamento"
   >
 
-    <!-- ========================================
+    <!-- =======================================================
          DEPARTAMENTO
-    ========================================= -->
+    ======================================================== -->
 
     <section class="departamento-preview">
 
-      <img
-        [src]="departamento.URL_Imagen"
-        [alt]="departamento.Titulo"
-      >
+      <div class="imagen-wrapper">
+
+        <img
+          [src]="departamento.URL_Imagen"
+          [alt]="departamento.Titulo"
+        >
+
+        <span class="property-badge">
+          Disponible para reservar
+        </span>
+
+      </div>
+
 
       <div class="preview-info">
 
@@ -57,13 +74,23 @@
         <div class="detalles">
 
           <span>
-            🛏️ {{ departamento.Habitaciones }}
+            🛏️
+            {{ departamento.Habitaciones }}
             habitaciones
           </span>
 
           <span>
-            🚿 {{ departamento.Banos }}
+            🚿
+            {{ departamento.Banos }}
             baños
+          </span>
+
+          <span
+            *ngIf="capacidadMaxima > 0"
+          >
+            👥
+            Hasta {{ capacidadMaxima }}
+            huéspedes
           </span>
 
         </div>
@@ -87,26 +114,45 @@
     </section>
 
 
-    <!-- ========================================
-         RESERVA + PAGO
-    ========================================= -->
+    <!-- =======================================================
+         RESERVA
+    ======================================================== -->
 
     <section class="reserva-card">
 
-      <div class="step-badge">
-        1
+      <!-- =====================================================
+           PASO 1
+      ====================================================== -->
+
+      <div class="section-title-row">
+
+        <div class="step-badge">
+          1
+        </div>
+
+        <div>
+
+          <h2>
+            Datos de tu reserva
+          </h2>
+
+          <p class="form-description">
+            Selecciona las fechas y verificaremos si el
+            departamento se encuentra disponible.
+          </p>
+
+        </div>
+
       </div>
 
-      <h2>
-        Datos de tu reserva
-      </h2>
 
-      <p class="form-description">
-        Selecciona tus fechas.
-      </p>
-
+      <!-- =====================================================
+           FECHAS
+      ====================================================== -->
 
       <div class="form-grid">
+
+        <!-- INGRESO -->
 
         <div class="form-group">
 
@@ -118,11 +164,14 @@
             id="fechaInicio"
             type="date"
             [(ngModel)]="fechaInicio"
-            (change)="calcularTotal()"
+            [min]="fechaMinima"
+            (ngModelChange)="actualizarReserva()"
           >
 
         </div>
 
+
+        <!-- SALIDA -->
 
         <div class="form-group">
 
@@ -134,7 +183,8 @@
             id="fechaFin"
             type="date"
             [(ngModel)]="fechaFin"
-            (change)="calcularTotal()"
+            [min]="fechaInicio || fechaMinima"
+            (ngModelChange)="actualizarReserva()"
           >
 
         </div>
@@ -142,7 +192,101 @@
       </div>
 
 
-      <div class="form-group">
+      <!-- =====================================================
+           DISPONIBILIDAD
+      ====================================================== -->
+
+      <div
+        class="availability-card checking"
+        *ngIf="verificandoDisponibilidad"
+      >
+
+        <div class="availability-icon loading-icon">
+          <span class="availability-spinner"></span>
+        </div>
+
+        <div class="availability-content">
+
+          <strong>
+            Verificando disponibilidad
+          </strong>
+
+          <p>
+            Estamos comprobando las fechas seleccionadas.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="availability-card available"
+        *ngIf="
+          !verificandoDisponibilidad &&
+          departamentoDisponible === true &&
+          mensajeDisponibilidad
+        "
+        aria-live="polite"
+      >
+
+        <div class="availability-icon">
+          ✓
+        </div>
+
+        <div class="availability-content">
+
+          <strong>
+            Departamento disponible
+          </strong>
+
+          <p>
+            {{ mensajeDisponibilidad }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="availability-card unavailable"
+        *ngIf="
+          !verificandoDisponibilidad &&
+          departamentoDisponible === false &&
+          mensajeDisponibilidad
+        "
+        aria-live="polite"
+      >
+
+        <div class="availability-icon">
+          !
+        </div>
+
+        <div class="availability-content">
+
+          <strong>
+            Departamento no disponible
+          </strong>
+
+          <p>
+            {{ mensajeDisponibilidad }}
+          </p>
+
+          <small>
+            Cambia la fecha de ingreso o salida para continuar.
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           HUÉSPEDES
+      ====================================================== -->
+
+      <div class="form-group huespedes-group">
 
         <label for="huespedes">
           Huéspedes
@@ -152,15 +296,36 @@
           id="huespedes"
           type="number"
           min="1"
+          [max]="capacidadMaxima > 0 ? capacidadMaxima : null"
           [(ngModel)]="huespedes"
         >
+
+        <small
+          class="field-help"
+          *ngIf="capacidadMaxima > 0"
+        >
+          Capacidad máxima:
+          {{ capacidadMaxima }}
+          huésped(es).
+        </small>
 
       </div>
 
 
-      <!-- RESUMEN -->
+      <!-- =====================================================
+           RESUMEN
+      ====================================================== -->
 
       <div class="resumen">
+
+        <div class="resumen-header">
+
+          <span>
+            Resumen de la reserva
+          </span>
+
+        </div>
+
 
         <div class="resumen-line">
 
@@ -189,6 +354,24 @@
         </div>
 
 
+        <div
+          class="resumen-line"
+          *ngIf="fechaInicio && fechaFin"
+        >
+
+          <span>
+            Estadía
+          </span>
+
+          <strong class="dates-summary">
+            {{ formatearFecha(fechaInicio) }}
+            →
+            {{ formatearFecha(fechaFin) }}
+          </strong>
+
+        </div>
+
+
         <div class="resumen-line total-line">
 
           <span>
@@ -205,9 +388,9 @@
       </div>
 
 
-      <!-- ========================================
+      <!-- =====================================================
            PASO 2
-      ========================================= -->
+      ====================================================== -->
 
       <div class="payment-divider"></div>
 
@@ -233,10 +416,45 @@
       </div>
 
 
-      <!-- MÉTODOS -->
+      <!-- =====================================================
+           AVISO SI TODAVÍA NO ESTÁ DISPONIBLE
+      ====================================================== -->
 
-      <div class="payment-methods">
+      <div
+        class="payment-blocked-message"
+        *ngIf="departamentoDisponible !== true"
+      >
 
+        <span>
+          🔒
+        </span>
+
+        <div>
+
+          <strong>
+            Primero confirma la disponibilidad
+          </strong>
+
+          <p>
+            Selecciona fechas disponibles antes de elegir
+            un método de pago.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           MÉTODOS DE PAGO
+      ====================================================== -->
+
+      <div
+        class="payment-methods"
+        [class.payment-methods-disabled]="
+          departamentoDisponible !== true
+        "
+      >
 
         <!-- YAPE -->
 
@@ -244,6 +462,10 @@
           type="button"
           class="payment-option yape"
           [class.selected]="metodoPago === 'YAPE'"
+          [disabled]="
+            departamentoDisponible !== true ||
+            validandoPago
+          "
           (click)="seleccionarMetodo('YAPE')"
         >
 
@@ -251,9 +473,17 @@
             Y
           </div>
 
-          <span>
-            Yape
-          </span>
+          <div class="payment-name">
+
+            <strong>
+              Yape
+            </strong>
+
+            <small>
+              Pago por QR
+            </small>
+
+          </div>
 
           <div class="check">
             ✓
@@ -268,6 +498,10 @@
           type="button"
           class="payment-option plin"
           [class.selected]="metodoPago === 'PLIN'"
+          [disabled]="
+            departamentoDisponible !== true ||
+            validandoPago
+          "
           (click)="seleccionarMetodo('PLIN')"
         >
 
@@ -275,9 +509,17 @@
             P
           </div>
 
-          <span>
-            Plin
-          </span>
+          <div class="payment-name">
+
+            <strong>
+              Plin
+            </strong>
+
+            <small>
+              Pago por QR
+            </small>
+
+          </div>
 
           <div class="check">
             ✓
@@ -292,6 +534,10 @@
           type="button"
           class="payment-option"
           [class.selected]="metodoPago === 'VISA'"
+          [disabled]="
+            departamentoDisponible !== true ||
+            validandoPago
+          "
           (click)="seleccionarMetodo('VISA')"
         >
 
@@ -299,9 +545,17 @@
             VISA
           </div>
 
-          <span>
-            Visa
-          </span>
+          <div class="payment-name">
+
+            <strong>
+              Visa
+            </strong>
+
+            <small>
+              Tarjeta
+            </small>
+
+          </div>
 
           <div class="check">
             ✓
@@ -316,16 +570,28 @@
           type="button"
           class="payment-option"
           [class.selected]="metodoPago === 'MASTERCARD'"
+          [disabled]="
+            departamentoDisponible !== true ||
+            validandoPago
+          "
           (click)="seleccionarMetodo('MASTERCARD')"
         >
 
-          <div class="payment-logo">
-            💳
+          <div class="payment-logo mastercard-logo">
+            ●●
           </div>
 
-          <span>
-            Mastercard
-          </span>
+          <div class="payment-name">
+
+            <strong>
+              Mastercard
+            </strong>
+
+            <small>
+              Tarjeta
+            </small>
+
+          </div>
 
           <div class="check">
             ✓
@@ -336,13 +602,16 @@
       </div>
 
 
-      <!-- ========================================
+      <!-- =====================================================
            QR
-      ========================================= -->
+      ====================================================== -->
 
       <div
         class="qr-payment"
-        *ngIf="esPagoQR"
+        *ngIf="
+          esPagoQR &&
+          departamentoDisponible === true
+        "
       >
 
         <span class="payment-demo">
@@ -351,13 +620,19 @@
 
         <h3>
           Escanea con
-          {{ metodoPago === 'YAPE' ? 'Yape' : 'Plin' }}
+          {{
+          metodoPago === 'YAPE'
+          ? 'Yape'
+          : 'Plin'
+          }}
         </h3>
 
         <p>
           Paga exactamente
+
           <strong>
-            S/ {{ total | number:'1.2-2' }}
+            S/
+            {{ total | number:'1.2-2' }}
           </strong>
         </p>
 
@@ -373,25 +648,36 @@
 
 
         <small>
-          Después de realizar el pago presiona
-          “Ya pagué”.
+          Después de realizar el pago,
+          presiona “Ya pagué”.
         </small>
 
       </div>
 
 
-      <!-- ========================================
+      <!-- =====================================================
            TARJETA
-      ========================================= -->
+      ====================================================== -->
 
       <div
         class="card-payment"
-        *ngIf="esTarjeta"
+        *ngIf="
+          esTarjeta &&
+          departamentoDisponible === true
+        "
       >
 
-        <span class="payment-demo">
-          PAGO SEGURO · DEMOSTRACIÓN
-        </span>
+        <div class="card-payment-header">
+
+          <span class="payment-demo">
+            PAGO SEGURO · DEMOSTRACIÓN
+          </span>
+
+          <span class="card-lock">
+            🔒
+          </span>
+
+        </div>
 
 
         <div class="form-group">
@@ -471,12 +757,16 @@
       </div>
 
 
-      <!-- MENSAJES -->
+      <!-- =====================================================
+           MENSAJES
+      ====================================================== -->
 
       <div
         class="payment-error"
         *ngIf="errorPago"
       >
+        <span>!</span>
+
         {{ errorPago }}
       </div>
 
@@ -485,18 +775,24 @@
         class="payment-success"
         *ngIf="mensajePago"
       >
+        <span>✓</span>
+
         {{ mensajePago }}
       </div>
 
 
-      <!-- ========================================
-           PAGAR
-      ========================================= -->
+      <!-- =====================================================
+           BOTÓN CONFIRMAR
+      ====================================================== -->
 
       <button
         type="button"
         class="confirm-button"
-        [disabled]="validandoPago"
+        [disabled]="
+          validandoPago ||
+          departamentoDisponible !== true ||
+          !metodoPago
+        "
         (click)="procesarPago()"
       >
 
@@ -506,20 +802,50 @@
         ></span>
 
 
-        <ng-container *ngIf="!validandoPago">
+        <ng-container
+          *ngIf="!validandoPago"
+        >
 
-          {{
-          esPagoQR
-          ? 'Ya pagué · Validar pago'
-          : esTarjeta
-          ? 'Pagar y confirmar reserva'
-          : 'Selecciona un método de pago'
-          }}
+          <ng-container
+            *ngIf="
+              departamentoDisponible === false
+            "
+          >
+            Fechas no disponibles
+          </ng-container>
+
+
+          <ng-container
+            *ngIf="
+              departamentoDisponible === null
+            "
+          >
+            Selecciona fechas disponibles
+          </ng-container>
+
+
+          <ng-container
+            *ngIf="
+              departamentoDisponible === true
+            "
+          >
+
+            {{
+            esPagoQR
+            ? 'Ya pagué · Validar pago'
+            : esTarjeta
+            ? 'Pagar y confirmar reserva'
+            : 'Selecciona un método de pago'
+            }}
+
+          </ng-container>
 
         </ng-container>
 
 
-        <ng-container *ngIf="validandoPago">
+        <ng-container
+          *ngIf="validandoPago"
+        >
           Validando pago...
         </ng-container>
 
@@ -527,10 +853,38 @@
 
 
       <p class="secure-message">
-        🔒 La reserva solo se confirma después de validar el pago.
+        🔒 La reserva solo se confirma después de
+        validar disponibilidad y pago.
       </p>
 
     </section>
+
+  </div>
+
+
+  <!-- =========================================================
+       SIN DEPARTAMENTO
+  ========================================================== -->
+
+  <div
+    class="sin-departamento"
+    *ngIf="!departamento"
+  >
+
+    <h2>
+      No encontramos el departamento
+    </h2>
+
+    <p>
+      Regresa al listado y selecciona una propiedad.
+    </p>
+
+    <button
+      type="button"
+      (click)="volverExplorar()"
+    >
+      Explorar departamentos
+    </button>
 
   </div>
 

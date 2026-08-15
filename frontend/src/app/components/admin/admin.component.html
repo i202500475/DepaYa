@@ -1,21 +1,24 @@
 <div class="admin-container">
 
-  <!-- ==========================================
+  <!-- =========================================================
        HEADER
-  =========================================== -->
+  ========================================================== -->
 
   <header class="admin-header">
 
     <div>
+      <span class="admin-eyebrow">
+        DEPAYA · ADMINISTRACIÓN
+      </span>
 
       <h1>
         Panel de Administración
       </h1>
 
       <p>
-        Gestión general de DepaYa
+        Gestión general de usuarios, propiedades,
+        reservas, pagos y reembolsos.
       </p>
-
     </div>
 
     <div class="admin-badge">
@@ -25,14 +28,15 @@
   </header>
 
 
-  <!-- ==========================================
+  <!-- =========================================================
        MENSAJES
-  =========================================== -->
+  ========================================================== -->
 
   <div
     class="alert success"
     *ngIf="mensaje"
   >
+    <span>✓</span>
     {{ mensaje }}
   </div>
 
@@ -40,85 +44,115 @@
     class="alert error"
     *ngIf="error"
   >
+    <span>!</span>
     {{ error }}
   </div>
 
 
-  <!-- ==========================================
+  <!-- =========================================================
        DASHBOARD
-  =========================================== -->
+  ========================================================== -->
 
   <section class="dashboard-cards">
 
-    <div class="dashboard-card">
+    <article class="dashboard-card">
 
       <div class="card-icon">
         👥
       </div>
 
       <div>
-        <span>Usuarios</span>
+        <span>
+          Usuarios
+        </span>
+
         <strong>
           {{ totalUsuarios }}
         </strong>
+
+        <small>
+          Registrados
+        </small>
       </div>
 
-    </div>
+    </article>
 
 
-    <div class="dashboard-card">
+    <article class="dashboard-card">
 
       <div class="card-icon">
         🏠
       </div>
 
       <div>
-        <span>Departamentos</span>
+        <span>
+          Departamentos
+        </span>
+
         <strong>
           {{ totalDepartamentos }}
         </strong>
+
+        <small>
+          Publicados
+        </small>
       </div>
 
-    </div>
+    </article>
 
 
-    <div class="dashboard-card">
+    <article class="dashboard-card">
 
       <div class="card-icon">
         📅
       </div>
 
       <div>
-        <span>Reservas</span>
+        <span>
+          Reservas
+        </span>
+
         <strong>
           {{ totalReservas }}
         </strong>
+
+        <small>
+          Registradas
+        </small>
       </div>
 
-    </div>
+    </article>
 
 
-    <div class="dashboard-card">
+    <article class="dashboard-card">
 
       <div class="card-icon">
         💳
       </div>
 
       <div>
-        <span>Pagos</span>
+        <span>
+          Pagos
+        </span>
+
         <strong>
           {{ totalPagos }}
         </strong>
+
+        <small>
+          {{ totalReembolsosPendientes }}
+          reembolso(s) pendiente(s)
+        </small>
       </div>
 
-    </div>
+    </article>
 
   </section>
 
 
-  <!-- ==========================================
+  <!-- =========================================================
        USUARIOS
-  =========================================== -->
+  ========================================================== -->
 
   <section class="admin-section">
 
@@ -126,12 +160,16 @@
 
       <div>
 
+        <span class="section-eyebrow">
+          USUARIOS
+        </span>
+
         <h2>
-          Usuarios
+          Usuarios registrados
         </h2>
 
         <p>
-          Administración de usuarios registrados en DepaYa
+          Administración de las cuentas registradas en DepaYa.
         </p>
 
       </div>
@@ -166,25 +204,14 @@
         <thead>
 
         <tr>
-
           <th>#</th>
-
           <th>Nombre</th>
-
           <th>Documento</th>
-
           <th>Correo</th>
-
           <th>Teléfono</th>
-
           <th>Rol</th>
-
-          <th>Fecha registro</th>
-
-          <th class="center">
-            Acciones
-          </th>
-
+          <th>Registro</th>
+          <th class="center">Acciones</th>
         </tr>
 
         </thead>
@@ -205,12 +232,10 @@
 
 
           <td>
-
             <strong>
               {{ usuario.nombre }}
               {{ usuario.apellido || '' }}
             </strong>
-
           </td>
 
 
@@ -241,19 +266,9 @@
 
               <span
                 class="rol"
-                [ngClass]="
-                  obtenerClaseRol(
-                    usuario.rol
-                  )
-                "
+                [ngClass]="obtenerClaseRol(usuario.rol)"
               >
-
-                {{
-                  obtenerNombreRol(
-                    usuario.rol
-                  )
-                }}
-
+                {{ obtenerNombreRol(usuario.rol) }}
               </span>
 
           </td>
@@ -264,17 +279,15 @@
           </td>
 
 
-          <td>
+          <td class="center">
 
             <div class="actions">
 
               <button
                 type="button"
                 class="btn-edit"
-                title="Editar"
-                (click)="
-                    abrirEditar(usuario)
-                  "
+                title="Editar usuario"
+                (click)="abrirEditar(usuario)"
               >
                 ✏️
               </button>
@@ -283,15 +296,13 @@
               <button
                 type="button"
                 class="btn-delete"
-                title="Eliminar"
+                title="Eliminar usuario"
                 [disabled]="
                     usuario.email.toLowerCase()
                     ===
                     'admin@depaya.com'
                   "
-                (click)="
-                    eliminarUsuario(usuario)
-                  "
+                (click)="eliminarUsuario(usuario)"
               >
                 🗑️
               </button>
@@ -304,14 +315,12 @@
 
 
         <tr
-          *ngIf="
-              usuarios.length === 0
-            "
+          *ngIf="usuarios.length === 0"
         >
 
           <td
             colspan="8"
-            class="empty"
+            class="empty-table"
           >
             No hay usuarios registrados.
           </td>
@@ -327,9 +336,9 @@
   </section>
 
 
-  <!-- ==========================================
+  <!-- =========================================================
        DEPARTAMENTOS
-  =========================================== -->
+  ========================================================== -->
 
   <section class="admin-section">
 
@@ -337,15 +346,20 @@
 
       <div>
 
+        <span class="section-eyebrow">
+          PROPIEDADES
+        </span>
+
         <h2>
           Departamentos publicados
         </h2>
 
         <p>
-          Propiedades publicadas por los propietarios
+          Propiedades publicadas por los propietarios.
         </p>
 
       </div>
+
 
       <div class="section-count">
         {{ totalDepartamentos }}
@@ -399,9 +413,18 @@
                 class="departamento-img"
               >
 
-              <strong>
-                {{ departamento.Titulo }}
-              </strong>
+
+              <div>
+
+                <strong>
+                  {{ departamento.Titulo }}
+                </strong>
+
+                <small>
+                  ID #{{ departamento.id }}
+                </small>
+
+              </div>
 
             </div>
 
@@ -429,7 +452,11 @@
 
 
           <td class="precio">
-            S/ {{ departamento.Precio_Noche | number:'1.2-2' }}
+            S/
+            {{
+            departamento.Precio_Noche
+            | number:'1.2-2'
+            }}
           </td>
 
 
@@ -441,14 +468,12 @@
 
 
         <tr
-          *ngIf="
-              departamentos.length === 0
-            "
+          *ngIf="departamentos.length === 0"
         >
 
           <td
             colspan="8"
-            class="empty"
+            class="empty-table"
           >
             No hay departamentos publicados.
           </td>
@@ -464,9 +489,9 @@
   </section>
 
 
-  <!-- ==========================================
-       RESERVAS / ALQUILERES
-  =========================================== -->
+  <!-- =========================================================
+       RESERVAS
+  ========================================================== -->
 
   <section class="admin-section">
 
@@ -474,15 +499,20 @@
 
       <div>
 
+        <span class="section-eyebrow">
+          RESERVAS
+        </span>
+
         <h2>
           Reservas / Alquileres
         </h2>
 
         <p>
-          Reservas realizadas por los inquilinos
+          Historial de reservas realizadas por los inquilinos.
         </p>
 
       </div>
+
 
       <div class="section-count">
         {{ totalReservas }}
@@ -506,8 +536,8 @@
           <th>Salida</th>
           <th>Noches</th>
           <th>Total</th>
-          <th>Estado</th>
-          <th>Reservado</th>
+          <th>Reserva</th>
+          <th>Reembolso</th>
         </tr>
 
         </thead>
@@ -528,6 +558,7 @@
 
 
           <td>
+
             <strong>
               {{ reserva.departamento }}
             </strong>
@@ -537,6 +568,7 @@
             <small>
               {{ reserva.ciudad }}
             </small>
+
           </td>
 
 
@@ -561,12 +593,18 @@
 
 
           <td>
-            {{ reserva.fechaInicio | date:'dd/MM/yyyy' }}
+            {{
+            reserva.fechaInicio
+            | date:'dd/MM/yyyy'
+            }}
           </td>
 
 
           <td>
-            {{ reserva.fechaFin | date:'dd/MM/yyyy' }}
+            {{
+            reserva.fechaFin
+            | date:'dd/MM/yyyy'
+            }}
           </td>
 
 
@@ -576,7 +614,11 @@
 
 
           <td class="precio">
-            S/ {{ reserva.total | number:'1.2-2' }}
+            S/
+            {{
+            reserva.total
+            | number:'1.2-2'
+            }}
           </td>
 
 
@@ -597,21 +639,34 @@
 
 
           <td>
-            {{ reserva.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
+
+              <span
+                class="refund-status"
+                [ngClass]="
+                  obtenerClaseReembolsoReserva(
+                    reserva
+                  )
+                "
+              >
+                {{
+                  obtenerTextoReembolsoReserva(
+                    reserva
+                  )
+                }}
+              </span>
+
           </td>
 
         </tr>
 
 
         <tr
-          *ngIf="
-              reservas.length === 0
-            "
+          *ngIf="reservas.length === 0"
         >
 
           <td
             colspan="10"
-            class="empty"
+            class="empty-table"
           >
             Todavía no hay reservas registradas.
           </td>
@@ -627,9 +682,9 @@
   </section>
 
 
-  <!-- ==========================================
-       PAGOS
-  =========================================== -->
+  <!-- =========================================================
+       PAGOS Y COMISIONES
+  ========================================================== -->
 
   <section class="admin-section">
 
@@ -637,30 +692,113 @@
 
       <div>
 
+        <span class="section-eyebrow">
+          FINANZAS
+        </span>
+
         <h2>
-          Pagos
+          Pagos y comisiones
         </h2>
 
         <p>
-          Pagos generados por las reservas del sistema
+          Distribución de ingresos entre DepaYa
+          y los propietarios.
         </p>
-
-      </div>
-
-      <div class="ingresos-box">
-
-        <span>
-          Ingresos registrados
-        </span>
-
-        <strong>
-          S/ {{ totalIngresos | number:'1.2-2' }}
-        </strong>
 
       </div>
 
     </div>
 
+
+    <!-- RESUMEN FINANCIERO -->
+
+    <div class="admin-finance-cards">
+
+
+      <article class="admin-finance-card">
+
+        <span>
+          Pagos procesados
+        </span>
+
+        <strong>
+          S/
+          {{
+          totalIngresos
+          | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          Total activo pagado por inquilinos
+        </small>
+
+      </article>
+
+
+      <article class="admin-finance-card depaya-card">
+
+        <span>
+          Comisión DepaYa
+        </span>
+
+        <strong>
+          S/
+          {{
+          totalComisionesDepaYa
+          | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          {{ porcentajeComisionDepaYa }}%
+          por reserva completada
+        </small>
+
+      </article>
+
+
+      <article class="admin-finance-card owner-card">
+
+        <span>
+          Neto a propietarios
+        </span>
+
+        <strong>
+          S/
+          {{
+          totalNetoPropietarios
+          | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          90% de las reservas activas
+        </small>
+
+      </article>
+
+
+      <article class="admin-finance-card refund-card">
+
+        <span>
+          Reembolsos pendientes
+        </span>
+
+        <strong>
+          {{ totalReembolsosPendientes }}
+        </strong>
+
+        <small>
+          Solicitudes por procesar
+        </small>
+
+      </article>
+
+    </div>
+
+
+    <!-- TABLA PAGOS -->
 
     <div class="table-container">
 
@@ -669,14 +807,45 @@
         <thead>
 
         <tr>
+
           <th>#</th>
-          <th>Departamento</th>
-          <th>Inquilino</th>
-          <th>Propietario</th>
-          <th>Monto</th>
-          <th>Método</th>
-          <th>Estado</th>
-          <th>Fecha</th>
+
+          <th>
+            Departamento
+          </th>
+
+          <th>
+            Inquilino
+          </th>
+
+          <th>
+            Propietario
+          </th>
+
+          <th>
+            Total
+          </th>
+
+          <th>
+            Comisión DepaYa
+          </th>
+
+          <th>
+            Neto propietario
+          </th>
+
+          <th>
+            Método
+          </th>
+
+          <th>
+            Estado
+          </th>
+
+          <th class="center">
+            Acción
+          </th>
+
         </tr>
 
         </thead>
@@ -689,6 +858,10 @@
               let pago of pagos;
               let i = index
             "
+          [class.refund-row]="
+              pago.estado ===
+              'REEMBOLSO_PENDIENTE'
+            "
         >
 
           <td class="numero-tabla">
@@ -697,9 +870,17 @@
 
 
           <td>
+
             <strong>
               {{ pago.departamento }}
             </strong>
+
+            <br>
+
+            <small>
+              Reserva #{{ pago.reservaId }}
+            </small>
+
           </td>
 
 
@@ -724,14 +905,108 @@
 
 
           <td class="precio">
-            S/ {{ pago.monto | number:'1.2-2' }}
+            S/
+            {{
+            pago.monto
+            | number:'1.2-2'
+            }}
           </td>
 
+
+          <!-- COMISIÓN -->
 
           <td>
-            {{ pago.metodo }}
+
+            <strong
+              class="admin-commission"
+              *ngIf="
+                  pago.estado ===
+                  'COMPLETADO'
+                "
+            >
+              S/
+              {{
+              calcularComisionDepaYa(pago)
+              | number:'1.2-2'
+              }}
+            </strong>
+
+
+            <span
+              class="amount-cancelled"
+              *ngIf="
+                  pago.estado !==
+                  'COMPLETADO'
+                "
+            >
+                S/ 0.00
+              </span>
+
           </td>
 
+
+          <!-- NETO PROPIETARIO -->
+
+          <td>
+
+            <strong
+              class="owner-net"
+              *ngIf="
+                  pago.estado ===
+                  'COMPLETADO'
+                "
+            >
+              S/
+              {{
+              calcularNetoPropietario(pago)
+              | number:'1.2-2'
+              }}
+            </strong>
+
+
+            <span
+              class="amount-cancelled"
+              *ngIf="
+                  pago.estado !==
+                  'COMPLETADO'
+                "
+            >
+                S/ 0.00
+              </span>
+
+          </td>
+
+
+          <!-- MÉTODO -->
+
+          <td>
+
+              <span
+                class="payment-method"
+                [class.yape]="
+                  pago.metodo === 'YAPE'
+                "
+                [class.plin]="
+                  pago.metodo === 'PLIN'
+                "
+                [class.visa]="
+                  pago.metodo === 'VISA'
+                "
+                [class.mastercard]="
+                  pago.metodo === 'MASTERCARD'
+                "
+              >
+                {{
+                  obtenerMetodoPago(
+                    pago
+                  )
+                }}
+              </span>
+
+          </td>
+
+
+          <!-- ESTADO -->
 
           <td>
 
@@ -743,28 +1018,80 @@
                   )
                 "
               >
-                {{ pago.estado }}
+                {{
+                  obtenerTextoPago(
+                    pago
+                  )
+                }}
               </span>
+
+
+            <small
+              class="refund-mini"
+              *ngIf="
+                  pago.estado ===
+                  'REEMBOLSO_PENDIENTE'
+                "
+            >
+              Hasta 48 horas
+            </small>
 
           </td>
 
 
-          <td>
-            {{ pago.fecha | date:'dd/MM/yyyy HH:mm' }}
+          <!-- ACCIÓN -->
+
+          <td class="center">
+
+            <button
+              type="button"
+              class="btn-refund"
+              *ngIf="
+                  pago.estado ===
+                  'REEMBOLSO_PENDIENTE'
+                "
+              (click)="devolverPago(pago)"
+            >
+              ↩ Devolver
+            </button>
+
+
+            <span
+              class="refund-done"
+              *ngIf="
+                  pago.estado ===
+                  'REEMBOLSADO'
+                "
+            >
+                ✓ Devuelto
+              </span>
+
+
+            <span
+              class="no-action"
+              *ngIf="
+                  pago.estado !==
+                  'REEMBOLSO_PENDIENTE'
+                  &&
+                  pago.estado !==
+                  'REEMBOLSADO'
+                "
+            >
+                —
+              </span>
+
           </td>
 
         </tr>
 
 
         <tr
-          *ngIf="
-              pagos.length === 0
-            "
+          *ngIf="pagos.length === 0"
         >
 
           <td
-            colspan="8"
-            class="empty"
+            colspan="10"
+            class="empty-table"
           >
             Todavía no hay pagos registrados.
           </td>
@@ -777,14 +1104,46 @@
 
     </div>
 
+
+    <!-- POLÍTICA -->
+
+    <div class="admin-commission-policy">
+
+      <div>
+        %
+      </div>
+
+      <p>
+
+        <strong>
+          Modelo de ingresos DepaYa:
+        </strong>
+
+        la plataforma retiene una comisión del
+
+        <b>
+          {{ porcentajeComisionDepaYa }}%
+        </b>
+
+        sobre cada reserva completada.
+
+        El <b>90%</b> restante corresponde al propietario.
+
+        Si se realiza un reembolso completo,
+        ambos importes se anulan.
+
+      </p>
+
+    </div>
+
   </section>
 
 </div>
 
 
-<!-- ============================================================
+<!-- ===========================================================
      MODAL USUARIO
-============================================================ -->
+=========================================================== -->
 
 <div
   class="modal-backdrop"
@@ -797,28 +1156,30 @@
     (click)="$event.stopPropagation()"
   >
 
+    <!-- HEADER MODAL -->
+
     <div class="modal-header">
 
       <div>
 
-        <h2>
+        <span class="modal-eyebrow">
+          DEPAYA
+        </span>
 
+        <h2>
           {{
           modoEdicion
           ? 'Editar usuario'
           : 'Nuevo usuario'
           }}
-
         </h2>
 
         <p>
-
           {{
           modoEdicion
           ? 'Actualiza la información del usuario'
           : 'Registra un nuevo usuario en DepaYa'
           }}
-
         </p>
 
       </div>
@@ -834,6 +1195,8 @@
 
     </div>
 
+
+    <!-- BODY MODAL -->
 
     <div class="modal-body">
 
@@ -899,7 +1262,7 @@
           type="text"
           maxlength="9"
           [(ngModel)]="form.telefono"
-          placeholder="9XXXXXXXX"
+          placeholder="987654321"
         >
 
       </div>
@@ -932,7 +1295,7 @@
       <div class="form-group">
 
         <label>
-          N° Documento
+          Número de documento
         </label>
 
         <input
@@ -986,24 +1349,35 @@
           placeholder="Mínimo 6 caracteres"
         >
 
-      </div>
+        <small class="field-help">
+          La contraseña debe tener como mínimo 6 caracteres.
+        </small>
 
-
-      <div
-        class="modal-error full"
-        *ngIf="error"
-      >
-        {{ error }}
       </div>
 
     </div>
 
 
+    <!-- ERROR MODAL -->
+
+    <div
+      class="modal-error"
+      *ngIf="
+        error &&
+        modalVisible
+      "
+    >
+      ! {{ error }}
+    </div>
+
+
+    <!-- FOOTER MODAL -->
+
     <div class="modal-footer">
 
       <button
         type="button"
-        class="btn-cancelar"
+        class="btn-modal-cancel"
         (click)="cerrarModal()"
       >
         Cancelar
@@ -1012,16 +1386,14 @@
 
       <button
         type="button"
-        class="btn-guardar"
+        class="btn-modal-save"
         (click)="guardarUsuario()"
       >
-
         {{
         modoEdicion
         ? 'Guardar cambios'
         : 'Crear usuario'
         }}
-
       </button>
 
     </div>

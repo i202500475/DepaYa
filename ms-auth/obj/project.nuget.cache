@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rQDvTyK3HX0=",
+  "dgSpecHash": "SOvkEhCML5o=",
   "success": true,
-  "projectFilePath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-auth\\ms-auth.csproj",
+  "projectFilePath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SaraA\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\SaraA\\.nuget\\packages\\azure.identity\\1.17.2\\azure.identity.1.17.2.nupkg.sha512",
@@ -50,9 +50,9 @@
       "code": "NU1903",
       "level": "Warning",
       "message": "El paquete \"Microsoft.OpenApi\" 2.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
-      "projectPath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-auth\\ms-auth.csproj",
+      "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\SaraA\\OneDrive\\Documents\\DepaYa\\ms-auth\\ms-auth.csproj",
+      "filePath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj",
       "libraryId": "Microsoft.OpenApi",
       "targetGraphs": [
         "net10.0"

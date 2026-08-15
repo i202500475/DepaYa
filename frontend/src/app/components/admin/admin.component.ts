@@ -1,20 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  Component,
+  OnInit,
+} from '@angular/core';
 
-import { AuthService, Usuario, RolUsuario } from '../../services/auth.service';
+import {
+  CommonModule,
+} from '@angular/common';
 
-import { Departamento, DepartamentoService } from '../../services/departamento.service';
+import {
+  FormsModule,
+} from '@angular/forms';
 
-import { Reserva, ReservaService } from '../../services/reserva.service';
+import {
+  AuthService,
+  Usuario,
+  RolUsuario,
+} from '../../services/auth.service';
 
-import { Pago, PagoService } from '../../services/pago.service';
+import {
+  Departamento,
+  DepartamentoService,
+} from '../../services/departamento.service';
+
+import {
+  Reserva,
+  ReservaService,
+} from '../../services/reserva.service';
+
+import {
+  Pago,
+  PagoService,
+} from '../../services/pago.service';
+
 
 @Component({
   selector: 'app-admin',
+
   standalone: true,
+
   imports: [CommonModule, FormsModule],
+
   templateUrl: './admin.component.html',
+
   styleUrls: ['./admin.component.css'],
 })
 export class AdminComponent implements OnInit {
@@ -37,7 +64,7 @@ export class AdminComponent implements OnInit {
   error = '';
 
   // ============================================================
-  // MODAL USUARIOS
+  // MODAL USUARIO
   // ============================================================
 
   modalVisible = false;
@@ -65,10 +92,17 @@ export class AdminComponent implements OnInit {
 
   tiposDocs = ['DNI', 'CE', 'Pasaporte'];
 
+  // ============================================================
+  // CONSTRUCTOR
+  // ============================================================
+
   constructor(
     private authService: AuthService,
+
     private departamentoService: DepartamentoService,
+
     private reservaService: ReservaService,
+
     private pagoService: PagoService,
   ) {}
 
@@ -90,13 +124,43 @@ export class AdminComponent implements OnInit {
     this.error = '';
 
     try {
+      // --------------------------------------------------------
+      // PROCESAR REEMBOLSOS QUE YA CUMPLIERON 48 HORAS
+      // --------------------------------------------------------
+
+      const reembolsosAutomaticos = this.pagoService.procesarReembolsosVencidos();
+
+      reembolsosAutomaticos.forEach((pago) => {
+        this.reservaService.marcarReembolsoDevuelto(
+          pago.reservaId,
+          pago.metodo,
+          pago.fechaReembolso,
+        );
+      });
+
+      // --------------------------------------------------------
+      // USUARIOS
+      // --------------------------------------------------------
+
       this.cargarUsuarios();
 
+      // --------------------------------------------------------
+      // DEPARTAMENTOS
+      // --------------------------------------------------------
+
       this.departamentos = this.departamentoService.getDepartamentos();
+
+      // --------------------------------------------------------
+      // RESERVAS
+      // --------------------------------------------------------
 
       this.reservas = this.reservaService
         .listar()
         .sort((a, b) => new Date(b.fechaReserva).getTime() - new Date(a.fechaReserva).getTime());
+
+      // --------------------------------------------------------
+      // PAGOS
+      // --------------------------------------------------------
 
       this.pagos = this.pagoService
         .listar()
@@ -111,7 +175,7 @@ export class AdminComponent implements OnInit {
   }
 
   // ============================================================
-  // CARGAR USUARIOS
+  // USUARIOS
   // ============================================================
 
   cargarUsuarios(): void {
@@ -119,7 +183,7 @@ export class AdminComponent implements OnInit {
   }
 
   // ============================================================
-  // CREAR USUARIO
+  // NUEVO USUARIO
   // ============================================================
 
   abrirCrear(): void {
@@ -127,13 +191,21 @@ export class AdminComponent implements OnInit {
 
     this.form = {
       nombre: '',
+
       apellido: '',
+
       email: '',
+
       telefono: '',
+
       tipoDoc: 'DNI',
+
       nroDoc: '',
+
       password: '123456',
+
       rol: 'INQUILINO',
+
       fecha: new Date().toLocaleDateString('es-PE'),
     };
 
@@ -191,11 +263,19 @@ export class AdminComponent implements OnInit {
   guardarUsuario(): void {
     this.limpiarMensajes();
 
+    // ----------------------------------------------------------
+    // NOMBRE
+    // ----------------------------------------------------------
+
     if (!this.form.nombre || !this.form.nombre.trim()) {
       this.error = 'Ingrese el nombre del usuario.';
 
       return;
     }
+
+    // ----------------------------------------------------------
+    // EMAIL
+    // ----------------------------------------------------------
 
     if (!this.form.email || !this.form.email.trim()) {
       this.error = 'Ingrese el correo electrónico.';
@@ -211,11 +291,19 @@ export class AdminComponent implements OnInit {
       return;
     }
 
+    // ----------------------------------------------------------
+    // PASSWORD
+    // ----------------------------------------------------------
+
     if (!this.form.password || this.form.password.length < 6) {
       this.error = 'La contraseña debe tener mínimo 6 caracteres.';
 
       return;
     }
+
+    // ----------------------------------------------------------
+    // TELÉFONO
+    // ----------------------------------------------------------
 
     if (this.form.telefono && this.form.telefono.trim()) {
       const telefono = this.form.telefono.trim().replace(/\s/g, '');
@@ -228,6 +316,10 @@ export class AdminComponent implements OnInit {
 
       this.form.telefono = telefono;
     }
+
+    // ----------------------------------------------------------
+    // DNI
+    // ----------------------------------------------------------
 
     if (this.form.tipoDoc === 'DNI' && this.form.nroDoc && this.form.nroDoc.trim()) {
       if (!/^\d{8}$/.test(this.form.nroDoc.trim())) {
@@ -255,6 +347,8 @@ export class AdminComponent implements OnInit {
 
         return;
       }
+
+      // ADMIN PRINCIPAL
 
       if (usuarioOriginal.email.trim().toLowerCase() === 'admin@depaya.com') {
         if (email !== 'admin@depaya.com') {
@@ -360,7 +454,7 @@ export class AdminComponent implements OnInit {
 
     const nombreCompleto = `${usuario.nombre} ${usuario.apellido || ''}`.trim();
 
-    const confirmar = confirm(`¿Deseas eliminar al usuario ${nombreCompleto}?`);
+    const confirmar = window.confirm(`¿Deseas eliminar al usuario ${nombreCompleto}?`);
 
     if (!confirmar) {
       return;
@@ -395,6 +489,87 @@ export class AdminComponent implements OnInit {
     if (limpiarMensajes) {
       this.error = '';
     }
+  }
+
+  // ============================================================
+  // REEMBOLSO - ADMIN
+  // ============================================================
+
+  puedeDevolver(pago: Pago): boolean {
+    return String(pago.estado) === 'REEMBOLSO_PENDIENTE';
+  }
+
+  // ============================================================
+  // DEVOLVER DINERO
+  // ============================================================
+
+  devolverPago(pago: Pago): void {
+    this.limpiarMensajes();
+
+    if (!this.puedeDevolver(pago)) {
+      this.error = 'Este pago no tiene un reembolso pendiente.';
+
+      return;
+    }
+
+    const metodo = this.pagoService.obtenerNombreMetodo(pago.metodo);
+
+    const confirmar = window.confirm(
+      `¿Confirmar devolución?\n\n` +
+        `Inquilino: ${pago.inquilinoNombre}\n` +
+        `Departamento: ${pago.departamento}\n` +
+        `Monto: S/ ${Number(pago.monto).toFixed(2)}\n` +
+        `Método: ${metodo}\n\n` +
+        `El pago quedará marcado como DEVUELTO COMPLETO.`,
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    const reembolso = this.pagoService.confirmarReembolso(pago.id);
+
+    if (!reembolso) {
+      this.error = 'No se pudo procesar el reembolso.';
+
+      return;
+    }
+
+    const reservaActualizada = this.reservaService.marcarReembolsoDevuelto(
+      pago.reservaId,
+      pago.metodo,
+      reembolso.fechaReembolso,
+    );
+
+    if (!reservaActualizada) {
+      this.error = 'El pago fue reembolsado, pero no se pudo actualizar la reserva.';
+
+      this.cargarTodo();
+
+      return;
+    }
+
+    this.mensaje =
+      `Reembolso completo de S/ ${Number(pago.monto).toFixed(2)} ` +
+      `procesado correctamente por ${metodo}.`;
+
+    this.cargarTodo();
+  }
+
+  // ============================================================
+  // MÉTODO DE PAGO
+  // ============================================================
+
+  obtenerMetodoPago(pago: Pago): string {
+    return this.pagoService.obtenerNombreMetodo(pago.metodo);
+  }
+
+  // ============================================================
+  // TEXTO PAGO
+  // ============================================================
+
+  obtenerTextoPago(pago: Pago): string {
+    return this.pagoService.obtenerNombreEstado(pago.estado);
   }
 
   // ============================================================
@@ -434,7 +609,7 @@ export class AdminComponent implements OnInit {
   }
 
   // ============================================================
-  // ESTADOS RESERVAS
+  // RESERVA
   // ============================================================
 
   obtenerClaseReserva(estado: string): string {
@@ -454,7 +629,39 @@ export class AdminComponent implements OnInit {
   }
 
   // ============================================================
-  // ESTADOS PAGOS
+  // ESTADO REEMBOLSO RESERVA
+  // ============================================================
+
+  obtenerTextoReembolsoReserva(reserva: Reserva): string {
+    if (reserva.estado !== 'CANCELADA') {
+      return '—';
+    }
+
+    if (reserva.estadoReembolso === 'PENDIENTE') {
+      return 'Reembolso pendiente';
+    }
+
+    if (reserva.estadoReembolso === 'DEVUELTO') {
+      return 'Devuelto completo';
+    }
+
+    return 'Sin reembolso';
+  }
+
+  obtenerClaseReembolsoReserva(reserva: Reserva): string {
+    if (reserva.estadoReembolso === 'PENDIENTE') {
+      return 'reembolso-pendiente';
+    }
+
+    if (reserva.estadoReembolso === 'DEVUELTO') {
+      return 'reembolso-devuelto';
+    }
+
+    return 'reembolso-none';
+  }
+
+  // ============================================================
+  // ESTADO PAGO
   // ============================================================
 
   obtenerClasePago(estado: string): string {
@@ -465,7 +672,13 @@ export class AdminComponent implements OnInit {
       case 'PROCESANDO':
         return 'estado-amarillo';
 
+      case 'REEMBOLSO_PENDIENTE':
+        return 'estado-naranja';
+
       case 'REEMBOLSADO':
+        return 'estado-azul';
+
+      case 'CANCELADO':
         return 'estado-rojo';
 
       default:
@@ -482,7 +695,7 @@ export class AdminComponent implements OnInit {
   }
 
   // ============================================================
-  // MENSAJES
+  // LIMPIAR MENSAJES
   // ============================================================
 
   private limpiarMensajes(): void {
@@ -511,9 +724,85 @@ export class AdminComponent implements OnInit {
     return this.pagos.length;
   }
 
+  // ============================================================
+  // PORCENTAJE COMISIÓN DEPAYA
+  // ============================================================
+
+  readonly porcentajeComisionDepaYa = 10;
+
+  private readonly COMISION_DEPAYA = 0.1;
+
+  // ============================================================
+  // TOTAL BRUTO PROCESADO
+  // ============================================================
+
   get totalIngresos(): number {
     return this.pagos
       .filter((pago) => pago.estado === 'COMPLETADO')
-      .reduce((total, pago) => total + pago.monto, 0);
+      .reduce(
+        (total, pago) => total + Number(pago.monto),
+
+        0,
+      );
+  }
+
+  // ============================================================
+  // COMISIÓN DE UN PAGO
+  // ============================================================
+
+  calcularComisionDepaYa(pago: Pago): number {
+    if (pago.estado !== 'COMPLETADO') {
+      return 0;
+    }
+
+    return Number(pago.monto) * this.COMISION_DEPAYA;
+  }
+
+  // ============================================================
+  // NETO DEL PROPIETARIO
+  // ============================================================
+
+  calcularNetoPropietario(pago: Pago): number {
+    if (pago.estado !== 'COMPLETADO') {
+      return 0;
+    }
+
+    return Number(pago.monto) - this.calcularComisionDepaYa(pago);
+  }
+
+  // ============================================================
+  // TOTAL DE COMISIONES DEPAYA
+  // ============================================================
+
+  get totalComisionesDepaYa(): number {
+    return this.pagos
+      .filter((pago) => pago.estado === 'COMPLETADO')
+      .reduce(
+        (total, pago) => total + this.calcularComisionDepaYa(pago),
+
+        0,
+      );
+  }
+
+  // ============================================================
+  // TOTAL NETO A PROPIETARIOS
+  // ============================================================
+
+  get totalNetoPropietarios(): number {
+    return this.pagos
+      .filter((pago) => pago.estado === 'COMPLETADO')
+      .reduce(
+        (total, pago) => total + this.calcularNetoPropietario(pago),
+
+        0,
+      );
+  }
+
+  // ============================================================
+  // REEMBOLSOS PENDIENTES
+  // ============================================================
+
+  get totalReembolsosPendientes(): number {
+    return this.pagos.filter((pago) => pago.estado === 'REEMBOLSO_PENDIENTE').length;
   }
 }

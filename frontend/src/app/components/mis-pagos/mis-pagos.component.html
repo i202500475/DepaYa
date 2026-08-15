@@ -2,36 +2,463 @@
 
   <div class="dashboard">
 
-    <span class="label">
-      MIS PAGOS
-    </span>
+    <!-- =======================================================
+         HEADER
+    ======================================================== -->
 
-    <h1>
-      Ingresos
-    </h1>
+    <header class="page-header">
 
-    <p>
-      Ingresos asociados a tus departamentos.
-    </p>
-
-
-    <div class="income-card">
-
-      <div class="icon">
-        💳
-      </div>
-
-      <span class="income-label">
-        Total recibido
+      <span class="label">
+        MIS PAGOS
       </span>
 
-      <strong>
-        S/ {{ ingresos | number:'1.2-2' }}
-      </strong>
+      <h1>
+        Mis ingresos
+      </h1>
 
-      <small>
-        Se actualiza automáticamente
-      </small>
+      <p>
+        Consulta el detalle de tus reservas,
+        la comisión de DepaYa y tu ingreso neto.
+      </p>
+
+    </header>
+
+
+    <!-- =======================================================
+         RESUMEN
+    ======================================================== -->
+
+    <section class="financial-summary">
+
+
+      <!-- TOTAL BRUTO -->
+
+      <article class="summary-card">
+
+        <div class="summary-icon gross">
+          💳
+        </div>
+
+        <span>
+          Pagado por inquilinos
+        </span>
+
+        <strong>
+          S/
+          {{
+          totalBruto
+          | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          {{ cantidadPagos }}
+          pago(s) activo(s)
+        </small>
+
+      </article>
+
+
+      <!-- COMISIÓN -->
+
+      <article class="summary-card commission">
+
+        <div class="summary-icon fee">
+          %
+        </div>
+
+        <span>
+          Comisión DepaYa
+        </span>
+
+        <strong>
+          - S/
+          {{
+          totalComision
+          | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          {{ porcentajeComision }}%
+          por intermediación
+        </small>
+
+      </article>
+
+
+      <!-- NETO -->
+
+      <article class="summary-card net">
+
+        <div class="summary-icon net-icon">
+          S/
+        </div>
+
+        <span>
+          Tu ingreso neto
+        </span>
+
+        <strong>
+          S/
+          {{
+          ingresoNeto
+          | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          Monto disponible para ti
+        </small>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================================
+         LIQUIDACIÓN GENERAL
+    ======================================================== -->
+
+    <section class="liquidacion-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-label">
+            LIQUIDACIÓN
+          </span>
+
+          <h2>
+            Resumen de tus ingresos
+          </h2>
+
+          <p>
+            Distribución de los pagos recibidos.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="liquidacion-resumen">
+
+        <div>
+
+          <span>
+            Total pagado por inquilinos
+          </span>
+
+          <strong>
+            S/
+            {{
+            totalBruto
+            | number:'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div class="commission-row">
+
+          <span>
+            Comisión DepaYa
+            ({{ porcentajeComision }}%)
+          </span>
+
+          <strong>
+            - S/
+            {{
+            totalComision
+            | number:'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div class="net-row">
+
+          <span>
+            Ingreso neto del propietario
+          </span>
+
+          <strong>
+            S/
+            {{
+            ingresoNeto
+            | number:'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         TABLA
+    ======================================================== -->
+
+    <section class="payments-section">
+
+      <div class="section-header">
+
+        <div>
+
+          <span class="section-label">
+            DETALLE
+          </span>
+
+          <h2>
+            Pagos recibidos
+          </h2>
+
+          <p>
+            Detalle de cada reserva con su
+            respectiva liquidación.
+          </p>
+
+        </div>
+
+
+        <span class="payments-count">
+          {{ cantidadPagos }}
+        </span>
+
+      </div>
+
+
+      <div
+        class="table-wrapper"
+        *ngIf="
+          pagosActivos.length > 0
+        "
+      >
+
+        <table>
+
+          <thead>
+
+          <tr>
+
+            <th>
+              Departamento
+            </th>
+
+            <th>
+              Inquilino
+            </th>
+
+            <th>
+              Total pagado
+            </th>
+
+            <th>
+              Comisión DepaYa
+            </th>
+
+            <th>
+              Neto propietario
+            </th>
+
+            <th>
+              Método
+            </th>
+
+            <th>
+              Fecha
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+          <tr
+            *ngFor="
+                let pago of pagosActivos
+              "
+          >
+
+            <td>
+
+              <strong>
+                {{ pago.departamento }}
+              </strong>
+
+              <small>
+                Reserva #{{ pago.reservaId }}
+              </small>
+
+            </td>
+
+
+            <td>
+
+              <strong>
+                {{ pago.inquilinoNombre }}
+              </strong>
+
+              <small>
+                {{ pago.inquilinoEmail }}
+              </small>
+
+            </td>
+
+
+            <td class="money gross-money">
+
+              S/
+              {{
+              pago.monto
+              | number:'1.2-2'
+              }}
+
+            </td>
+
+
+            <td class="money commission-money">
+
+              - S/
+              {{
+              calcularComision(pago)
+              | number:'1.2-2'
+              }}
+
+            </td>
+
+
+            <td class="money net-money">
+
+              S/
+              {{
+              calcularNeto(pago)
+              | number:'1.2-2'
+              }}
+
+            </td>
+
+
+            <td>
+
+                <span
+                  class="payment-method"
+                  [class.yape]="
+                    pago.metodo === 'YAPE'
+                  "
+                  [class.plin]="
+                    pago.metodo === 'PLIN'
+                  "
+                  [class.visa]="
+                    pago.metodo === 'VISA'
+                  "
+                  [class.mastercard]="
+                    pago.metodo === 'MASTERCARD'
+                  "
+                >
+
+                  {{
+                    obtenerMetodoPago(
+                      pago
+                    )
+                  }}
+
+                </span>
+
+            </td>
+
+
+            <td>
+
+              {{
+              pago.fecha
+              | date:'dd/MM/yyyy'
+              }}
+
+              <small>
+                {{
+                pago.fecha
+                | date:'HH:mm'
+                }}
+              </small>
+
+            </td>
+
+          </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- SIN PAGOS -->
+
+      <div
+        class="empty"
+        *ngIf="
+          pagosActivos.length === 0
+        "
+      >
+
+        <div class="empty-icon">
+          💳
+        </div>
+
+        <h3>
+          Todavía no tienes ingresos
+        </h3>
+
+        <p>
+          Cuando un inquilino complete una
+          reserva, la liquidación aparecerá aquí.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         POLÍTICA
+    ======================================================== -->
+
+    <div class="commission-info">
+
+      <div class="info-icon">
+        i
+      </div>
+
+      <div>
+
+        <strong>
+          Comisión por intermediación
+        </strong>
+
+        <p>
+          DepaYa retiene una comisión del
+          {{ porcentajeComision }}% por cada reserva
+          confirmada. El 90% restante corresponde
+          al propietario.
+        </p>
+
+        <p>
+          Si una reserva es cancelada con derecho
+          a reembolso completo, ese pago deja de
+          contabilizarse inmediatamente como ingreso
+          y la comisión de DepaYa también es anulada.
+        </p>
+
+      </div>
 
     </div>
 

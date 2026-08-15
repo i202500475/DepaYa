@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 
 export type MetodoPago = 'YAPE' | 'PLIN' | 'VISA' | 'MASTERCARD';
 
-export type EstadoPago = 'PROCESANDO' | 'COMPLETADO' | 'REEMBOLSADO';
+export type EstadoPago =
+  'PROCESANDO' | 'COMPLETADO' | 'REEMBOLSO_PENDIENTE' | 'REEMBOLSADO' | 'CANCELADO';
 
 export interface Pago {
   id: number;
@@ -10,7 +11,9 @@ export interface Pago {
   reservaId: number;
 
   propietarioEmail: string;
+
   inquilinoEmail: string;
+
   inquilinoNombre: string;
 
   departamento: string;
@@ -24,6 +27,12 @@ export interface Pago {
   estado: EstadoPago;
 
   fecha: string;
+
+  fechaSolicitudReembolso?: string;
+
+  fechaLimiteReembolso?: string;
+
+  fechaReembolso?: string;
 }
 
 @Injectable({
@@ -46,7 +55,11 @@ export class PagoService {
     try {
       const pagos: Pago[] = JSON.parse(datos);
 
-      return Array.isArray(pagos) ? pagos : [];
+      if (!Array.isArray(pagos)) {
+        return [];
+      }
+
+      return pagos;
     } catch (error) {
       console.error('Error cargando pagos:', error);
 
@@ -55,15 +68,29 @@ export class PagoService {
   }
 
   // ============================================================
-  // GUARDAR
+  // GUARDAR LISTA
   // ============================================================
 
   private guardar(pagos: Pago[]): void {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(pagos));
 
-    // Actualización inmediata dentro
-    // de la misma aplicación.
     window.dispatchEvent(new Event('depaya-pagos-actualizados'));
+  }
+
+  // ============================================================
+  // OBTENER POR ID
+  // ============================================================
+
+  obtenerPorId(id: number): Pago | undefined {
+    return this.listar().find((pago) => Number(pago.id) === Number(id));
+  }
+
+  // ============================================================
+  // OBTENER POR RESERVA
+  // ============================================================
+
+  obtenerPorReserva(reservaId: number): Pago | undefined {
+    return this.listar().find((pago) => Number(pago.reservaId) === Number(reservaId));
   }
 
   // ============================================================
@@ -73,18 +100,20 @@ export class PagoService {
   crearPagoPendiente(reserva: any, metodo: MetodoPago): Pago {
     const pagos = this.listar();
 
-    const existente = pagos.find((pago) => pago.reservaId === reserva.id);
+    const existente = pagos.find((pago) => Number(pago.reservaId) === Number(reserva.id));
 
     if (existente) {
-      return existente;
+      return {
+        ...existente,
+      };
     }
 
-    const nuevoId = pagos.length > 0 ? Math.max(...pagos.map((pago) => pago.id)) + 1 : 1;
+    const nuevoId = pagos.length > 0 ? Math.max(...pagos.map((pago) => Number(pago.id))) + 1 : 1;
 
     const pago: Pago = {
       id: nuevoId,
 
-      reservaId: reserva.id,
+      reservaId: Number(reserva.id),
 
       propietarioEmail: reserva.propietarioEmail,
 
@@ -121,7 +150,7 @@ export class PagoService {
   confirmarPago(id: number): boolean {
     const pagos = this.listar();
 
-    const indice = pagos.findIndex((pago) => pago.id === id);
+    const indice = pagos.findIndex((pago) => Number(pago.id) === Number(id));
 
     if (indice === -1) {
       return false;
@@ -141,13 +170,175 @@ export class PagoService {
   }
 
   // ============================================================
-  // ACTUALIZAR
+  // SOLICITAR REEMBOLSO
+  // ============================================================
+
+  solicitarReembolso(reservaId: number): Pago | null {
+    const pagos = this.listar();
+
+    const indice = pagos.findIndex((pago) => Number(pago.reservaId) === Number(reservaId));
+
+    if (indice === -1) {
+      return null;
+    }
+
+    if (pagos[indice].estado !== 'COMPLETADO') {
+      return null;
+    }
+
+    const ahora = new Date();
+
+    const limite = new Date(ahora.getTime() + 48 * 60 * 60 * 1000);
+
+    pagos[indice] = {
+      ...pagos[indice],
+
+      estado: 'REEMBOLSO_PENDIENTE',
+
+      fechaSolicitudReembolso: ahora.toISOString(),
+
+      fechaLimiteReembolso: limite.toISOString(),
+
+      fechaReembolso: undefined,
+    };
+
+    this.guardar(pagos);
+
+    return {
+      ...pagos[indice],
+    };
+  }
+
+  // ============================================================
+  // REVERTIR SOLICITUD DE REEMBOLSO
+  // ============================================================
+
+  revertirSolicitudReembolso(pagoId: number): boolean {
+    const pagos = this.listar();
+
+    const indice = pagos.findIndex((pago) => Number(pago.id) === Number(pagoId));
+
+    if (indice === -1) {
+      return false;
+    }
+
+    if (pagos[indice].estado !== 'REEMBOLSO_PENDIENTE') {
+      return false;
+    }
+
+    pagos[indice] = {
+      ...pagos[indice],
+
+      estado: 'COMPLETADO',
+
+      fechaSolicitudReembolso: undefined,
+
+      fechaLimiteReembolso: undefined,
+
+      fechaReembolso: undefined,
+    };
+
+    this.guardar(pagos);
+
+    return true;
+  }
+
+  // ============================================================
+  // ADMIN CONFIRMA EL REEMBOLSO
+  // ============================================================
+
+  confirmarReembolso(pagoId: number): Pago | null {
+    const pagos = this.listar();
+
+    const indice = pagos.findIndex((pago) => Number(pago.id) === Number(pagoId));
+
+    if (indice === -1) {
+      return null;
+    }
+
+    if (pagos[indice].estado !== 'REEMBOLSO_PENDIENTE') {
+      return null;
+    }
+
+    pagos[indice] = {
+      ...pagos[indice],
+
+      estado: 'REEMBOLSADO',
+
+      fechaReembolso: new Date().toISOString(),
+    };
+
+    this.guardar(pagos);
+
+    return {
+      ...pagos[indice],
+    };
+  }
+
+  // ============================================================
+  // PROCESAR REEMBOLSOS QUE SUPERARON 48 HORAS
+  // ============================================================
+
+  procesarReembolsosVencidos(): Pago[] {
+    const pagos = this.listar();
+
+    const ahora = Date.now();
+
+    const reembolsados: Pago[] = [];
+
+    let huboCambios = false;
+
+    for (let i = 0; i < pagos.length; i++) {
+      const pago = pagos[i];
+
+      if (pago.estado !== 'REEMBOLSO_PENDIENTE') {
+        continue;
+      }
+
+      if (!pago.fechaLimiteReembolso) {
+        continue;
+      }
+
+      const fechaLimite = new Date(pago.fechaLimiteReembolso).getTime();
+
+      if (Number.isNaN(fechaLimite)) {
+        continue;
+      }
+
+      if (ahora < fechaLimite) {
+        continue;
+      }
+
+      pagos[i] = {
+        ...pago,
+
+        estado: 'REEMBOLSADO',
+
+        fechaReembolso: new Date().toISOString(),
+      };
+
+      reembolsados.push({
+        ...pagos[i],
+      });
+
+      huboCambios = true;
+    }
+
+    if (huboCambios) {
+      this.guardar(pagos);
+    }
+
+    return reembolsados;
+  }
+
+  // ============================================================
+  // ACTUALIZAR PAGO
   // ============================================================
 
   actualizarPago(pago: Pago): boolean {
     const pagos = this.listar();
 
-    const indice = pagos.findIndex((item) => item.id === pago.id);
+    const indice = pagos.findIndex((item) => Number(item.id) === Number(pago.id));
 
     if (indice === -1) {
       return false;
@@ -163,13 +354,13 @@ export class PagoService {
   }
 
   // ============================================================
-  // ELIMINAR
+  // ELIMINAR PAGO
   // ============================================================
 
   eliminarPago(id: number): boolean {
     const pagos = this.listar();
 
-    const nuevos = pagos.filter((pago) => pago.id !== id);
+    const nuevos = pagos.filter((pago) => Number(pago.id) !== Number(id));
 
     if (nuevos.length === pagos.length) {
       return false;
@@ -181,7 +372,7 @@ export class PagoService {
   }
 
   // ============================================================
-  // PROPIETARIO
+  // PAGOS DEL PROPIETARIO
   // ============================================================
 
   buscarPorPropietario(email: string): Pago[] {
@@ -191,7 +382,7 @@ export class PagoService {
   }
 
   // ============================================================
-  // INQUILINO
+  // PAGOS DEL INQUILINO
   // ============================================================
 
   buscarPorInquilino(email: string): Pago[] {
@@ -201,10 +392,21 @@ export class PagoService {
   }
 
   // ============================================================
-  // INGRESOS PROPIETARIO
+  // INGRESOS DEL PROPIETARIO
   // ============================================================
 
   obtenerIngresosPropietario(email: string): number {
+    /*
+      SOLO LOS PAGOS COMPLETADOS
+      CUENTAN COMO INGRESO.
+
+      REEMBOLSO_PENDIENTE:
+      deja de contar inmediatamente.
+
+      REEMBOLSADO:
+      tampoco cuenta.
+    */
+
     return this.buscarPorPropietario(email)
       .filter((pago) => pago.estado === 'COMPLETADO')
       .reduce(
@@ -215,7 +417,7 @@ export class PagoService {
   }
 
   // ============================================================
-  // TEXTO MÉTODO
+  // NOMBRE MÉTODO
   // ============================================================
 
   obtenerNombreMetodo(metodo: MetodoPago): string {
@@ -234,6 +436,32 @@ export class PagoService {
 
       default:
         return metodo;
+    }
+  }
+
+  // ============================================================
+  // NOMBRE DEL ESTADO
+  // ============================================================
+
+  obtenerNombreEstado(estado: EstadoPago): string {
+    switch (estado) {
+      case 'PROCESANDO':
+        return 'Procesando';
+
+      case 'COMPLETADO':
+        return 'Completado';
+
+      case 'REEMBOLSO_PENDIENTE':
+        return 'Reembolso pendiente';
+
+      case 'REEMBOLSADO':
+        return 'Devuelto completo';
+
+      case 'CANCELADO':
+        return 'Cancelado';
+
+      default:
+        return estado;
     }
   }
 }

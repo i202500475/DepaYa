@@ -2,42 +2,89 @@
 
   <div class="page-header">
 
-    <h1>Mis reservas</h1>
+    <div>
 
-    <p>
-      Aquí puedes consultar todas tus reservas.
-    </p>
+      <span class="eyebrow">
+        DEPAYA
+      </span>
+
+      <h1>
+        Mis reservas
+      </h1>
+
+      <p>
+        Consulta tus estadías, cancelaciones y reembolsos.
+      </p>
+
+    </div>
 
   </div>
+
+
+  <!-- MENSAJE -->
+
+  <div
+    class="alert success"
+    *ngIf="mensaje"
+  >
+    ✓ {{ mensaje }}
+  </div>
+
+
+  <div
+    class="alert error"
+    *ngIf="error"
+  >
+    ! {{ error }}
+  </div>
+
+
+  <!-- RESERVAS -->
 
   <div
     class="reservas-grid"
     *ngIf="reservas.length > 0"
   >
 
-    <div
+    <article
       class="reserva-card"
       *ngFor="let reserva of reservas"
+      [class.card-cancelada]="
+        reserva.estado === 'CANCELADA'
+      "
     >
+
+      <!-- HEADER -->
 
       <div class="reserva-header">
 
         <div>
 
+          <span class="reserva-id">
+            RESERVA #{{ reserva.id }}
+          </span>
+
           <h3>
             {{ reserva.departamento }}
           </h3>
 
-          <span>
-            {{ reserva.ciudad }}
-          </span>
+          <p>
+            📍 {{ reserva.ciudad }}
+          </p>
 
         </div>
+
 
         <span
           class="estado"
           [class.confirmada]="
             reserva.estado === 'CONFIRMADA'
+          "
+          [class.pendiente]="
+            reserva.estado === 'PENDIENTE'
+          "
+          [class.cancelada]="
+            reserva.estado === 'CANCELADA'
           "
         >
           {{ reserva.estado }}
@@ -45,41 +92,363 @@
 
       </div>
 
+
+      <!-- INFO -->
+
       <div class="reserva-info">
 
-        <div>
-          <strong>Ingreso</strong>
-          <span>
-            {{ reserva.fechaInicio }}
-          </span>
+        <div class="info-box">
+
+          <small>
+            Ingreso
+          </small>
+
+          <strong>
+            {{ formatearFecha(reserva.fechaInicio) }}
+          </strong>
+
         </div>
 
-        <div>
-          <strong>Salida</strong>
-          <span>
-            {{ reserva.fechaFin }}
-          </span>
+
+        <div class="info-box">
+
+          <small>
+            Salida
+          </small>
+
+          <strong>
+            {{ formatearFecha(reserva.fechaFin) }}
+          </strong>
+
         </div>
 
-        <div>
-          <strong>Noches</strong>
-          <span>
+
+        <div class="info-box">
+
+          <small>
+            Noches
+          </small>
+
+          <strong>
             {{ reserva.noches }}
-          </span>
+          </strong>
+
         </div>
 
-        <div>
-          <strong>Total</strong>
-          <span>
-            S/ {{ reserva.total | number:'1.2-2' }}
-          </span>
+
+        <div class="info-box total">
+
+          <small>
+            Total pagado
+          </small>
+
+          <strong>
+            S/
+            {{ reserva.total | number:'1.2-2' }}
+          </strong>
+
         </div>
 
       </div>
 
-    </div>
+
+      <!-- =====================================================
+           CONFIRMADA + APTO
+      ====================================================== -->
+
+      <div
+        class="refund-box refund-ok"
+        *ngIf="
+          reserva.estado === 'CONFIRMADA' &&
+          puedeCancelarConReembolso(reserva)
+        "
+      >
+
+        <div class="refund-icon">
+          ✓
+        </div>
+
+        <div class="refund-content">
+
+          <strong>
+            Apto para reembolso completo
+          </strong>
+
+          <p>
+            Puedes cancelar gratuitamente hasta el
+            {{ formatearFecha(
+            obtenerFechaLimiteCancelacion(reserva)
+            )
+            }}.
+          </p>
+
+          <small>
+            Se devolverá el 100% por el mismo método de pago.
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           MISMO DÍA / NO APTO
+      ====================================================== -->
+
+      <div
+        class="refund-box refund-no"
+        *ngIf="
+          reserva.estado === 'CONFIRMADA' &&
+          !puedeCancelarConReembolso(reserva)
+        "
+      >
+
+        <div class="refund-icon">
+          !
+        </div>
+
+        <div class="refund-content">
+
+          <strong>
+            Reembolso no apto
+          </strong>
+
+          <p>
+            El plazo de cancelación gratuita ha finalizado.
+          </p>
+
+          <small>
+            No puedes cancelar esta reserva desde el día
+            del ingreso.
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           REEMBOLSO PENDIENTE
+      ====================================================== -->
+
+      <div
+        class="refund-box refund-pending"
+        *ngIf="
+          reserva.estado === 'CANCELADA' &&
+          reserva.estadoReembolso === 'PENDIENTE'
+        "
+      >
+
+        <div class="refund-icon">
+          ⏳
+        </div>
+
+        <div class="refund-content">
+
+          <strong>
+            Reembolso completo en proceso
+          </strong>
+
+          <p>
+            S/
+            {{ reserva.total | number:'1.2-2' }}
+            ·
+            {{ obtenerMetodoPago(reserva) }}
+          </p>
+
+          <small>
+            Tu devolución será procesada en un plazo
+            máximo de 48 horas.
+          </small>
+
+          <div class="refund-detail">
+
+            <span>
+              Solicitado
+            </span>
+
+            <b>
+              {{
+              formatearFechaHora(
+              reserva.fechaSolicitudReembolso
+              )
+              }}
+            </b>
+
+          </div>
+
+          <div class="refund-detail">
+
+            <span>
+              Plazo máximo
+            </span>
+
+            <b>
+              {{
+              formatearFechaHora(
+              reserva.fechaLimiteReembolso
+              )
+              }}
+            </b>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           DEVUELTO
+      ====================================================== -->
+
+      <div
+        class="refund-box refund-complete"
+        *ngIf="
+          reserva.estado === 'CANCELADA' &&
+          reserva.estadoReembolso === 'DEVUELTO'
+        "
+      >
+
+        <div class="refund-icon">
+          ✓
+        </div>
+
+        <div class="refund-content">
+
+          <span class="refund-complete-label">
+            DEVUELTO COMPLETO
+          </span>
+
+          <strong class="refund-amount">
+            S/
+            {{ reserva.total | number:'1.2-2' }}
+          </strong>
+
+          <p>
+            Devuelto mediante
+            <b>
+              {{ obtenerMetodoPago(reserva) }}
+            </b>
+          </p>
+
+          <small>
+            Reembolso completado:
+            {{
+            formatearFechaHora(
+            reserva.fechaReembolso
+            )
+            }}
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- CANCELADA SIN REEMBOLSO -->
+
+      <div
+        class="refund-box refund-cancelled"
+        *ngIf="
+          reserva.estado === 'CANCELADA' &&
+          (
+            !reserva.estadoReembolso ||
+            reserva.estadoReembolso === 'NO_APLICA'
+          )
+        "
+      >
+
+        <div class="refund-icon">
+          ×
+        </div>
+
+        <div class="refund-content">
+
+          <strong>
+            Reserva cancelada
+          </strong>
+
+          <p>
+            Esta reserva fue cancelada.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- ACCIONES -->
+
+      <div
+        class="reserva-actions"
+        *ngIf="reserva.estado === 'CONFIRMADA'"
+      >
+
+        <button
+          type="button"
+          class="btn-cancelar"
+          [class.disabled-refund]="
+            !puedeCancelarConReembolso(reserva)
+          "
+          [disabled]="
+            !puedeCancelarConReembolso(reserva) ||
+            procesandoReservaId === reserva.id
+          "
+          (click)="cancelarReserva(reserva)"
+        >
+
+          <ng-container
+            *ngIf="
+              procesandoReservaId !== reserva.id
+            "
+          >
+            {{
+            puedeCancelarConReembolso(reserva)
+            ? 'Cancelar reserva y solicitar reembolso'
+            : 'Cancelación no disponible'
+            }}
+          </ng-container>
+
+
+          <ng-container
+            *ngIf="
+              procesandoReservaId === reserva.id
+            "
+          >
+            Procesando cancelación...
+          </ng-container>
+
+        </button>
+
+
+        <span
+          class="cancel-policy"
+          *ngIf="
+            puedeCancelarConReembolso(reserva)
+          "
+        >
+          Reembolso del 100% · mismo método de pago
+        </span>
+
+
+        <span
+          class="cancel-policy no-apto"
+          *ngIf="
+            !puedeCancelarConReembolso(reserva)
+          "
+        >
+          ⚠ Reembolso no apto
+        </span>
+
+      </div>
+
+    </article>
 
   </div>
+
+
+  <!-- VACÍO -->
 
   <div
     class="empty"
@@ -95,8 +464,8 @@
     </h2>
 
     <p>
-      Explora nuestros departamentos
-      y encuentra tu próximo hogar.
+      Explora nuestros departamentos y encuentra
+      tu próxima estadía.
     </p>
 
   </div>
