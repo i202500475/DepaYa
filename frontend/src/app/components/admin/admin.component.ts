@@ -1,37 +1,16 @@
-import {
-  Component,
-  OnInit,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {
-  CommonModule,
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-  FormsModule,
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-import {
-  AuthService,
-  Usuario,
-  RolUsuario,
-} from '../../services/auth.service';
+import { AuthService, Usuario, RolUsuario } from '../../services/auth.service';
 
-import {
-  Departamento,
-  DepartamentoService,
-} from '../../services/departamento.service';
+import { Departamento, DepartamentoService } from '../../services/departamento.service';
 
-import {
-  Reserva,
-  ReservaService,
-} from '../../services/reserva.service';
+import { Reserva, ReservaService } from '../../services/reserva.service';
 
-import {
-  Pago,
-  PagoService,
-} from '../../services/pago.service';
-
+import { Pago, PagoService } from '../../services/pago.service';
 
 @Component({
   selector: 'app-admin',
@@ -62,6 +41,27 @@ export class AdminComponent implements OnInit {
   mensaje = '';
 
   error = '';
+
+  // ============================================================
+  // BUSCADORES POR DNI
+  // ============================================================
+
+  busquedaUsuarioDni = '';
+
+  busquedaDepartamentoDni = '';
+
+  // ============================================================
+  // DATOS DEMO QUE YA NO DEBEN MOSTRARSE
+  // ============================================================
+
+  private readonly TITULOS_DEMO = new Set([
+    'Loft Ejecutivo Prime con Vista al Mar',
+    'Departamento Moderno en San Isidro',
+    'Departamento Familiar en Barranco',
+    'Departamento con Vista al Mar',
+    'Loft Ejecutivo Moderno',
+    'Casa de Playa Familiar',
+  ]);
 
   // ============================================================
   // MODAL USUARIO
@@ -156,6 +156,7 @@ export class AdminComponent implements OnInit {
 
       this.reservas = this.reservaService
         .listar()
+        .filter((reserva) => !this.esRegistroDemo(reserva.departamento))
         .sort((a, b) => new Date(b.fechaReserva).getTime() - new Date(a.fechaReserva).getTime());
 
       // --------------------------------------------------------
@@ -164,6 +165,7 @@ export class AdminComponent implements OnInit {
 
       this.pagos = this.pagoService
         .listar()
+        .filter((pago) => !this.esRegistroDemo(pago.departamento))
         .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
     } catch (error) {
       console.error('Error cargando información del administrador:', error);
@@ -172,6 +174,14 @@ export class AdminComponent implements OnInit {
     } finally {
       this.cargando = false;
     }
+  }
+
+  // ============================================================
+  // OCULTAR REGISTROS DEMO ANTIGUOS
+  // ============================================================
+
+  private esRegistroDemo(nombreDepartamento: string | undefined | null): boolean {
+    return this.TITULOS_DEMO.has((nombreDepartamento || '').trim());
   }
 
   // ============================================================
@@ -489,6 +499,70 @@ export class AdminComponent implements OnInit {
     if (limpiarMensajes) {
       this.error = '';
     }
+  }
+
+  // ============================================================
+  // BÚSQUEDA POR DNI
+  // ============================================================
+
+  private normalizarDni(valor: string | undefined | null): string {
+    return (valor || '').replace(/\D/g, '');
+  }
+
+  obtenerUsuarioPorEmail(email: string | undefined | null): Usuario | undefined {
+    const correo = (email || '').trim().toLowerCase();
+
+    if (!correo) {
+      return undefined;
+    }
+
+    return this.usuarios.find((usuario) => (usuario.email || '').trim().toLowerCase() === correo);
+  }
+
+  obtenerDniPropietario(email: string | undefined | null): string {
+    const propietario = this.obtenerUsuarioPorEmail(email);
+
+    if (!propietario) {
+      return 'Sin DNI';
+    }
+
+    const documento = (propietario.nroDoc || '').trim();
+
+    return documento || 'Sin DNI';
+  }
+
+  get usuariosFiltrados(): Usuario[] {
+    const dni = this.normalizarDni(this.busquedaUsuarioDni);
+
+    if (!dni) {
+      return this.usuarios;
+    }
+
+    return this.usuarios.filter((usuario) => this.normalizarDni(usuario.nroDoc).includes(dni));
+  }
+
+  get departamentosFiltrados(): Departamento[] {
+    const dni = this.normalizarDni(this.busquedaDepartamentoDni);
+
+    if (!dni) {
+      return this.departamentos;
+    }
+
+    return this.departamentos.filter((departamento) => {
+      const dniPropietario = this.normalizarDni(
+        this.obtenerDniPropietario(departamento.propietarioEmail),
+      );
+
+      return dniPropietario.includes(dni);
+    });
+  }
+
+  limpiarBusquedaUsuario(): void {
+    this.busquedaUsuarioDni = '';
+  }
+
+  limpiarBusquedaDepartamento(): void {
+    this.busquedaDepartamentoDni = '';
   }
 
   // ============================================================

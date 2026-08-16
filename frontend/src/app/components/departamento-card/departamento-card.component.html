@@ -2,25 +2,27 @@
 
   <!-- IMAGEN -->
   <div class="card-image-wrap">
-
     <img
       [src]="departamento.URL_Imagen"
       [alt]="departamento.Titulo"
       class="card-img"
     />
 
-    <!-- FAVORITO -->
+    <!-- FAVORITO FUNCIONAL -->
     <button
       class="heart-btn"
+      [class.favorite]="favorito"
       type="button"
-      aria-label="Guardar departamento"
+      [attr.aria-label]="favorito ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+      [attr.title]="favorito ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+      (click)="alternarFavorito($event)"
     >
       <svg
-        width="20"
-        height="20"
+        width="22"
+        height="22"
         viewBox="0 0 24 24"
-        fill="none"
-        stroke="white"
+        [attr.fill]="favorito ? 'currentColor' : 'none'"
+        stroke="currentColor"
         stroke-width="2"
       >
         <path
@@ -29,18 +31,16 @@
       </svg>
     </button>
 
-    <!-- DISPONIBILIDAD -->
     <div class="availability-badge">
       Disponible
     </div>
-
   </div>
+
 
   <!-- INFORMACIÓN -->
   <div class="card-info">
 
     <div class="card-location-row">
-
       <span class="card-location">
         📍 {{ departamento.Distrito }}, Lima
       </span>
@@ -48,19 +48,30 @@
       <span class="card-rating">
         ★ 4.92
       </span>
-
     </div>
+
 
     <h3 class="card-title">
       {{ departamento.Titulo }}
     </h3>
 
-    <p class="card-description">
+
+    <span class="card-category">
       {{ departamento.Categoria }}
+    </span>
+
+
+    <!-- DESCRIPCIÓN DEL PROPIETARIO -->
+    <p class="card-description">
+      {{
+      departamento.Descripcion ||
+      'El propietario no agregó una descripción para este alojamiento.'
+      }}
     </p>
 
-    <div class="card-details">
 
+    <!-- DATOS BÁSICOS -->
+    <div class="card-details">
       <span>
         🛏️ {{ departamento.Habitaciones }} habitaciones
       </span>
@@ -69,18 +80,35 @@
         🚿 {{ departamento.Banos }} baños
       </span>
 
+      <span *ngIf="departamento.Capacidad">
+        👥 Máx. {{ departamento.Capacidad }} huéspedes
+      </span>
     </div>
 
-    <div class="card-price">
 
+    <!-- SERVICIOS -->
+    <div class="amenities" *ngIf="tieneServicios">
+      <span *ngIf="departamento.TienePiscina">
+        🏊 Piscina
+      </span>
+
+      <span *ngIf="departamento.TieneWifi">
+        📶 WiFi
+      </span>
+
+      <span *ngIf="departamento.AdmiteMascotas">
+        🐾 Mascotas
+      </span>
+    </div>
+
+
+    <!-- PRECIO SIEMPRE AL FONDO -->
+    <div class="card-price">
       <strong>
         S/ {{ departamento.Precio_Noche | number:'1.0-0' }}
       </strong>
 
-      <span>
-        / noche
-      </span>
-
+      <span>/ noche</span>
     </div>
 
   </div>

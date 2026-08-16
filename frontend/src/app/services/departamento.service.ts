@@ -2,27 +2,19 @@ import { Injectable } from '@angular/core';
 
 export interface Departamento {
   id: number;
-
   Titulo: string;
-
   Distrito: string;
-
   Precio_Noche: number;
-
   Habitaciones: number;
-
   Banos: number;
-
   Categoria: string;
-
   URL_Imagen: string;
-
   propietarioEmail: string;
-
   Descripcion?: string;
-
   Capacidad?: number;
-
+  TienePiscina?: boolean;
+  TieneWifi?: boolean;
+  AdmiteMascotas?: boolean;
   fechaPublicacion?: string;
 }
 
@@ -31,6 +23,15 @@ export interface Departamento {
 })
 export class DepartamentoService {
   private readonly STORAGE_KEY = 'departamentosDepaYa';
+
+  private readonly TITULOS_DEMO = new Set([
+    'Loft Ejecutivo Prime con Vista al Mar',
+    'Departamento Moderno en San Isidro',
+    'Departamento Familiar en Barranco',
+    'Departamento con Vista al Mar',
+    'Loft Ejecutivo Moderno',
+    'Casa de Playa Familiar',
+  ]);
 
   private departamentos: Departamento[] = [];
 
@@ -50,8 +51,9 @@ export class DepartamentoService {
         const lista = JSON.parse(datos);
 
         if (Array.isArray(lista)) {
-          this.departamentos = lista;
-
+          this.departamentos = this.limpiarDepartamentosDemo(lista);
+          this.normalizarDepartamentos();
+          this.guardar();
           return;
         }
       } catch (error) {
@@ -59,163 +61,40 @@ export class DepartamentoService {
       }
     }
 
-    // ==========================================================
-    // DATOS INICIALES
-    // ==========================================================
-
-    this.departamentos = [
-      {
-        id: 1,
-
-        Titulo: 'Loft Ejecutivo Prime con Vista al Mar',
-
-        Distrito: 'Miraflores',
-
-        Precio_Noche: 280,
-
-        Habitaciones: 2,
-
-        Banos: 2,
-
-        Categoria: 'Loft',
-
-        URL_Imagen:
-          'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
-
-        propietarioEmail: 'propietario@depaya.com',
-
-        Descripcion: 'Loft moderno y cómodo en Miraflores.',
-
-        Capacidad: 4,
-      },
-
-      {
-        id: 2,
-
-        Titulo: 'Departamento Moderno en San Isidro',
-
-        Distrito: 'San Isidro',
-
-        Precio_Noche: 320,
-
-        Habitaciones: 3,
-
-        Banos: 2,
-
-        Categoria: 'Moderno',
-
-        URL_Imagen:
-          'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80',
-
-        propietarioEmail: 'propietario@depaya.com',
-
-        Descripcion: 'Departamento moderno en excelente ubicación.',
-
-        Capacidad: 5,
-      },
-
-      {
-        id: 3,
-
-        Titulo: 'Departamento Familiar en Barranco',
-
-        Distrito: 'Barranco',
-
-        Precio_Noche: 250,
-
-        Habitaciones: 3,
-
-        Banos: 2,
-
-        Categoria: 'Familiar',
-
-        URL_Imagen:
-          'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=80',
-
-        propietarioEmail: 'propietario@depaya.com',
-
-        Descripcion: 'Departamento familiar cerca de los principales atractivos de Barranco.',
-
-        Capacidad: 6,
-      },
-
-      {
-        id: 4,
-
-        Titulo: 'Departamento con Vista al Mar',
-
-        Distrito: 'San Miguel',
-
-        Precio_Noche: 290,
-
-        Habitaciones: 2,
-
-        Banos: 2,
-
-        Categoria: 'Vista al mar',
-
-        URL_Imagen:
-          'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
-
-        propietarioEmail: 'propietario@depaya.com',
-
-        Descripcion: 'Departamento con una excelente vista al mar.',
-
-        Capacidad: 4,
-      },
-
-      {
-        id: 5,
-
-        Titulo: 'Loft Ejecutivo Moderno',
-
-        Distrito: 'Surco',
-
-        Precio_Noche: 300,
-
-        Habitaciones: 2,
-
-        Banos: 2,
-
-        Categoria: 'Ejecutivo',
-
-        URL_Imagen:
-          'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80',
-
-        propietarioEmail: 'propietario@depaya.com',
-
-        Descripcion: 'Loft ejecutivo moderno y completamente equipado.',
-
-        Capacidad: 4,
-      },
-
-      {
-        id: 6,
-
-        Titulo: 'Casa de Playa Familiar',
-
-        Distrito: 'Chorrillos',
-
-        Precio_Noche: 350,
-
-        Habitaciones: 4,
-
-        Banos: 3,
-
-        Categoria: 'Playa',
-
-        URL_Imagen:
-          'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
-
-        propietarioEmail: 'propietario@depaya.com',
-
-        Descripcion: 'Amplio alojamiento familiar cerca del mar.',
-
-        Capacidad: 8,
-      },
-    ];
-
+    // Desde ahora el proyecto inicia sin propiedades de relleno.
+    // Solo se mostrarán las publicaciones creadas por propietarios.
+    this.departamentos = [];
     this.guardar();
+  }
+
+  // ============================================================
+  // QUITAR LOS 6 DEPARTAMENTOS DEMO ANTIGUOS
+  // ============================================================
+
+  private limpiarDepartamentosDemo(lista: Departamento[]): Departamento[] {
+    return lista.filter((departamento) => {
+      const esDemo =
+        this.TITULOS_DEMO.has((departamento.Titulo || '').trim()) &&
+        (departamento.propietarioEmail || '').trim().toLowerCase() === 'propietario@depaya.com' &&
+        !departamento.fechaPublicacion;
+
+      return !esDemo;
+    });
+  }
+
+  // ============================================================
+  // NORMALIZAR CAMPOS OPCIONALES
+  // ============================================================
+
+  private normalizarDepartamentos(): void {
+    this.departamentos = this.departamentos.map((departamento) => ({
+      ...departamento,
+      Descripcion: departamento.Descripcion ?? '',
+      Capacidad: Number(departamento.Capacidad ?? 0),
+      TienePiscina: Boolean(departamento.TienePiscina),
+      TieneWifi: Boolean(departamento.TieneWifi),
+      AdmiteMascotas: Boolean(departamento.AdmiteMascotas),
+    }));
   }
 
   // ============================================================
@@ -226,6 +105,7 @@ export class DepartamentoService {
     const datos = localStorage.getItem(this.STORAGE_KEY);
 
     if (!datos) {
+      this.departamentos = [];
       return;
     }
 
@@ -233,7 +113,8 @@ export class DepartamentoService {
       const lista = JSON.parse(datos);
 
       if (Array.isArray(lista)) {
-        this.departamentos = lista;
+        this.departamentos = this.limpiarDepartamentosDemo(lista);
+        this.normalizarDepartamentos();
       }
     } catch (error) {
       console.error('Error sincronizando departamentos:', error);
@@ -302,16 +183,17 @@ export class DepartamentoService {
 
     const nuevoDepartamento: Departamento = {
       ...departamento,
-
       id: nuevoId,
-
       propietarioEmail: departamento.propietarioEmail.trim().toLowerCase(),
-
+      Descripcion: (departamento.Descripcion || '').trim(),
+      Capacidad: Number(departamento.Capacidad ?? 0),
+      TienePiscina: Boolean(departamento.TienePiscina),
+      TieneWifi: Boolean(departamento.TieneWifi),
+      AdmiteMascotas: Boolean(departamento.AdmiteMascotas),
       fechaPublicacion: departamento.fechaPublicacion || new Date().toISOString(),
     };
 
     this.departamentos.push(nuevoDepartamento);
-
     this.guardar();
 
     return {
@@ -334,12 +216,16 @@ export class DepartamentoService {
 
     this.departamentos[indice] = {
       ...this.departamentos[indice],
-
       ...departamento,
+      propietarioEmail: departamento.propietarioEmail.trim().toLowerCase(),
+      Descripcion: (departamento.Descripcion || '').trim(),
+      Capacidad: Number(departamento.Capacidad ?? 0),
+      TienePiscina: Boolean(departamento.TienePiscina),
+      TieneWifi: Boolean(departamento.TieneWifi),
+      AdmiteMascotas: Boolean(departamento.AdmiteMascotas),
     };
 
     this.guardar();
-
     return true;
   }
 
@@ -359,7 +245,6 @@ export class DepartamentoService {
     }
 
     this.guardar();
-
     return true;
   }
 }

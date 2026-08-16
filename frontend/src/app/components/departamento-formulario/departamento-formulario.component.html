@@ -2,32 +2,50 @@
 
   <div class="publish-container">
 
-    <!-- HEADER -->
+    <!-- ======================================================
+         ENCABEZADO
+    ======================================================= -->
 
     <div class="form-header">
 
-      <span class="form-label">
-        PROPIETARIO
-      </span>
+      <div class="header-content">
 
-      <h2>
-        Publicar un inmueble
-      </h2>
+        <span class="form-label">
+          PROPIETARIO
+        </span>
 
-      <p>
-        Ingresa los detalles para que los inquilinos puedan encontrar tu departamento.
-      </p>
+        <h1>
+          Publicar un inmueble
+        </h1>
+
+        <p>
+          Completa la información de tu propiedad para que
+          los inquilinos puedan conocerla y reservarla.
+        </p>
+
+      </div>
+
+      <div class="header-icon">
+        🏠
+      </div>
 
     </div>
 
 
-    <!-- MENSAJE -->
+    <!-- ======================================================
+         MENSAJES
+    ======================================================= -->
 
     <div
       class="mensaje exito"
       *ngIf="mensaje"
     >
-      ✓ {{ mensaje }}
+      <span class="mensaje-icon">✓</span>
+
+      <div>
+        <strong>Publicación realizada</strong>
+        <p>{{ mensaje }}</p>
+      </div>
     </div>
 
 
@@ -35,280 +53,674 @@
       class="mensaje error"
       *ngIf="error"
     >
-      {{ error }}
+      <span class="mensaje-icon">!</span>
+
+      <div>
+        <strong>Revisa la información</strong>
+        <p>{{ error }}</p>
+      </div>
     </div>
 
+
+    <!-- ======================================================
+         FORMULARIO
+    ======================================================= -->
 
     <form
       class="modern-form"
       (ngSubmit)="publicar()"
     >
 
-      <!-- TÍTULO -->
+      <!-- ====================================================
+           SECCIÓN 1
+      ===================================================== -->
 
-      <div class="input-group full-width">
+      <section class="form-section">
 
-        <label>
-          Título de la publicación *
-        </label>
+        <div class="section-heading">
 
-        <input
-          type="text"
-          name="titulo"
-          [(ngModel)]="titulo"
-          placeholder="Ej: Departamento moderno con balcón"
-        >
-
-      </div>
-
-
-      <!-- DISTRITO / PRECIO -->
-
-      <div class="form-row">
-
-        <div class="input-group">
-
-          <label>
-            Distrito *
-          </label>
-
-          <select
-            name="distrito"
-            [(ngModel)]="distrito"
-          >
-
-            <option value="">
-              Seleccionar distrito
-            </option>
-
-            <option
-              *ngFor="let item of distritos"
-              [value]="item"
-            >
-              {{ item }}
-            </option>
-
-          </select>
-
-        </div>
-
-
-        <div class="input-group">
-
-          <label>
-            Precio por noche (S/) *
-          </label>
-
-          <input
-            type="number"
-            name="precio"
-            [(ngModel)]="precioNoche"
-            min="1"
-            placeholder="0.00"
-          >
-
-        </div>
-
-      </div>
-
-
-      <!-- CAPACIDAD / HABITACIONES -->
-
-      <div class="form-row">
-
-        <div class="input-group">
-
-          <label>
-            Capacidad *
-          </label>
-
-          <input
-            type="number"
-            name="capacidad"
-            [(ngModel)]="capacidad"
-            min="1"
-            placeholder="Cantidad de personas"
-          >
-
-        </div>
-
-
-        <div class="input-group">
-
-          <label>
-            Habitaciones *
-          </label>
-
-          <input
-            type="number"
-            name="habitaciones"
-            [(ngModel)]="habitaciones"
-            min="1"
-            placeholder="Ej: 2"
-          >
-
-        </div>
-
-      </div>
-
-
-      <!-- BAÑOS / CATEGORÍA -->
-
-      <div class="form-row">
-
-        <div class="input-group">
-
-          <label>
-            Baños *
-          </label>
-
-          <input
-            type="number"
-            name="banos"
-            [(ngModel)]="banos"
-            min="1"
-            placeholder="Ej: 2"
-          >
-
-        </div>
-
-
-        <div class="input-group">
-
-          <label>
-            Categoría *
-          </label>
-
-          <select
-            name="categoria"
-            [(ngModel)]="categoria"
-          >
-
-            <option value="">
-              Seleccionar categoría
-            </option>
-
-            <option
-              *ngFor="let item of categorias"
-              [value]="item"
-            >
-              {{ item }}
-            </option>
-
-          </select>
-
-        </div>
-
-      </div>
-
-
-      <!-- DESCRIPCIÓN -->
-
-      <div class="input-group full-width">
-
-        <label>
-          Descripción detallada *
-        </label>
-
-        <textarea
-          rows="4"
-          name="descripcion"
-          [(ngModel)]="descripcion"
-          placeholder="Describe las comodidades, ubicación, áreas comunes, servicios, etc."
-        ></textarea>
-
-      </div>
-
-
-      <!-- FOTO -->
-
-      <div class="input-group full-width">
-
-        <label>
-          Fotografía del inmueble *
-        </label>
-
-        <div
-          class="upload-box"
-          *ngIf="!imagenBase64"
-        >
-
-          <div class="upload-icon">
-            📷
+          <div class="section-number">
+            1
           </div>
 
-          <strong>
-            Carga una fotografía
-          </strong>
+          <div>
+            <h2>
+              Información principal
+            </h2>
 
-          <span>
-            JPG, JPEG o PNG
-          </span>
+            <p>
+              Datos básicos que aparecerán en la publicación.
+            </p>
+          </div>
 
-          <label class="btn-seleccionar">
+        </div>
 
-            Seleccionar imagen
+
+        <div class="form-grid">
+
+          <!-- TÍTULO -->
+
+          <div class="input-group full-width">
+
+            <label for="titulo">
+              Título de la publicación
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-icon">
+                🏢
+              </span>
+
+              <input
+                id="titulo"
+                type="text"
+                name="titulo"
+                [(ngModel)]="titulo"
+                placeholder="Ej: Departamento moderno con balcón"
+              >
+
+            </div>
+
+            <small>
+              Utiliza un título breve y atractivo.
+            </small>
+
+          </div>
+
+
+          <!-- DISTRITO -->
+
+          <div class="input-group">
+
+            <label for="distrito">
+              Distrito
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-icon">
+                📍
+              </span>
+
+              <select
+                id="distrito"
+                name="distrito"
+                [(ngModel)]="distrito"
+              >
+
+                <option value="">
+                  Seleccionar distrito
+                </option>
+
+                <option
+                  *ngFor="let item of distritos"
+                  [value]="item"
+                >
+                  {{ item }}
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <!-- PRECIO -->
+
+          <div class="input-group">
+
+            <label for="precio">
+              Precio por noche
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-prefix">
+                S/
+              </span>
+
+              <input
+                id="precio"
+                class="with-prefix"
+                type="number"
+                name="precio"
+                [(ngModel)]="precioNoche"
+                min="1"
+                placeholder="0.00"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           SECCIÓN 2
+      ===================================================== -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            2
+          </div>
+
+          <div>
+            <h2>
+              Distribución y capacidad
+            </h2>
+
+            <p>
+              Indica cuántas personas puede recibir el alojamiento.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="form-grid three-columns">
+
+          <!-- CAPACIDAD -->
+
+          <div class="input-group">
+
+            <label for="capacidad">
+              Capacidad máxima
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-icon">
+                👥
+              </span>
+
+              <input
+                id="capacidad"
+                type="number"
+                name="capacidad"
+                [(ngModel)]="capacidad"
+                min="1"
+                placeholder="Ej: 4"
+              >
+
+            </div>
+
+            <small>
+              Cantidad máxima de huéspedes.
+            </small>
+
+          </div>
+
+
+          <!-- HABITACIONES -->
+
+          <div class="input-group">
+
+            <label for="habitaciones">
+              Habitaciones
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-icon">
+                🛏️
+              </span>
+
+              <input
+                id="habitaciones"
+                type="number"
+                name="habitaciones"
+                [(ngModel)]="habitaciones"
+                min="1"
+                placeholder="Ej: 2"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- BAÑOS -->
+
+          <div class="input-group">
+
+            <label for="banos">
+              Baños
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-icon">
+                🚿
+              </span>
+
+              <input
+                id="banos"
+                type="number"
+                name="banos"
+                [(ngModel)]="banos"
+                min="1"
+                placeholder="Ej: 2"
+              >
+
+            </div>
+
+          </div>
+
+
+          <!-- CATEGORÍA -->
+
+          <div class="input-group full-width">
+
+            <label for="categoria">
+              Categoría
+              <span>*</span>
+            </label>
+
+            <div class="input-wrapper">
+
+              <span class="field-icon">
+                🏷️
+              </span>
+
+              <select
+                id="categoria"
+                name="categoria"
+                [(ngModel)]="categoria"
+              >
+
+                <option value="">
+                  Seleccionar categoría
+                </option>
+
+                <option
+                  *ngFor="let item of categorias"
+                  [value]="item"
+                >
+                  {{ item }}
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           SECCIÓN 3
+      ===================================================== -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            3
+          </div>
+
+          <div>
+            <h2>
+              Descripción del alojamiento
+            </h2>
+
+            <p>
+              Esta información será visible para los inquilinos.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="input-group full-width">
+
+          <label for="descripcion">
+            Descripción detallada
+            <span>*</span>
+          </label>
+
+          <textarea
+            id="descripcion"
+            rows="6"
+            name="descripcion"
+            [(ngModel)]="descripcion"
+            placeholder="Describe el departamento, ubicación, ambientes, comodidades, áreas comunes y cualquier información importante para el huésped..."
+          ></textarea>
+
+          <small>
+            Una buena descripción ayuda al inquilino a tomar una mejor decisión.
+          </small>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           SECCIÓN 4
+      ===================================================== -->
+
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            4
+          </div>
+
+          <div>
+            <h2>
+              Servicios y comodidades
+            </h2>
+
+            <p>
+              Selecciona todo lo que ofrece tu alojamiento.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="amenities-grid">
+
+          <!-- PISCINA -->
+
+          <label
+            class="amenity-card"
+            [class.active]="tienePiscina"
+          >
 
             <input
-              #inputImagen
-              type="file"
-              accept="image/*"
-              (change)="seleccionarImagen($event)"
+              type="checkbox"
+              name="tienePiscina"
+              [(ngModel)]="tienePiscina"
             >
+
+            <span class="custom-check">
+              ✓
+            </span>
+
+            <span class="amenity-icon">
+              🏊
+            </span>
+
+            <span class="amenity-text">
+
+              <strong>
+                Piscina
+              </strong>
+
+              <small>
+                El alojamiento cuenta con piscina.
+              </small>
+
+            </span>
+
+          </label>
+
+
+          <!-- WIFI -->
+
+          <label
+            class="amenity-card"
+            [class.active]="tieneWifi"
+          >
+
+            <input
+              type="checkbox"
+              name="tieneWifi"
+              [(ngModel)]="tieneWifi"
+            >
+
+            <span class="custom-check">
+              ✓
+            </span>
+
+            <span class="amenity-icon">
+              📶
+            </span>
+
+            <span class="amenity-text">
+
+              <strong>
+                WiFi
+              </strong>
+
+              <small>
+                Internet disponible para huéspedes.
+              </small>
+
+            </span>
+
+          </label>
+
+
+          <!-- MASCOTAS -->
+
+          <label
+            class="amenity-card"
+            [class.active]="admiteMascotas"
+          >
+
+            <input
+              type="checkbox"
+              name="admiteMascotas"
+              [(ngModel)]="admiteMascotas"
+            >
+
+            <span class="custom-check">
+              ✓
+            </span>
+
+            <span class="amenity-icon">
+              🐾
+            </span>
+
+            <span class="amenity-text">
+
+              <strong>
+                Se admiten mascotas
+              </strong>
+
+              <small>
+                Los huéspedes pueden alojarse con mascotas.
+              </small>
+
+            </span>
 
           </label>
 
         </div>
 
+      </section>
 
-        <!-- PREVIEW -->
 
-        <div
-          class="image-preview"
-          *ngIf="imagenBase64"
-        >
+      <!-- ====================================================
+           SECCIÓN 5
+      ===================================================== -->
 
-          <img
-            [src]="imagenBase64"
-            alt="Vista previa del departamento"
+      <section class="form-section">
+
+        <div class="section-heading">
+
+          <div class="section-number">
+            5
+          </div>
+
+          <div>
+            <h2>
+              Fotografía principal
+            </h2>
+
+            <p>
+              Esta será la imagen principal de tu publicación.
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="input-group full-width">
+
+          <!-- CARGAR -->
+
+          <div
+            class="upload-box"
+            *ngIf="!imagenBase64"
           >
 
-          <div class="preview-footer">
+            <div class="upload-icon">
+              📷
+            </div>
 
-            <span>
-              {{ nombreImagen }}
+            <h3>
+              Carga una fotografía del inmueble
+            </h3>
+
+            <p>
+              Selecciona una imagen clara y de buena calidad.
+            </p>
+
+            <span class="upload-format">
+              JPG, JPEG o PNG · Máximo 10 MB
             </span>
 
-            <button
-              type="button"
-              class="btn-quitar"
-              (click)="quitarImagen()"
-            >
-              Quitar foto
-            </button>
+
+            <label class="btn-seleccionar">
+
+              <span>
+                📁
+              </span>
+
+              Seleccionar imagen
+
+              <input
+                #inputImagen
+                type="file"
+                accept="image/*"
+                (change)="seleccionarImagen($event)"
+              >
+
+            </label>
+
+          </div>
+
+
+          <!-- PREVIEW -->
+
+          <div
+            class="image-preview"
+            *ngIf="imagenBase64"
+          >
+
+            <div class="preview-image-wrapper">
+
+              <img
+                [src]="imagenBase64"
+                alt="Vista previa del departamento"
+              >
+
+              <span class="preview-badge">
+                Vista previa
+              </span>
+
+            </div>
+
+
+            <div class="preview-footer">
+
+              <div class="file-info">
+
+                <div class="file-icon">
+                  🖼️
+                </div>
+
+                <div>
+
+                  <strong>
+                    {{ nombreImagen }}
+                  </strong>
+
+                  <span>
+                    Imagen lista para publicar
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="btn-quitar"
+                (click)="quitarImagen()"
+              >
+                🗑️ Quitar foto
+              </button>
+
+            </div>
 
           </div>
 
         </div>
 
+      </section>
+
+
+      <!-- ====================================================
+           FOOTER
+      ===================================================== -->
+
+      <div class="form-footer">
+
+        <div class="footer-info">
+
+          <span>
+            🔒
+          </span>
+
+          <p>
+            Revisa los datos antes de publicar.
+            Podrás administrar posteriormente tus propiedades.
+          </p>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="publicando"
+        >
+
+          <span *ngIf="!publicando">
+            Publicar inmueble
+          </span>
+
+          <span *ngIf="publicando">
+            Publicando...
+          </span>
+
+        </button>
+
       </div>
-
-
-      <!-- BOTÓN -->
-
-      <button
-        type="submit"
-        class="btn-submit"
-        [disabled]="publicando"
-      >
-
-        {{
-        publicando
-        ? 'Publicando...'
-        : 'Publicar ahora'
-        }}
-
-      </button>
 
     </form>
 

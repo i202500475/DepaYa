@@ -71,6 +71,15 @@
         </p>
 
 
+        <div class="property-description">
+          <span>Descripción del propietario</span>
+
+          <p>
+            {{ descripcionDepartamento }}
+          </p>
+        </div>
+
+
         <div class="detalles">
 
           <span>
@@ -93,6 +102,28 @@
             huéspedes
           </span>
 
+        </div>
+
+
+        <div
+          class="preview-amenities"
+          *ngIf="departamento.TienePiscina || departamento.TieneWifi || departamento.AdmiteMascotas"
+        >
+          <span class="preview-amenities-title">Servicios del alojamiento</span>
+
+          <div class="preview-amenities-list">
+            <span *ngIf="departamento.TienePiscina">
+              🏊 Piscina
+            </span>
+
+            <span *ngIf="departamento.TieneWifi">
+              📶 WiFi
+            </span>
+
+            <span *ngIf="departamento.AdmiteMascotas">
+              🐾 Se admiten mascotas
+            </span>
+          </div>
         </div>
 
 
@@ -296,8 +327,11 @@
           id="huespedes"
           type="number"
           min="1"
+          step="1"
           [max]="capacidadMaxima > 0 ? capacidadMaxima : null"
           [(ngModel)]="huespedes"
+          (ngModelChange)="validarHuespedesEnTiempoReal()"
+          [class.input-error]="capacidadSuperada"
         >
 
         <small
@@ -309,6 +343,27 @@
           huésped(es).
         </small>
 
+      </div>
+
+
+      <!-- AVISO ROJO DE CAPACIDAD -->
+
+      <div
+        class="capacity-error-card"
+        *ngIf="capacidadSuperada"
+        aria-live="assertive"
+      >
+        <div class="capacity-error-icon">!</div>
+
+        <div>
+          <strong>Capacidad máxima superada</strong>
+
+          <p>
+            Este departamento permite como máximo
+            {{ capacidadMaxima }} huésped(es).
+            Reduce la cantidad para continuar con la reserva.
+          </p>
+        </div>
       </div>
 
 
@@ -422,7 +477,7 @@
 
       <div
         class="payment-blocked-message"
-        *ngIf="departamentoDisponible !== true"
+        *ngIf="departamentoDisponible !== true || !huespedesValidos"
       >
 
         <span>
@@ -432,12 +487,19 @@
         <div>
 
           <strong>
-            Primero confirma la disponibilidad
+            {{
+            !huespedesValidos
+            ? 'Revisa la cantidad de huéspedes'
+            : 'Primero confirma la disponibilidad'
+            }}
           </strong>
 
           <p>
-            Selecciona fechas disponibles antes de elegir
-            un método de pago.
+            {{
+            !huespedesValidos
+            ? 'La cantidad ingresada supera la capacidad permitida o no es válida.'
+            : 'Selecciona fechas disponibles antes de elegir un método de pago.'
+            }}
           </p>
 
         </div>
@@ -452,7 +514,8 @@
       <div
         class="payment-methods"
         [class.payment-methods-disabled]="
-          departamentoDisponible !== true
+          departamentoDisponible !== true ||
+          !huespedesValidos
         "
       >
 
@@ -464,6 +527,7 @@
           [class.selected]="metodoPago === 'YAPE'"
           [disabled]="
             departamentoDisponible !== true ||
+            !huespedesValidos ||
             validandoPago
           "
           (click)="seleccionarMetodo('YAPE')"
@@ -500,6 +564,7 @@
           [class.selected]="metodoPago === 'PLIN'"
           [disabled]="
             departamentoDisponible !== true ||
+            !huespedesValidos ||
             validandoPago
           "
           (click)="seleccionarMetodo('PLIN')"
@@ -536,6 +601,7 @@
           [class.selected]="metodoPago === 'VISA'"
           [disabled]="
             departamentoDisponible !== true ||
+            !huespedesValidos ||
             validandoPago
           "
           (click)="seleccionarMetodo('VISA')"
@@ -572,6 +638,7 @@
           [class.selected]="metodoPago === 'MASTERCARD'"
           [disabled]="
             departamentoDisponible !== true ||
+            !huespedesValidos ||
             validandoPago
           "
           (click)="seleccionarMetodo('MASTERCARD')"
@@ -610,7 +677,8 @@
         class="qr-payment"
         *ngIf="
           esPagoQR &&
-          departamentoDisponible === true
+          departamentoDisponible === true &&
+          huespedesValidos
         "
       >
 
@@ -663,7 +731,8 @@
         class="card-payment"
         *ngIf="
           esTarjeta &&
-          departamentoDisponible === true
+          departamentoDisponible === true &&
+          huespedesValidos
         "
       >
 
@@ -758,6 +827,39 @@
 
 
       <!-- =====================================================
+           TÉRMINOS Y CONDICIONES
+      ====================================================== -->
+
+      <div class="terms-box">
+
+        <label class="terms-check">
+          <input
+            type="checkbox"
+            [(ngModel)]="aceptaTerminos"
+          >
+
+          <span>
+            He leído y acepto los
+
+            <button
+              type="button"
+              class="terms-link"
+              (click)="abrirTerminos()"
+            >
+              Términos y condiciones
+            </button>
+            de la reserva.
+          </span>
+        </label>
+
+        <small>
+          Debes aceptar las condiciones antes de procesar el pago.
+        </small>
+
+      </div>
+
+
+      <!-- =====================================================
            MENSAJES
       ====================================================== -->
 
@@ -788,11 +890,7 @@
       <button
         type="button"
         class="confirm-button"
-        [disabled]="
-          validandoPago ||
-          departamentoDisponible !== true ||
-          !metodoPago
-        "
+        [disabled]="!puedePagar"
         (click)="procesarPago()"
       >
 
@@ -831,7 +929,11 @@
           >
 
             {{
-            esPagoQR
+            !huespedesValidos
+            ? 'Revisa la cantidad de huéspedes'
+            : !aceptaTerminos
+            ? 'Acepta los términos para continuar'
+            : esPagoQR
             ? 'Ya pagué · Validar pago'
             : esTarjeta
             ? 'Pagar y confirmar reserva'
@@ -885,6 +987,109 @@
     >
       Explorar departamentos
     </button>
+
+  </div>
+
+
+  <!-- =========================================================
+       MODAL TÉRMINOS Y CONDICIONES
+  ========================================================== -->
+
+  <div
+    class="terms-modal-backdrop"
+    *ngIf="modalTerminosVisible"
+    (click)="cerrarTerminos()"
+  >
+
+    <section
+      class="terms-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloTerminos"
+      (click)="$event.stopPropagation()"
+    >
+
+      <div class="terms-modal-header">
+        <div>
+          <span>DEPAYA</span>
+          <h2 id="tituloTerminos">Términos y condiciones de la reserva</h2>
+        </div>
+
+        <button
+          type="button"
+          class="terms-modal-close"
+          aria-label="Cerrar términos y condiciones"
+          (click)="cerrarTerminos()"
+        >
+          ×
+        </button>
+      </div>
+
+
+      <div class="terms-modal-body">
+
+        <div class="terms-item">
+          <strong>1. Responsabilidad por daños</strong>
+          <p>
+            El huésped se compromete a cuidar el inmueble, mobiliario,
+            equipos y demás bienes del alojamiento. Los daños ocasionados
+            por el huésped o sus acompañantes serán de su responsabilidad.
+          </p>
+        </div>
+
+        <div class="terms-item">
+          <strong>2. Capacidad máxima</strong>
+          <p>
+            No se permite alojar una cantidad de personas superior a la
+            capacidad máxima indicada por el propietario en la publicación.
+          </p>
+        </div>
+
+        <div class="terms-item">
+          <strong>3. Uso adecuado del alojamiento</strong>
+          <p>
+            El inmueble deberá utilizarse únicamente para fines de hospedaje,
+            respetando las instalaciones, áreas comunes y las reglas del lugar.
+          </p>
+        </div>
+
+        <div class="terms-item">
+          <strong>4. Conducta del huésped</strong>
+          <p>
+            El huésped y sus acompañantes deberán mantener una conducta adecuada
+            y evitar acciones que puedan afectar al propietario, vecinos o terceros.
+          </p>
+        </div>
+
+        <div class="terms-item">
+          <strong>5. Información de la reserva</strong>
+          <p>
+            El usuario declara que la información proporcionada para realizar
+            la reserva es verdadera y corresponde a las personas que se hospedarán.
+          </p>
+        </div>
+
+        <div class="terms-item">
+          <strong>6. Cancelaciones y reembolsos</strong>
+          <p>
+            Las cancelaciones y reembolsos se procesarán de acuerdo con la política
+            de cancelación vigente de DepaYa y las condiciones aplicables a la reserva.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="terms-modal-footer">
+        <button
+          type="button"
+          (click)="cerrarTerminos()"
+        >
+          Entendido
+        </button>
+      </div>
+
+    </section>
 
   </div>
 

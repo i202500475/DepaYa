@@ -78,6 +78,14 @@ export class ReservaFormularioComponent implements OnInit {
   errorPago = '';
 
   // ============================================================
+  // TÉRMINOS Y CONDICIONES
+  // ============================================================
+
+  aceptaTerminos = false;
+
+  modalTerminosVisible = false;
+
+  // ============================================================
   // CONSTRUCTOR
   // ============================================================
 
@@ -110,6 +118,14 @@ export class ReservaFormularioComponent implements OnInit {
 
     try {
       this.departamento = JSON.parse(datos);
+
+      const huespedesGuardados = Number(localStorage.getItem('huespedesSeleccionados'));
+
+      if (Number.isFinite(huespedesGuardados) && huespedesGuardados >= 1) {
+        this.huespedes = Math.floor(huespedesGuardados);
+      }
+
+      this.validarHuespedesEnTiempoReal();
     } catch (error) {
       console.error('Error cargando departamento:', error);
 
@@ -196,6 +212,56 @@ export class ReservaFormularioComponent implements OnInit {
 
   get capacidadMaxima(): number {
     return Number(this.departamento?.Capacidad ?? this.departamento?.capacidad ?? 0);
+  }
+
+  get huespedesValidos(): boolean {
+    const cantidad = Number(this.huespedes);
+
+    if (!Number.isFinite(cantidad) || cantidad < 1) {
+      return false;
+    }
+
+    if (this.capacidadMaxima > 0 && cantidad > this.capacidadMaxima) {
+      return false;
+    }
+
+    return true;
+  }
+
+  get capacidadSuperada(): boolean {
+    return this.capacidadMaxima > 0 && Number(this.huespedes) > this.capacidadMaxima;
+  }
+
+  get descripcionDepartamento(): string {
+    return (
+      this.departamento?.Descripcion ??
+      this.departamento?.descripcion ??
+      'El propietario no agregó una descripción para este alojamiento.'
+    );
+  }
+
+  validarHuespedesEnTiempoReal(): void {
+    this.errorPago = '';
+
+    const cantidad = Number(this.huespedes);
+
+    if (!Number.isFinite(cantidad) || cantidad < 1) {
+      return;
+    }
+
+    this.huespedes = Math.floor(cantidad);
+  }
+
+  // ============================================================
+  // TÉRMINOS Y CONDICIONES
+  // ============================================================
+
+  abrirTerminos(): void {
+    this.modalTerminosVisible = true;
+  }
+
+  cerrarTerminos(): void {
+    this.modalTerminosVisible = false;
   }
 
   // ============================================================
@@ -438,6 +504,16 @@ export class ReservaFormularioComponent implements OnInit {
     }
 
     // ----------------------------------------------------------
+    // TÉRMINOS Y CONDICIONES
+    // ----------------------------------------------------------
+
+    if (!this.aceptaTerminos) {
+      this.errorPago = 'Debes leer y aceptar los Términos y condiciones antes de pagar.';
+
+      return false;
+    }
+
+    // ----------------------------------------------------------
     // DISPONIBILIDAD
     // ----------------------------------------------------------
 
@@ -579,6 +655,8 @@ export class ReservaFormularioComponent implements OnInit {
       !!this.fechaFin &&
       this.noches > 0 &&
       this.departamentoDisponible === true &&
+      this.huespedesValidos &&
+      this.aceptaTerminos &&
       !!this.metodoPago &&
       !this.validandoPago
     );
@@ -804,6 +882,7 @@ export class ReservaFormularioComponent implements OnInit {
         this.mensajePago = 'Pago validado. Reserva confirmada correctamente.';
 
         localStorage.removeItem('departamentoSeleccionado');
+        localStorage.removeItem('huespedesSeleccionados');
 
         /*
             Nunca guardar datos sensibles

@@ -186,6 +186,41 @@
     </div>
 
 
+    <!-- BUSCADOR POR DNI -->
+
+    <div class="admin-search-box">
+      <div class="admin-search-icon">🔎</div>
+
+      <div class="admin-search-field">
+        <label for="buscarUsuarioDni">
+          Buscar usuario por DNI
+        </label>
+
+        <input
+          id="buscarUsuarioDni"
+          type="text"
+          maxlength="8"
+          inputmode="numeric"
+          [(ngModel)]="busquedaUsuarioDni"
+          placeholder="Ej. 76543210"
+        >
+
+        <small>
+          Al ingresar el DNI se mostrará toda la información registrada del usuario.
+        </small>
+      </div>
+
+      <button
+        type="button"
+        class="btn-clear-search"
+        *ngIf="busquedaUsuarioDni"
+        (click)="limpiarBusquedaUsuario()"
+      >
+        Limpiar
+      </button>
+    </div>
+
+
     <div
       class="loading"
       *ngIf="cargando"
@@ -221,7 +256,7 @@
 
         <tr
           *ngFor="
-              let usuario of usuarios;
+              let usuario of usuariosFiltrados;
               let i = index
             "
         >
@@ -315,14 +350,14 @@
 
 
         <tr
-          *ngIf="usuarios.length === 0"
+          *ngIf="usuariosFiltrados.length === 0"
         >
 
           <td
             colspan="8"
             class="empty-table"
           >
-            No hay usuarios registrados.
+            No se encontraron usuarios con ese DNI.
           </td>
 
         </tr>
@@ -368,6 +403,41 @@
     </div>
 
 
+    <!-- BUSCADOR POR DNI DEL PROPIETARIO -->
+
+    <div class="admin-search-box">
+      <div class="admin-search-icon">🔎</div>
+
+      <div class="admin-search-field">
+        <label for="buscarDepartamentoDni">
+          Buscar departamentos por DNI del propietario
+        </label>
+
+        <input
+          id="buscarDepartamentoDni"
+          type="text"
+          maxlength="8"
+          inputmode="numeric"
+          [(ngModel)]="busquedaDepartamentoDni"
+          placeholder="Ingrese DNI del propietario"
+        >
+
+        <small>
+          El correo se mantiene internamente, pero la consulta administrativa se realiza por DNI.
+        </small>
+      </div>
+
+      <button
+        type="button"
+        class="btn-clear-search"
+        *ngIf="busquedaDepartamentoDni"
+        (click)="limpiarBusquedaDepartamento()"
+      >
+        Limpiar
+      </button>
+    </div>
+
+
     <div class="table-container">
 
       <table>
@@ -392,7 +462,7 @@
 
         <tr
           *ngFor="
-              let departamento of departamentos;
+              let departamento of departamentosFiltrados;
               let i = index
             "
         >
@@ -460,22 +530,24 @@
           </td>
 
 
-          <td class="correo">
-            {{ departamento.propietarioEmail }}
+          <td>
+            <span class="dni-owner">
+              DNI {{ obtenerDniPropietario(departamento.propietarioEmail) }}
+            </span>
           </td>
 
         </tr>
 
 
         <tr
-          *ngIf="departamentos.length === 0"
+          *ngIf="departamentosFiltrados.length === 0"
         >
 
           <td
             colspan="8"
             class="empty-table"
           >
-            No hay departamentos publicados.
+            No se encontraron departamentos para ese DNI.
           </td>
 
         </tr>
@@ -587,8 +659,10 @@
           </td>
 
 
-          <td class="correo">
-            {{ reserva.propietarioEmail }}
+          <td>
+            <span class="dni-owner">
+              DNI {{ obtenerDniPropietario(reserva.propietarioEmail) }}
+            </span>
           </td>
 
 

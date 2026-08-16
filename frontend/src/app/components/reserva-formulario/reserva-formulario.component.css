@@ -1618,3 +1618,330 @@ max-width: 550px
       );
   }
 }
+
+
+/* ============================================================
+   DESCRIPCIÓN DEL PROPIETARIO
+============================================================ */
+
+.property-description {
+  margin-top: 17px;
+  padding: 14px 15px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.property-description > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #334155;
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.property-description p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* ============================================================
+   CAPACIDAD DE HUÉSPEDES
+============================================================ */
+
+.form-group input.input-error {
+  border-color: #ef4444;
+  background: #fff7f7;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.08);
+}
+
+.capacity-error-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: -3px 0 20px;
+  padding: 14px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #fff1f2, #fef2f2);
+  color: #b91c1c;
+  animation: availabilityEntrada 0.25s ease both;
+}
+
+.capacity-error-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.capacity-error-card strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.capacity-error-card p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* ============================================================
+   TÉRMINOS Y CONDICIONES
+============================================================ */
+
+.terms-box {
+  margin-top: 22px;
+  padding: 15px 16px;
+  border: 1px solid #dbe3ec;
+  border-radius: 13px;
+  background: #f8fafc;
+}
+
+.terms-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.terms-check input {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  accent-color: #2563eb;
+  cursor: pointer;
+}
+
+.terms-link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #2563eb;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.terms-link:hover {
+  color: #1d4ed8;
+}
+
+.terms-box > small {
+  display: block;
+  margin: 7px 0 0 27px;
+  color: #94a3b8;
+  font-size: 9px;
+}
+
+
+/* ============================================================
+   MODAL TÉRMINOS
+============================================================ */
+
+.terms-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(7px);
+}
+
+.terms-modal {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 44px);
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.28);
+  animation: paymentEntrada 0.25s ease both;
+}
+
+.terms-modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  border-bottom: 1px solid #edf1f5;
+  background: #ffffff;
+}
+
+.terms-modal-header span {
+  display: block;
+  margin-bottom: 5px;
+  color: #ff385c;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+
+.terms-modal-header h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 21px;
+}
+
+.terms-modal-close {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.terms-modal-body {
+  padding: 22px 24px 8px;
+}
+
+.terms-item {
+  margin-bottom: 17px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.terms-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.terms-item strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #1e293b;
+  font-size: 12px;
+}
+
+.terms-item p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.terms-modal-footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  padding: 17px 24px 22px;
+  border-top: 1px solid #edf1f5;
+  background: #ffffff;
+}
+
+.terms-modal-footer button {
+  min-height: 43px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.terms-modal-footer button:hover {
+  background: #1d4ed8;
+}
+
+@media (max-width: 550px) {
+  .terms-modal-backdrop {
+    padding: 10px;
+  }
+
+  .terms-modal-header,
+  .terms-modal-body,
+  .terms-modal-footer {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .terms-box > small {
+    margin-left: 0;
+  }
+}
+
+
+/* ============================================================
+   SERVICIOS DEL ALOJAMIENTO
+============================================================ */
+
+.preview-amenities {
+  margin-top: 18px;
+  padding: 14px;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+
+  background: #f8fafc;
+}
+
+.preview-amenities-title {
+  display: block;
+  margin-bottom: 9px;
+
+  color: #334155;
+
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.preview-amenities-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preview-amenities-list span {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 7px 9px;
+
+  border: 1px solid #dbeafe;
+  border-radius: 999px;
+
+  background: #ffffff;
+  color: #475569;
+
+  font-size: 10px;
+  font-weight: 750;
+}

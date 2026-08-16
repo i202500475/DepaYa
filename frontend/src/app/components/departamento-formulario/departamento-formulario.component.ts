@@ -8,13 +8,9 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-departamento-formulario',
-
   standalone: true,
-
   imports: [CommonModule, FormsModule],
-
   templateUrl: './departamento-formulario.component.html',
-
   styleUrls: ['./departamento-formulario.component.css'],
 })
 export class DepartamentoFormularioComponent {
@@ -30,27 +26,27 @@ export class DepartamentoFormularioComponent {
   // ============================================================
 
   titulo = '';
-
   distrito = '';
-
   precioNoche: number | null = null;
-
   capacidad: number | null = null;
-
   habitaciones: number | null = null;
-
   banos: number | null = null;
-
   categoria = '';
-
   descripcion = '';
+
+  // ============================================================
+  // SERVICIOS Y COMODIDADES
+  // ============================================================
+
+  tienePiscina = false;
+  tieneWifi = false;
+  admiteMascotas = false;
 
   // ============================================================
   // IMAGEN
   // ============================================================
 
   imagenBase64 = '';
-
   nombreImagen = '';
 
   // ============================================================
@@ -58,9 +54,7 @@ export class DepartamentoFormularioComponent {
   // ============================================================
 
   publicando = false;
-
   mensaje = '';
-
   error = '';
 
   // ============================================================
@@ -101,33 +95,25 @@ export class DepartamentoFormularioComponent {
     this.error = '';
 
     const input = event.target as HTMLInputElement;
-
     const archivo = input.files?.[0];
 
     if (!archivo) {
       return;
     }
 
-    // Solo imágenes
     if (!archivo.type.startsWith('image/')) {
       this.error = 'Selecciona una imagen válida.';
-
       input.value = '';
-
       return;
     }
 
-    // Máximo 10 MB antes de comprimir
     if (archivo.size > 10 * 1024 * 1024) {
       this.error = 'La imagen no puede superar los 10 MB.';
-
       input.value = '';
-
       return;
     }
 
     this.nombreImagen = archivo.name;
-
     this.procesarImagen(archivo);
   }
 
@@ -146,41 +132,31 @@ export class DepartamentoFormularioComponent {
         const maxAlto = 900;
 
         let ancho = imagen.width;
-
         let alto = imagen.height;
 
-        // Redimensionar manteniendo proporción
         if (ancho > maxAncho || alto > maxAlto) {
           const escala = Math.min(maxAncho / ancho, maxAlto / alto);
-
           ancho = Math.round(ancho * escala);
-
           alto = Math.round(alto * escala);
         }
 
         const canvas = document.createElement('canvas');
-
         canvas.width = ancho;
-
         canvas.height = alto;
 
         const contexto = canvas.getContext('2d');
 
         if (!contexto) {
           this.error = 'No se pudo procesar la fotografía.';
-
           return;
         }
 
         contexto.drawImage(imagen, 0, 0, ancho, alto);
-
-        // Comprimir para evitar llenar localStorage
         this.imagenBase64 = canvas.toDataURL('image/jpeg', 0.72);
       };
 
       imagen.onerror = () => {
         this.error = 'No se pudo cargar la fotografía.';
-
         this.imagenBase64 = '';
       };
 
@@ -189,7 +165,6 @@ export class DepartamentoFormularioComponent {
 
     lector.onerror = () => {
       this.error = 'No se pudo leer la fotografía.';
-
       this.imagenBase64 = '';
     };
 
@@ -202,7 +177,6 @@ export class DepartamentoFormularioComponent {
 
   quitarImagen(): void {
     this.imagenBase64 = '';
-
     this.nombreImagen = '';
 
     if (this.inputImagen?.nativeElement) {
@@ -216,134 +190,91 @@ export class DepartamentoFormularioComponent {
 
   publicar(): void {
     this.mensaje = '';
-
     this.error = '';
-
-    // ==========================================================
-    // USUARIO ACTUAL
-    // ==========================================================
 
     const usuario = this.authService.obtenerUsuarioActual();
 
     if (!usuario) {
       this.error = 'Debes iniciar sesión para publicar un departamento.';
-
       return;
     }
 
     if (usuario.rol !== 'PROPIETARIO') {
       this.error = 'Solo los propietarios pueden publicar departamentos.';
-
       return;
     }
 
-    // ==========================================================
-    // VALIDACIONES
-    // ==========================================================
-
     if (!this.titulo.trim()) {
       this.error = 'Ingrese el título del inmueble.';
-
       return;
     }
 
     if (!this.distrito) {
       this.error = 'Seleccione un distrito.';
-
       return;
     }
 
     if (this.precioNoche === null || Number(this.precioNoche) <= 0) {
       this.error = 'Ingrese un precio por noche válido.';
-
       return;
     }
 
     if (this.capacidad === null || Number(this.capacidad) <= 0) {
       this.error = 'Ingrese la capacidad del inmueble.';
-
       return;
     }
 
     if (this.habitaciones === null || Number(this.habitaciones) <= 0) {
       this.error = 'Ingrese la cantidad de habitaciones.';
-
       return;
     }
 
     if (this.banos === null || Number(this.banos) <= 0) {
       this.error = 'Ingrese la cantidad de baños.';
-
       return;
     }
 
     if (!this.categoria) {
       this.error = 'Seleccione una categoría.';
-
       return;
     }
 
     if (!this.descripcion.trim()) {
       this.error = 'Ingrese una descripción del inmueble.';
-
       return;
     }
 
     if (!this.imagenBase64) {
       this.error = 'Debes seleccionar una fotografía del inmueble.';
-
       return;
     }
-
-    // ==========================================================
-    // GUARDAR
-    // ==========================================================
 
     this.publicando = true;
 
     try {
       const nuevoDepartamento: any = {
         id: 0,
-
         Titulo: this.titulo.trim(),
-
         Distrito: this.distrito,
-
         Precio_Noche: Number(this.precioNoche),
-
         Habitaciones: Number(this.habitaciones),
-
         Banos: Number(this.banos),
-
         Categoria: this.categoria,
-
         URL_Imagen: this.imagenBase64,
-
         propietarioEmail: usuario.email.trim().toLowerCase(),
-
         Descripcion: this.descripcion.trim(),
-
         Capacidad: Number(this.capacidad),
-
+        TienePiscina: this.tienePiscina,
+        TieneWifi: this.tieneWifi,
+        AdmiteMascotas: this.admiteMascotas,
         fechaPublicacion: new Date().toISOString(),
       };
 
       this.departamentoService.agregarDepartamento(nuevoDepartamento);
-
-      // ========================================================
-      // CONFIRMACIÓN
-      // ========================================================
-
       this.mensaje = '¡Departamento publicado correctamente!';
-
-      // ========================================================
-      // LIMPIAR FORMULARIO
-      // ========================================================
-
       this.limpiarFormulario();
     } catch (error) {
       console.error('Error publicando departamento:', error);
-
       this.error = 'No se pudo publicar el departamento.';
     } finally {
       this.publicando = false;
@@ -356,23 +287,17 @@ export class DepartamentoFormularioComponent {
 
   private limpiarFormulario(): void {
     this.titulo = '';
-
     this.distrito = '';
-
     this.precioNoche = null;
-
     this.capacidad = null;
-
     this.habitaciones = null;
-
     this.banos = null;
-
     this.categoria = '';
-
     this.descripcion = '';
-
+    this.tienePiscina = false;
+    this.tieneWifi = false;
+    this.admiteMascotas = false;
     this.imagenBase64 = '';
-
     this.nombreImagen = '';
 
     if (this.inputImagen?.nativeElement) {
