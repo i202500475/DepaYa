@@ -177,3 +177,4 @@ C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-auth\obj\Debug\net10.0\refint\ms-auth.
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-auth\obj\Debug\net10.0\ms-auth.pdb
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-auth\obj\Debug\net10.0\ms-auth.genruntimeconfig.cache
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-auth\obj\Debug\net10.0\ref\ms-auth.dll
+C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-auth\obj\Debug\net10.0\ms-auth.sourcelink.json

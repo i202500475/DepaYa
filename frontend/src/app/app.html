@@ -1,8 +1,29 @@
-<app-auth-navbar *ngIf="esRutaAuth"></app-auth-navbar>
-<app-navbar *ngIf="!esRutaAuth"></app-navbar>
+<!-- ============================================================
+     NAVBAR PRINCIPAL
+
+     En login y registro no mostramos ningún navbar.
+============================================================ -->
+
+<app-navbar
+  *ngIf="!esRutaAuth"
+></app-navbar>
+
+
+<!-- ============================================================
+     CONTENIDO
+============================================================ -->
 
 <div class="main-content">
   <router-outlet></router-outlet>
 </div>
 
-<app-footer *ngIf="!esRutaAuth"></app-footer>
+
+<!-- ============================================================
+     FOOTER
+
+     Tampoco se muestra en login ni registro.
+============================================================ -->
+
+<app-footer
+  *ngIf="!esRutaAuth"
+></app-footer>

@@ -1,10 +1,410 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+<div class="owner-page">
 
-</body>
-</html>
+  <div class="owner-container">
+
+    <!-- ======================================================
+         ENCABEZADO
+    ======================================================= -->
+
+    <section class="owner-header">
+
+      <div class="owner-header-info">
+        <span class="eyebrow">CUENTA DE PROPIETARIO</span>
+
+        <h1>
+          Hola, {{ usuarioActual?.nombre }}
+        </h1>
+
+        <p>
+          Administra tus publicaciones y las opciones relacionadas
+          con tu cuenta de DepaYa.
+        </p>
+      </div>
+
+      <div class="owner-avatar">
+        🏠
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         MENSAJES
+    ======================================================= -->
+
+    <div class="message success" *ngIf="mensaje">
+      <div class="message-icon">✓</div>
+
+      <div>
+        <strong>Operación realizada</strong>
+        <p>{{ mensaje }}</p>
+      </div>
+    </div>
+
+
+    <div class="message error" *ngIf="error">
+      <div class="message-icon">!</div>
+
+      <div>
+        <strong>No se pudo continuar</strong>
+        <p>{{ error }}</p>
+      </div>
+    </div>
+
+
+    <!-- ======================================================
+         RESUMEN
+    ======================================================= -->
+
+    <section class="stats-grid">
+
+      <article class="stat-card">
+        <div class="stat-icon">🏢</div>
+
+        <div>
+          <span>Departamentos</span>
+          <strong>{{ departamentos.length }}</strong>
+        </div>
+      </article>
+
+
+      <article class="stat-card">
+        <div class="stat-icon active-icon">✓</div>
+
+        <div>
+          <span>Publicaciones activas</span>
+          <strong>{{ departamentosActivos.length }}</strong>
+        </div>
+      </article>
+
+
+      <article class="stat-card">
+        <div class="stat-icon reserve-icon">📅</div>
+
+        <div>
+          <span>Reservas por completar</span>
+          <strong>{{ reservasPendientesCierre.length }}</strong>
+        </div>
+      </article>
+
+    </section>
+
+
+    <!-- ======================================================
+         ACCESOS
+    ======================================================= -->
+
+    <section class="owner-card">
+
+      <div class="section-title">
+        <div class="section-icon">⚙️</div>
+
+        <div>
+          <h2>Administración</h2>
+          <p>Accede rápidamente a las principales opciones de tu cuenta.</p>
+        </div>
+      </div>
+
+
+      <div class="quick-actions">
+
+        <a routerLink="/mis-departamentos" class="quick-action">
+          <div class="quick-icon">🏢</div>
+
+          <div>
+            <strong>Mis departamentos</strong>
+            <span>Revisa tus publicaciones</span>
+          </div>
+
+          <span class="arrow">→</span>
+        </a>
+
+
+        <a
+          *ngIf="!publicacionesBloqueadas"
+          routerLink="/publicar"
+          class="quick-action"
+        >
+          <div class="quick-icon">＋</div>
+
+          <div>
+            <strong>Publicar inmueble</strong>
+            <span>Agrega una nueva propiedad</span>
+          </div>
+
+          <span class="arrow">→</span>
+        </a>
+
+
+        <div
+          *ngIf="publicacionesBloqueadas"
+          class="quick-action quick-action-disabled"
+        >
+          <div class="quick-icon">🔒</div>
+
+          <div>
+            <strong>Publicaciones desactivadas</strong>
+            <span>Solo el administrador puede reactivarlas</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         AVISO IMPORTANTE
+    ======================================================= -->
+
+    <section class="important-warning">
+      <div class="important-warning-icon">⚠️</div>
+
+      <div>
+        <strong>Importante antes de desactivar</strong>
+
+        <p>
+          Si desactivas tus publicaciones o tu cuenta y luego cambias de decisión,
+          no podrás reactivarlas por tu cuenta. Tendrás que comunicarte con el
+          administrador de DepaYa para solicitar la reactivación.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- ======================================================
+         RESERVAS QUE BLOQUEAN CUENTA
+    ======================================================= -->
+
+    <section
+      class="owner-card"
+      *ngIf="reservasPendientesCierre.length > 0"
+    >
+
+      <div class="section-title">
+        <div class="section-icon warning-icon">📅</div>
+
+        <div>
+          <h2>Reservas por completar</h2>
+
+          <p>
+            Estas reservas deben finalizar antes de que puedas
+            desactivar tu cuenta.
+          </p>
+        </div>
+      </div>
+
+
+      <div class="reservations-list">
+
+        <article
+          class="reservation-item"
+          *ngFor="let reserva of reservasPendientesCierre"
+        >
+
+          <div class="reservation-main">
+            <span
+              class="reservation-status"
+              [class.pending]="reserva.estado === 'PENDIENTE'"
+            >
+              {{ reserva.estado }}
+            </span>
+
+            <strong>{{ reserva.departamento }}</strong>
+
+            <span class="reservation-city">
+              📍 {{ reserva.ciudad }}
+            </span>
+          </div>
+
+
+          <div class="reservation-dates">
+            <div>
+              <span>Ingreso</span>
+              <strong>{{ reserva.fechaInicio | date:'dd/MM/yyyy' }}</strong>
+            </div>
+
+            <div>
+              <span>Salida</span>
+              <strong>{{ reserva.fechaFin | date:'dd/MM/yyyy' }}</strong>
+            </div>
+          </div>
+
+        </article>
+
+      </div>
+
+
+      <div class="reservation-notice">
+        <span>ℹ️</span>
+
+        <p>
+          Mientras tengas una reserva activa o futura no podrás desactivar
+          completamente tu cuenta. Sí puedes desactivar tus publicaciones
+          para dejar de recibir nuevas reservas.
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         ZONA DE CUENTA
+    ======================================================= -->
+
+    <section class="account-zone">
+
+      <div class="account-zone-header">
+        <span class="account-eyebrow">CONFIGURACIÓN DE CUENTA</span>
+
+        <h2>¿Ya no deseas publicar en DepaYa?</h2>
+
+        <p>
+          Puedes desactivar tus publicaciones o, cuando no tengas reservas
+          pendientes, desactivar completamente tu cuenta.
+        </p>
+      </div>
+
+
+      <!-- ====================================================
+           DESACTIVAR PUBLICACIONES
+      ===================================================== -->
+
+      <article class="account-option">
+
+        <div class="account-option-icon deactivate">◉</div>
+
+        <div class="account-option-content">
+          <h3>Desactivar mis departamentos</h3>
+
+          <p>
+            Tus departamentos dejarán de aparecer en Explorar y no podrán
+            recibir nuevas reservas. Las reservas que ya existen continuarán
+            normalmente.
+          </p>
+
+          <div
+            class="status-box warning-status"
+            *ngIf="!publicacionesBloqueadas"
+          >
+            <strong>Reactivación solo por ADMIN</strong>
+            <span>
+              Si cambias de decisión después de desactivar, deberás comunicarte
+              con el administrador de DepaYa.
+            </span>
+          </div>
+
+          <div
+            class="status-box admin-status"
+            *ngIf="publicacionesBloqueadas"
+          >
+            <strong>🔒 Publicaciones desactivadas</strong>
+            <span>
+              Para volver a activarlas debes comunicarte con el administrador.
+            </span>
+          </div>
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-deactivate"
+          [disabled]="
+            procesando ||
+            publicacionesBloqueadas
+          "
+          (click)="desactivarDepartamentos()"
+        >
+          <span *ngIf="!procesando">Desactivar publicaciones</span>
+          <span *ngIf="procesando">Procesando...</span>
+        </button>
+
+      </article>
+
+
+      <!-- ====================================================
+           DESACTIVAR CUENTA
+      ===================================================== -->
+
+      <article class="account-option danger-option">
+
+        <div class="account-option-icon delete">!</div>
+
+        <div class="account-option-content">
+          <h3>Desactivar mi cuenta</h3>
+
+          <p *ngIf="puedeDesactivarCuenta">
+            Puedes desactivar tu cuenta porque no tienes reservas activas
+            ni futuras. Tu información quedará conservada para que un
+            administrador pueda reactivarla si posteriormente lo solicitas.
+          </p>
+
+          <p *ngIf="!puedeDesactivarCuenta">
+            No puedes desactivar tu cuenta todavía porque tienes una o más
+            reservas activas o futuras.
+          </p>
+
+          <div
+            class="status-box warning-status"
+            *ngIf="puedeDesactivarCuenta"
+          >
+            <strong>Solo ADMIN puede reactivar la cuenta</strong>
+            <span>
+              Si te arrepientes después de desactivarla, deberás comunicarte
+              con el administrador de DepaYa.
+            </span>
+          </div>
+
+          <div
+            class="status-box warning-status"
+            *ngIf="!puedeDesactivarCuenta"
+          >
+            <strong>Desactivación bloqueada</strong>
+            <span>
+              Última reserva hasta:
+              {{ fechaUltimaReserva | date:'dd/MM/yyyy' }}
+            </span>
+          </div>
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-delete-account"
+          [disabled]="
+            procesando ||
+            !puedeDesactivarCuenta
+          "
+          (click)="desactivarCuenta()"
+        >
+          <span *ngIf="!procesando">Desactivar mi cuenta</span>
+          <span *ngIf="procesando">Procesando...</span>
+        </button>
+
+      </article>
+
+    </section>
+
+
+    <!-- ======================================================
+         INFORMACIÓN
+    ======================================================= -->
+
+    <section class="information-card">
+      <div class="information-icon">🔒</div>
+
+      <div>
+        <strong>Tus reservas y datos históricos se conservan</strong>
+
+        <p>
+          Desactivar publicaciones o la cuenta no elimina las reservas ni
+          los pagos históricos. Esto permite mantener la trazabilidad de las
+          operaciones y, si lo solicitas, que el administrador pueda reactivar
+          tu acceso posteriormente.
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+</div>

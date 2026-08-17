@@ -750,6 +750,8 @@ export class ReservaFormularioComponent implements OnInit {
         this.usuarioActual.apellido || ''
       }`.trim(),
 
+      huespedes: Math.floor(Number(this.huespedes)),
+
       fechaInicio: this.fechaInicio,
 
       fechaFin: this.fechaFin,

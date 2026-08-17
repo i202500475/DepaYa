@@ -204,6 +204,12 @@ export class DepartamentoFormularioComponent {
       return;
     }
 
+    if (usuario.PublicacionesHabilitadas === false) {
+      this.error =
+        'Tus publicaciones están desactivadas. Si deseas volver a publicar, debes comunicarte con el administrador de DepaYa para solicitar la reactivación.';
+      return;
+    }
+
     if (!this.titulo.trim()) {
       this.error = 'Ingrese el título del inmueble.';
       return;

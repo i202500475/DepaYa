@@ -21,6 +21,10 @@ export interface Reserva {
 
   inquilinoNombre: string;
 
+  // Cantidad de huéspedes de la reserva.
+  // Es opcional para mantener compatibilidad con reservas antiguas.
+  huespedes?: number;
+
   fechaInicio: string;
 
   fechaFin: string;
@@ -91,6 +95,11 @@ export class ReservaService {
         ...reserva,
 
         estadoReembolso: reserva.estadoReembolso ?? 'NO_APLICA',
+
+        huespedes:
+          Number.isFinite(Number(reserva.huespedes)) && Number(reserva.huespedes) >= 1
+            ? Math.floor(Number(reserva.huespedes))
+            : undefined,
       }));
     } catch (error) {
       console.error('Error cargando reservas:', error);

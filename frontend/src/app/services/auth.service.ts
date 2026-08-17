@@ -13,6 +13,15 @@ export interface Usuario {
   nroDoc?: string;
   rol: RolUsuario;
   fecha?: string;
+
+  // Estado lógico de la cuenta. Los registros antiguos se consideran activos.
+  Activo?: boolean;
+
+  // Si es false, el propietario conserva acceso a reservas/pagos,
+  // pero no puede crear nuevas publicaciones hasta que ADMIN lo reactive.
+  PublicacionesHabilitadas?: boolean;
+
+  fechaDesactivacion?: string;
 }
 
 @Injectable({
@@ -82,6 +91,15 @@ export class AuthService {
           rol: this.normalizarRol(usuario.rol),
 
           fecha: usuario.fecha || usuario.fecha_Registro || new Date().toLocaleDateString('es-PE'),
+
+          Activo: usuario.Activo !== false && usuario.activo !== false,
+
+          PublicacionesHabilitadas:
+            usuario.PublicacionesHabilitadas !== false &&
+            usuario.publicacionesHabilitadas !== false,
+
+          fechaDesactivacion:
+            usuario.fechaDesactivacion || '',
         };
       });
 
@@ -129,6 +147,12 @@ export class AuthService {
         rol: 'ADMIN',
 
         fecha: new Date().toLocaleDateString('es-PE'),
+
+        Activo: true,
+
+        PublicacionesHabilitadas: true,
+
+        fechaDesactivacion: '',
       },
 
       {
@@ -151,6 +175,12 @@ export class AuthService {
         rol: 'PROPIETARIO',
 
         fecha: new Date().toLocaleDateString('es-PE'),
+
+        Activo: true,
+
+        PublicacionesHabilitadas: true,
+
+        fechaDesactivacion: '',
       },
 
       {
@@ -173,6 +203,12 @@ export class AuthService {
         rol: 'INQUILINO',
 
         fecha: new Date().toLocaleDateString('es-PE'),
+
+        Activo: true,
+
+        PublicacionesHabilitadas: true,
+
+        fechaDesactivacion: '',
       },
     ];
 
@@ -287,6 +323,12 @@ export class AuthService {
       rol: 'ADMIN',
 
       fecha: new Date().toLocaleDateString('es-PE'),
+
+      Activo: true,
+
+      PublicacionesHabilitadas: true,
+
+      fechaDesactivacion: '',
     });
 
     this.guardarUsuarios();
@@ -405,6 +447,14 @@ export class AuthService {
       rol: this.normalizarRol(usuario.rol),
 
       fecha: usuario.fecha || new Date().toLocaleDateString('es-PE'),
+
+      Activo: usuario.Activo !== false,
+
+      PublicacionesHabilitadas:
+        usuario.PublicacionesHabilitadas !== false,
+
+      fechaDesactivacion:
+        usuario.fechaDesactivacion || '',
     };
 
     this.usuarios.push(nuevoUsuario);
@@ -544,6 +594,12 @@ export class AuthService {
       return null;
     }
 
+    if (usuario.Activo === false) {
+      console.warn('Cuenta desactivada:', correo);
+
+      return null;
+    }
+
     const usuarioActual: Usuario = {
       ...usuario,
 
@@ -613,6 +669,134 @@ export class AuthService {
 
   estaLogueado(): boolean {
     return this.obtenerUsuarioActual() !== null;
+  }
+
+  // ============================================================
+  // BLOQUEAR PUBLICACIONES DEL PROPIETARIO
+  // ============================================================
+
+  bloquearPublicacionesPropietario(id: number): boolean {
+    this.refrescarUsuarios();
+
+    const indice = this.usuarios.findIndex((usuario) => usuario.id === id);
+
+    if (indice === -1) {
+      return false;
+    }
+
+    if (this.usuarios[indice].rol !== 'PROPIETARIO') {
+      return false;
+    }
+
+    this.usuarios[indice] = {
+      ...this.usuarios[indice],
+      PublicacionesHabilitadas: false,
+    };
+
+    this.guardarUsuarios();
+    this.sincronizarUsuarioActual(this.usuarios[indice]);
+
+    return true;
+  }
+
+  // ============================================================
+  // DESACTIVAR CUENTA DEL USUARIO
+  // La cuenta NO se borra físicamente para permitir que ADMIN
+  // pueda reactivarla posteriormente.
+  // ============================================================
+
+  desactivarCuenta(id: number): boolean {
+    this.refrescarUsuarios();
+
+    const indice = this.usuarios.findIndex((usuario) => usuario.id === id);
+
+    if (indice === -1) {
+      return false;
+    }
+
+    const usuario = this.usuarios[indice];
+
+    if (usuario.email.trim().toLowerCase() === 'admin@depaya.com') {
+      return false;
+    }
+
+    this.usuarios[indice] = {
+      ...usuario,
+      Activo: false,
+      PublicacionesHabilitadas:
+        usuario.rol === 'PROPIETARIO'
+          ? false
+          : usuario.PublicacionesHabilitadas !== false,
+      fechaDesactivacion: new Date().toISOString(),
+    };
+
+    this.guardarUsuarios();
+
+    const actual = this.obtenerUsuarioActual();
+
+    if (actual?.id === id) {
+      localStorage.removeItem(this.CURRENT_USER_KEY);
+    }
+
+    return true;
+  }
+
+  // ============================================================
+  // REACTIVAR USUARIO - USO ADMIN
+  // ============================================================
+
+  reactivarUsuario(id: number): boolean {
+    this.refrescarUsuarios();
+
+    const indice = this.usuarios.findIndex((usuario) => usuario.id === id);
+
+    if (indice === -1) {
+      return false;
+    }
+
+    this.usuarios[indice] = {
+      ...this.usuarios[indice],
+      Activo: true,
+      PublicacionesHabilitadas: true,
+      fechaDesactivacion: '',
+    };
+
+    this.guardarUsuarios();
+
+    return true;
+  }
+
+  // ============================================================
+  // ESTADO DE PUBLICACIÓN
+  // ============================================================
+
+  puedePublicar(email: string): boolean {
+    const usuario = this.obtenerUsuarioPorEmail(email);
+
+    if (!usuario || usuario.Activo === false) {
+      return false;
+    }
+
+    if (usuario.rol !== 'PROPIETARIO') {
+      return false;
+    }
+
+    return usuario.PublicacionesHabilitadas !== false;
+  }
+
+  // ============================================================
+  // SINCRONIZAR USUARIO ACTUAL
+  // ============================================================
+
+  private sincronizarUsuarioActual(usuario: Usuario): void {
+    const actual = this.obtenerUsuarioActual();
+
+    if (actual?.id === usuario.id) {
+      localStorage.setItem(
+        this.CURRENT_USER_KEY,
+        JSON.stringify(usuario),
+      );
+    }
   }
 
   // ============================================================

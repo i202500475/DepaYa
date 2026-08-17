@@ -137,3 +137,4 @@ C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-reservas\obj\Debug\net10.0\refint\ms-r
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-reservas\obj\Debug\net10.0\ms-reservas.pdb
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-reservas\obj\Debug\net10.0\ms-reservas.genruntimeconfig.cache
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-reservas\obj\Debug\net10.0\ref\ms-reservas.dll
+C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-reservas\obj\Debug\net10.0\ms-reservas.sourcelink.json

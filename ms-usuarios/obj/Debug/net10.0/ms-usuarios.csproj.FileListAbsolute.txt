@@ -137,3 +137,4 @@ C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-usuarios\obj\Debug\net10.0\refint\ms-u
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-usuarios\obj\Debug\net10.0\ms-usuarios.pdb
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-usuarios\obj\Debug\net10.0\ms-usuarios.genruntimeconfig.cache
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-usuarios\obj\Debug\net10.0\ref\ms-usuarios.dll
+C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-usuarios\obj\Debug\net10.0\ms-usuarios.sourcelink.json

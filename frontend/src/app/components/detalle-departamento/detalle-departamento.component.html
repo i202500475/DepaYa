@@ -1,0 +1,703 @@
+<div class="detail-page">
+
+  <div class="detail-container">
+
+    <!-- ======================================================
+         ERROR
+    ======================================================= -->
+
+    <section
+      class="error-state"
+      *ngIf="error"
+    >
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <h1>
+        Alojamiento no disponible
+      </h1>
+
+      <p>
+        {{ error }}
+      </p>
+
+      <button
+        type="button"
+        (click)="volverExplorar()"
+      >
+        Volver a Explorar
+      </button>
+
+    </section>
+
+
+    <!-- ======================================================
+         CONTENIDO
+    ======================================================= -->
+
+    <ng-container
+      *ngIf="departamento && !error"
+    >
+
+      <!-- ====================================================
+           VOLVER
+      ===================================================== -->
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="volverExplorar()"
+      >
+
+        <span>
+          ←
+        </span>
+
+        Volver a Explorar
+
+      </button>
+
+
+      <!-- ====================================================
+           ENCABEZADO
+      ===================================================== -->
+
+      <section class="property-header">
+
+        <div>
+
+          <div class="header-tags">
+
+            <span class="category-tag">
+              {{ departamento.Categoria }}
+            </span>
+
+            <span class="available-tag">
+              <span class="available-dot"></span>
+              Disponible
+            </span>
+
+          </div>
+
+
+          <h1>
+            {{ departamento.Titulo }}
+          </h1>
+
+
+          <div class="location">
+
+            <span class="location-icon">
+              📍
+            </span>
+
+            <span>
+              {{ departamento.Distrito }},
+              Lima
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="header-price">
+
+          <span>
+            Desde
+          </span>
+
+          <strong>
+            S/
+            {{
+            precioNoche
+            | number:'1.2-2'
+            }}
+          </strong>
+
+          <small>
+            por noche
+          </small>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           IMAGEN PRINCIPAL
+      ===================================================== -->
+
+      <section class="gallery-section">
+
+        <div class="main-image">
+
+          <img
+            [src]="departamento.URL_Imagen"
+            [alt]="departamento.Titulo"
+          >
+
+          <div class="image-gradient"></div>
+
+
+          <div class="image-category">
+            {{ departamento.Categoria }}
+          </div>
+
+
+          <div class="image-location">
+            📍 {{ departamento.Distrito }}
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ====================================================
+           CONTENIDO PRINCIPAL
+      ===================================================== -->
+
+      <section class="content-grid">
+
+        <!-- ==================================================
+             COLUMNA IZQUIERDA
+        =================================================== -->
+
+        <div class="property-content">
+
+          <!-- ================================================
+               INFORMACIÓN RÁPIDA
+          ================================================= -->
+
+          <section class="property-stats">
+
+            <article class="stat-item">
+
+              <div class="stat-icon">
+                🛏️
+              </div>
+
+              <div>
+
+                <span>
+                  Habitaciones
+                </span>
+
+                <strong>
+                  {{ departamento.Habitaciones }}
+                </strong>
+
+              </div>
+
+            </article>
+
+
+            <article class="stat-item">
+
+              <div class="stat-icon">
+                🚿
+              </div>
+
+              <div>
+
+                <span>
+                  Baños
+                </span>
+
+                <strong>
+                  {{ departamento.Banos }}
+                </strong>
+
+              </div>
+
+            </article>
+
+
+            <article class="stat-item">
+
+              <div class="stat-icon">
+                👥
+              </div>
+
+              <div>
+
+                <span>
+                  Capacidad
+                </span>
+
+                <strong
+                  *ngIf="capacidadMaxima > 0"
+                >
+                  Hasta
+                  {{ capacidadMaxima }}
+                </strong>
+
+                <strong
+                  *ngIf="capacidadMaxima <= 0"
+                >
+                  Consultar
+                </strong>
+
+              </div>
+
+            </article>
+
+
+            <article class="stat-item">
+
+              <div class="stat-icon">
+                🏷️
+              </div>
+
+              <div>
+
+                <span>
+                  Categoría
+                </span>
+
+                <strong>
+                  {{ departamento.Categoria }}
+                </strong>
+
+              </div>
+
+            </article>
+
+          </section>
+
+
+          <!-- ================================================
+               DESCRIPCIÓN
+          ================================================= -->
+
+          <section class="content-card">
+
+            <div class="content-heading">
+
+              <div class="heading-icon">
+                🏠
+              </div>
+
+              <div>
+
+                <span>
+                  SOBRE EL ALOJAMIENTO
+                </span>
+
+                <h2>
+                  Conoce este departamento
+                </h2>
+
+              </div>
+
+            </div>
+
+
+            <p class="description">
+              {{ descripcion }}
+            </p>
+
+          </section>
+
+
+          <!-- ================================================
+               SERVICIOS
+          ================================================= -->
+
+          <section class="content-card">
+
+            <div class="content-heading">
+
+              <div class="heading-icon amenities-heading">
+                ✨
+              </div>
+
+              <div>
+
+                <span>
+                  COMODIDADES
+                </span>
+
+                <h2>
+                  Servicios incluidos
+                </h2>
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="amenities-grid"
+              *ngIf="tieneServicios"
+            >
+
+              <article
+                class="amenity"
+                *ngIf="departamento.TieneWifi"
+              >
+
+                <div class="amenity-icon">
+                  📶
+                </div>
+
+                <div>
+
+                  <strong>
+                    WiFi
+                  </strong>
+
+                  <span>
+                    Internet disponible
+                  </span>
+
+                </div>
+
+              </article>
+
+
+              <article
+                class="amenity"
+                *ngIf="departamento.TienePiscina"
+              >
+
+                <div class="amenity-icon">
+                  🏊
+                </div>
+
+                <div>
+
+                  <strong>
+                    Piscina
+                  </strong>
+
+                  <span>
+                    Piscina disponible
+                  </span>
+
+                </div>
+
+              </article>
+
+
+              <article
+                class="amenity"
+                *ngIf="departamento.AdmiteMascotas"
+              >
+
+                <div class="amenity-icon">
+                  🐾
+                </div>
+
+                <div>
+
+                  <strong>
+                    Se admiten mascotas
+                  </strong>
+
+                  <span>
+                    Alojamiento pet friendly
+                  </span>
+
+                </div>
+
+              </article>
+
+            </div>
+
+
+            <div
+              class="no-amenities"
+              *ngIf="!tieneServicios"
+            >
+
+              <span>
+                ℹ
+              </span>
+
+              El propietario no indicó servicios adicionales.
+
+            </div>
+
+          </section>
+
+
+          <!-- ================================================
+               INFORMACIÓN
+          ================================================= -->
+
+          <section class="content-card">
+
+            <div class="content-heading">
+
+              <div class="heading-icon security-heading">
+                ✓
+              </div>
+
+              <div>
+
+                <span>
+                  DEPAYA
+                </span>
+
+                <h2>
+                  Antes de reservar
+                </h2>
+
+              </div>
+
+            </div>
+
+
+            <div class="information-list">
+
+              <div>
+
+                <span class="check-icon">
+                  ✓
+                </span>
+
+                <p>
+                  Verifica las fechas de ingreso
+                  y salida antes de realizar el pago.
+                </p>
+
+              </div>
+
+
+              <div>
+
+                <span class="check-icon">
+                  ✓
+                </span>
+
+                <p>
+                  La cantidad de huéspedes no puede
+                  superar la capacidad publicada.
+                </p>
+
+              </div>
+
+
+              <div>
+
+                <span class="check-icon">
+                  ✓
+                </span>
+
+                <p>
+                  Antes del pago podrás revisar y aceptar
+                  los términos y condiciones de la reserva.
+                </p>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- ==================================================
+             RESUMEN RESERVA
+        =================================================== -->
+
+        <aside class="booking-column">
+
+          <section class="booking-card">
+
+            <div class="booking-header">
+
+              <div>
+
+                <span>
+                  PRECIO POR NOCHE
+                </span>
+
+                <div class="booking-price">
+
+                  <strong>
+                    S/
+                    {{
+                    precioNoche
+                    | number:'1.2-2'
+                    }}
+                  </strong>
+
+                  <small>
+                    / noche
+                  </small>
+
+                </div>
+
+              </div>
+
+
+              <div class="booking-badge">
+                Disponible
+              </div>
+
+            </div>
+
+
+            <div class="booking-divider"></div>
+
+
+            <!-- HUÉSPEDES -->
+
+            <div class="guest-field">
+
+              <label
+                for="detalleHuespedes"
+              >
+                ¿Cuántas personas se hospedarán?
+              </label>
+
+
+              <div class="guest-input">
+
+                <span>
+                  👥
+                </span>
+
+                <input
+                  id="detalleHuespedes"
+                  type="number"
+                  min="1"
+                  [max]="
+                    capacidadMaxima > 0
+                      ? capacidadMaxima
+                      : null
+                  "
+                  [(ngModel)]="huespedes"
+                  (ngModelChange)="normalizarHuespedes()"
+                >
+
+              </div>
+
+
+              <small
+                *ngIf="capacidadMaxima > 0"
+              >
+                Capacidad máxima:
+                {{ capacidadMaxima }}
+                huésped(es).
+              </small>
+
+            </div>
+
+
+            <!-- ERROR CAPACIDAD -->
+
+            <div
+              class="capacity-alert"
+              *ngIf="capacidadSuperada"
+            >
+
+              <span>
+                !
+              </span>
+
+              <div>
+
+                <strong>
+                  Capacidad superada
+                </strong>
+
+                <p>
+                  Este departamento permite
+                  un máximo de
+                  {{ capacidadMaxima }}
+                  huésped(es).
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- RESUMEN -->
+
+            <div class="booking-summary">
+
+              <div>
+
+                <span>
+                  Precio
+                </span>
+
+                <strong>
+                  S/
+                  {{
+                  precioNoche
+                  | number:'1.2-2'
+                  }}
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Huéspedes
+                </span>
+
+                <strong>
+                  {{ huespedes || 1 }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <button
+              type="button"
+              class="reserve-button"
+              [disabled]="!huespedesValidos"
+              (click)="reservarAhora()"
+            >
+
+              <span>
+                Continuar con la reserva
+              </span>
+
+              <strong>
+                →
+              </strong>
+
+            </button>
+
+
+            <div class="booking-note">
+
+              <span>
+                🔒
+              </span>
+
+              <p>
+                Todavía no se realizará ningún cobro.
+                En el siguiente paso seleccionarás
+                fechas y método de pago.
+              </p>
+
+            </div>
+
+          </section>
+
+        </aside>
+
+      </section>
+
+    </ng-container>
+
+  </div>
+
+</div>

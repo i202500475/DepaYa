@@ -137,3 +137,4 @@ C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-pagos\obj\Debug\net10.0\refint\ms-pago
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-pagos\obj\Debug\net10.0\ms-pagos.pdb
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-pagos\obj\Debug\net10.0\ms-pagos.genruntimeconfig.cache
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-pagos\obj\Debug\net10.0\ref\ms-pagos.dll
+C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-pagos\obj\Debug\net10.0\ms-pagos.sourcelink.json

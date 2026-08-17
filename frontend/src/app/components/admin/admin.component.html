@@ -245,6 +245,7 @@
           <th>Correo</th>
           <th>Teléfono</th>
           <th>Rol</th>
+          <th>Estado</th>
           <th>Registro</th>
           <th class="center">Acciones</th>
         </tr>
@@ -310,6 +311,16 @@
 
 
           <td>
+            <span
+              class="estado-cuenta"
+              [ngClass]="obtenerClaseEstadoUsuario(usuario)"
+            >
+              {{ obtenerTextoEstadoUsuario(usuario) }}
+            </span>
+          </td>
+
+
+          <td>
             {{ usuario.fecha || '-' }}
           </td>
 
@@ -317,6 +328,17 @@
           <td class="center">
 
             <div class="actions">
+
+              <button
+                *ngIf="propietarioNecesitaReactivacion(usuario)"
+                type="button"
+                class="btn-reactivate"
+                title="Reactivar propietario y departamentos"
+                (click)="reactivarPropietario(usuario)"
+              >
+                ♻️
+              </button>
+
 
               <button
                 type="button"
@@ -354,7 +376,7 @@
         >
 
           <td
-            colspan="8"
+            colspan="9"
             class="empty-table"
           >
             No se encontraron usuarios con ese DNI.

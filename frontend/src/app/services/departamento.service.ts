@@ -15,6 +15,7 @@ export interface Departamento {
   TienePiscina?: boolean;
   TieneWifi?: boolean;
   AdmiteMascotas?: boolean;
+  Activo?: boolean;
   fechaPublicacion?: string;
 }
 
@@ -94,6 +95,7 @@ export class DepartamentoService {
       TienePiscina: Boolean(departamento.TienePiscina),
       TieneWifi: Boolean(departamento.TieneWifi),
       AdmiteMascotas: Boolean(departamento.AdmiteMascotas),
+      Activo: departamento.Activo !== false,
     }));
   }
 
@@ -139,6 +141,20 @@ export class DepartamentoService {
     return this.departamentos.map((departamento) => ({
       ...departamento,
     }));
+  }
+
+  // ============================================================
+  // LISTAR SOLO ACTIVOS
+  // ============================================================
+
+  getDepartamentosActivos(): Departamento[] {
+    this.sincronizar();
+
+    return this.departamentos
+      .filter((departamento) => departamento.Activo !== false)
+      .map((departamento) => ({
+        ...departamento,
+      }));
   }
 
   // ============================================================
@@ -190,6 +206,7 @@ export class DepartamentoService {
       TienePiscina: Boolean(departamento.TienePiscina),
       TieneWifi: Boolean(departamento.TieneWifi),
       AdmiteMascotas: Boolean(departamento.AdmiteMascotas),
+      Activo: departamento.Activo !== false,
       fechaPublicacion: departamento.fechaPublicacion || new Date().toISOString(),
     };
 
@@ -223,10 +240,126 @@ export class DepartamentoService {
       TienePiscina: Boolean(departamento.TienePiscina),
       TieneWifi: Boolean(departamento.TieneWifi),
       AdmiteMascotas: Boolean(departamento.AdmiteMascotas),
+      Activo:
+        departamento.Activo === undefined
+          ? this.departamentos[indice].Activo !== false
+          : departamento.Activo !== false,
     };
 
     this.guardar();
     return true;
+  }
+
+  // ============================================================
+  // DESACTIVAR UN DEPARTAMENTO
+  // ============================================================
+
+  desactivarDepartamento(id: number): boolean {
+    this.sincronizar();
+
+    const indice = this.departamentos.findIndex(
+      (departamento) => Number(departamento.id) === Number(id),
+    );
+
+    if (indice === -1) {
+      return false;
+    }
+
+    this.departamentos[indice] = {
+      ...this.departamentos[indice],
+      Activo: false,
+    };
+
+    this.guardar();
+    return true;
+  }
+
+  // ============================================================
+  // DESACTIVAR TODOS LOS DEPARTAMENTOS DEL PROPIETARIO
+  // ============================================================
+
+  desactivarDepartamentosPropietario(email: string): number {
+    this.sincronizar();
+
+    const correo = email.trim().toLowerCase();
+    let cantidad = 0;
+
+    this.departamentos = this.departamentos.map((departamento) => {
+      const pertenece = (departamento.propietarioEmail || '').trim().toLowerCase() === correo;
+
+      if (pertenece && departamento.Activo !== false) {
+        cantidad++;
+
+        return {
+          ...departamento,
+          Activo: false,
+        };
+      }
+
+      return departamento;
+    });
+
+    if (cantidad > 0) {
+      this.guardar();
+    }
+
+    return cantidad;
+  }
+
+  // ============================================================
+  // REACTIVAR TODOS LOS DEPARTAMENTOS DEL PROPIETARIO
+  // SOLO DEBE SER LLAMADO DESDE LA GESTIÓN DEL ADMINISTRADOR
+  // ============================================================
+
+  reactivarDepartamentosPropietario(email: string): number {
+    this.sincronizar();
+
+    const correo = email.trim().toLowerCase();
+    let cantidad = 0;
+
+    this.departamentos = this.departamentos.map((departamento) => {
+      const pertenece = (departamento.propietarioEmail || '').trim().toLowerCase() === correo;
+
+      if (pertenece && departamento.Activo === false) {
+        cantidad++;
+
+        return {
+          ...departamento,
+          Activo: true,
+        };
+      }
+
+      return departamento;
+    });
+
+    if (cantidad > 0) {
+      this.guardar();
+    }
+
+    return cantidad;
+  }
+
+  // ============================================================
+  // ELIMINAR TODOS LOS DEPARTAMENTOS DEL PROPIETARIO
+  // ============================================================
+
+  eliminarDepartamentosPorPropietario(email: string): number {
+    this.sincronizar();
+
+    const correo = email.trim().toLowerCase();
+    const cantidadAnterior = this.departamentos.length;
+
+    this.departamentos = this.departamentos.filter(
+      (departamento) => (departamento.propietarioEmail || '').trim().toLowerCase() !== correo,
+    );
+
+    const eliminados = cantidadAnterior - this.departamentos.length;
+
+    if (eliminados > 0) {
+      this.guardar();
+    }
+
+    return eliminados;
   }
 
   // ============================================================

@@ -1,179 +1,370 @@
-<div class="page">
+<div class="rentals-page">
 
-  <div class="page-header">
+  <div class="rentals-container">
 
-    <div>
+    <!-- ======================================================
+         ENCABEZADO
+    ======================================================= -->
 
-      <span class="label">
-        PROPIETARIO
-      </span>
+    <section class="page-header">
 
-      <h1>
-        Mis alquileres
-      </h1>
+      <div class="header-copy">
 
-      <p>
-        Reservas realizadas únicamente sobre tus departamentos.
-      </p>
+        <span class="eyebrow">
+          PROPIETARIO · RESERVAS
+        </span>
 
-    </div>
+        <h1>
+          Mis alquileres
+        </h1>
+
+        <p>
+          Revisa quién se hospedará en tus departamentos,
+          las fechas de cada reserva y la cantidad de huéspedes.
+        </p>
+
+        <div
+          class="search-context"
+          *ngIf="busquedaActual"
+        >
+          <span>🔎</span>
+
+          Mostrando resultados para
+          <strong>“{{ busquedaActual }}”</strong>
+        </div>
+
+      </div>
+
+      <div class="header-decoration">
+        <span>🏙️</span>
+      </div>
+
+    </section>
 
 
-    <div class="contador">
+    <!-- ======================================================
+         RESUMEN
+    ======================================================= -->
 
-      <strong>
-        {{ alquileres.length }}
-      </strong>
+    <section class="summary-grid">
 
-      <span>
-        reservas
-      </span>
+      <article class="summary-card">
 
-    </div>
+        <div class="summary-icon blue">
+          📅
+        </div>
 
-  </div>
+        <div>
+          <span>Total de reservas</span>
+          <strong>{{ totalReservas }}</strong>
+        </div>
+
+      </article>
 
 
-  <div
-    class="lista"
-    *ngIf="alquileres.length > 0"
-  >
+      <article class="summary-card">
 
-    <article
-      class="alquiler-card"
-      *ngFor="let alquiler of alquileres"
+        <div class="summary-icon green">
+          ✓
+        </div>
+
+        <div>
+          <span>Confirmadas</span>
+          <strong>{{ totalConfirmadas }}</strong>
+        </div>
+
+      </article>
+
+
+      <article class="summary-card">
+
+        <div class="summary-icon amber">
+          ⏱
+        </div>
+
+        <div>
+          <span>Pendientes</span>
+          <strong>{{ totalPendientes }}</strong>
+        </div>
+
+      </article>
+
+
+      <article class="summary-card highlight-card">
+
+        <div class="summary-icon pink">
+          👥
+        </div>
+
+        <div>
+          <span>Huéspedes próximos</span>
+          <strong>{{ huespedesProximos }}</strong>
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ======================================================
+         LISTADO
+    ======================================================= -->
+
+    <section
+      class="rentals-list"
+      *ngIf="alquileres.length > 0"
     >
 
-      <div class="card-header">
+      <article
+        class="rental-card"
+        *ngFor="let alquiler of alquileres; let i = index"
+        [style.--delay]="(i * 60) + 'ms'"
+      >
 
-        <div>
+        <!-- ==================================================
+             IMAGEN
+        =================================================== -->
 
-          <span class="departamento-label">
-            DEPARTAMENTO
+        <div class="property-media">
+
+          <img
+            *ngIf="obtenerImagen(alquiler)"
+            [src]="obtenerImagen(alquiler)"
+            [alt]="alquiler.departamento"
+          >
+
+          <div
+            class="property-placeholder"
+            *ngIf="!obtenerImagen(alquiler)"
+          >
+            <span>🏢</span>
+          </div>
+
+          <div class="media-gradient"></div>
+
+          <span
+            class="estado estado-media"
+            [ngClass]="claseEstado(alquiler.estado)"
+          >
+            <span class="estado-dot"></span>
+            {{ alquiler.estado }}
           </span>
 
-          <h2>
-            {{ alquiler.departamento }}
-          </h2>
-
-          <p>
+          <div class="media-location">
             📍 {{ alquiler.ciudad }}
-          </p>
+          </div>
 
         </div>
 
 
-        <span
-          class="estado"
-          [ngClass]="claseEstado(alquiler.estado)"
-        >
-          {{ alquiler.estado }}
-        </span>
+        <!-- ==================================================
+             CONTENIDO
+        =================================================== -->
 
+        <div class="rental-content">
+
+          <div class="rental-top">
+
+            <div>
+
+              <span class="reservation-id">
+                RESERVA #{{ alquiler.id }}
+              </span>
+
+              <h2>
+                {{ alquiler.departamento }}
+              </h2>
+
+              <p class="location-mobile">
+                📍 {{ alquiler.ciudad }}
+              </p>
+
+            </div>
+
+            <span
+              class="estado estado-desktop"
+              [ngClass]="claseEstado(alquiler.estado)"
+            >
+              <span class="estado-dot"></span>
+              {{ alquiler.estado }}
+            </span>
+
+          </div>
+
+
+          <!-- ================================================
+               HUÉSPED
+          ================================================= -->
+
+          <div class="guest-panel">
+
+            <div class="guest-avatar">
+              {{ alquiler.inquilinoNombre?.charAt(0) || '?' }}
+            </div>
+
+            <div class="guest-info">
+
+              <span>
+                INQUILINO
+              </span>
+
+              <strong>
+                {{ alquiler.inquilinoNombre || 'Sin nombre registrado' }}
+              </strong>
+
+              <small>
+                {{ alquiler.inquilinoEmail }}
+              </small>
+
+            </div>
+
+
+            <div class="guest-count">
+
+              <div class="guest-count-icon">
+                👥
+              </div>
+
+              <div>
+                <span>Huéspedes</span>
+
+                <strong
+                  [class.not-registered]="!tieneHuespedesRegistrados(alquiler)"
+                >
+                  {{ textoHuespedes(alquiler) }}
+                </strong>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ================================================
+               DATOS DE LA ESTADÍA
+          ================================================= -->
+
+          <div class="stay-grid">
+
+            <div class="stay-item">
+
+              <div class="stay-icon">
+                ↘
+              </div>
+
+              <div>
+                <span>Ingreso</span>
+                <strong>{{ alquiler.fechaInicio | date:'dd/MM/yyyy' }}</strong>
+              </div>
+
+            </div>
+
+
+            <div class="stay-item">
+
+              <div class="stay-icon">
+                ↗
+              </div>
+
+              <div>
+                <span>Salida</span>
+                <strong>{{ alquiler.fechaFin | date:'dd/MM/yyyy' }}</strong>
+              </div>
+
+            </div>
+
+
+            <div class="stay-item">
+
+              <div class="stay-icon">
+                🌙
+              </div>
+
+              <div>
+                <span>Noches</span>
+                <strong>{{ alquiler.noches }}</strong>
+              </div>
+
+            </div>
+
+
+            <div class="stay-item total-item">
+
+              <div class="stay-icon">
+                S/
+              </div>
+
+              <div>
+                <span>Total de la reserva</span>
+                <strong>S/ {{ alquiler.total | number:'1.2-2' }}</strong>
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ================================================
+               FOOTER DE TARJETA
+          ================================================= -->
+
+          <div class="card-footer">
+
+            <div class="registered-date">
+              <span>🕒</span>
+
+              Reserva realizada
+              <strong>
+                {{ alquiler.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
+              </strong>
+            </div>
+
+            <div class="reservation-protection">
+              <span>✓</span>
+              Registro DepaYa
+            </div>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- ======================================================
+         SIN RESULTADOS
+    ======================================================= -->
+
+    <section
+      class="empty-state"
+      *ngIf="alquileres.length === 0"
+    >
+
+      <div class="empty-icon">
+        📅
       </div>
 
+      <span class="eyebrow">
+        SIN RESERVAS
+      </span>
 
-      <div class="inquilino">
+      <h2>
+        {{ busquedaActual ? 'No encontramos coincidencias' : 'Aún no tienes alquileres' }}
+      </h2>
 
-        <span>
-          Inquilino
-        </span>
+      <p *ngIf="!busquedaActual">
+        Cuando un inquilino reserve uno de tus departamentos,
+        aquí podrás consultar todos los detalles de su estadía.
+      </p>
 
-        <strong>
-          {{ alquiler.inquilinoNombre }}
-        </strong>
+      <p *ngIf="busquedaActual">
+        No existen reservas que coincidan con
+        “{{ busquedaActual }}”.
+      </p>
 
-        <small>
-          {{ alquiler.inquilinoEmail }}
-        </small>
-
-      </div>
-
-
-      <div class="datos">
-
-        <div>
-
-          <span>
-            Ingreso
-          </span>
-
-          <strong>
-            {{ alquiler.fechaInicio | date:'dd/MM/yyyy' }}
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>
-            Salida
-          </span>
-
-          <strong>
-            {{ alquiler.fechaFin | date:'dd/MM/yyyy' }}
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>
-            Noches
-          </span>
-
-          <strong>
-            {{ alquiler.noches }}
-          </strong>
-
-        </div>
-
-
-        <div>
-
-          <span>
-            Total
-          </span>
-
-          <strong class="monto">
-            S/ {{ alquiler.total | number:'1.2-2' }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="fecha-reserva">
-
-        Reserva registrada:
-        {{ alquiler.fechaReserva | date:'dd/MM/yyyy HH:mm' }}
-
-      </div>
-
-    </article>
-
-  </div>
-
-
-  <div
-    class="empty"
-    *ngIf="alquileres.length === 0"
-  >
-
-    <div>
-      📅
-    </div>
-
-    <h2>
-      Aún no tienes alquileres
-    </h2>
-
-    <p>
-      Cuando un inquilino reserve uno de tus departamentos aparecerá aquí.
-    </p>
+    </section>
 
   </div>
 

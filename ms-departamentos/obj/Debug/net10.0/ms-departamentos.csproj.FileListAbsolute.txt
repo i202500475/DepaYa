@@ -131,3 +131,4 @@ C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-departamentos\obj\Debug\net10.0\refint
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-departamentos\obj\Debug\net10.0\ms-departamentos.pdb
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-departamentos\obj\Debug\net10.0\ms-departamentos.genruntimeconfig.cache
 C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-departamentos\obj\Debug\net10.0\ref\ms-departamentos.dll
+C:\Users\SaraA\Downloads\DepaYa\DepaYa\ms-departamentos\obj\Debug\net10.0\ms-departamentos.sourcelink.json

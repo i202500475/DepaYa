@@ -1,200 +1,746 @@
-<div class="explorar-container">
+<div class="explorar-page">
 
-  <!-- ENCABEZADO -->
-  <section class="explorar-header">
-    <div>
-      <span class="welcome-label">DEPAYA</span>
+  <!-- =========================================================
+       HERO PRINCIPAL
+  ========================================================== -->
 
-      <h1>Encuentra tu próximo hogar</h1>
+  <section class="hero-section">
 
-      <p>
-        Explora departamentos disponibles en Lima
-        y encuentra el espacio perfecto para ti.
-      </p>
+    <!-- DECORACIÓN -->
+
+    <div class="hero-glow hero-glow-one"></div>
+    <div class="hero-glow hero-glow-two"></div>
+
+
+    <div class="hero-container">
+
+      <!-- =====================================================
+           TEXTO HERO
+      ====================================================== -->
+
+      <div class="hero-copy">
+
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+
+          Encuentra tu espacio ideal
+        </div>
+
+
+        <h1>
+          Tu próximo hogar
+          <span>
+            está más cerca
+          </span>
+          de lo que imaginas.
+        </h1>
+
+
+        <p class="hero-description">
+          Descubre departamentos en Lima,
+          compara opciones y encuentra el alojamiento
+          que mejor se adapta a tu próxima estadía.
+        </p>
+
+
+        <!-- BUSCADOR HERO -->
+
+        <div class="hero-search">
+
+          <div class="hero-search-icon">
+
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.3"
+              stroke-linecap="round"
+            >
+
+              <circle
+                cx="11"
+                cy="11"
+                r="7"
+              />
+
+              <line
+                x1="20"
+                y1="20"
+                x2="16.5"
+                y2="16.5"
+              />
+
+            </svg>
+
+          </div>
+
+
+          <input
+            type="text"
+            [(ngModel)]="busqueda"
+            (input)="buscar()"
+            placeholder="¿Dónde quieres hospedarte?"
+          >
+
+
+          <button
+            type="button"
+            (click)="buscar(); irAPropiedades()"
+          >
+            Buscar
+          </button>
+
+        </div>
+
+
+        <!-- BENEFICIOS -->
+
+        <div class="hero-benefits">
+
+          <div class="benefit-item">
+
+            <div class="benefit-icon">
+              ⌂
+            </div>
+
+            <div>
+
+              <strong>
+                Variedad de opciones
+              </strong>
+
+              <span>
+                Encuentra el depa ideal
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="benefit-item">
+
+            <div class="benefit-icon">
+              ✓
+            </div>
+
+            <div>
+
+              <strong>
+                Reserva sencilla
+              </strong>
+
+              <span>
+                Todo desde DepaYa
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           GALERÍA ANIMADA
+      ====================================================== -->
+
+      <div class="hero-visual">
+
+        <div class="visual-background"></div>
+
+
+        <!-- IMAGEN 1 -->
+
+        <div
+          class="property-image property-image-main"
+          *ngIf="heroDepartamentos.length > 0"
+        >
+
+          <img
+            [src]="heroDepartamentos[0].URL_Imagen"
+            [alt]="heroDepartamentos[0].Titulo"
+          >
+
+          <div class="image-overlay"></div>
+
+
+          <div class="featured-property">
+
+            <span>
+              Destacado
+            </span>
+
+            <strong>
+              {{
+              heroDepartamentos[0].Titulo
+              }}
+            </strong>
+
+            <small>
+              📍
+              {{
+              heroDepartamentos[0].Distrito
+              }},
+              Lima
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- IMAGEN 2 -->
+
+        <div
+          class="property-image property-image-top"
+          *ngIf="heroDepartamentos.length > 1"
+        >
+
+          <img
+            [src]="heroDepartamentos[1].URL_Imagen"
+            [alt]="heroDepartamentos[1].Titulo"
+          >
+
+        </div>
+
+
+        <!-- IMAGEN 3 -->
+
+        <div
+          class="property-image property-image-bottom"
+          *ngIf="heroDepartamentos.length > 2"
+        >
+
+          <img
+            [src]="heroDepartamentos[2].URL_Imagen"
+            [alt]="heroDepartamentos[2].Titulo"
+          >
+
+        </div>
+
+
+        <!-- SI SOLO HAY 1 -->
+
+        <div
+          class="property-image property-image-top duplicated-image"
+          *ngIf="
+            heroDepartamentos.length === 1
+          "
+        >
+
+          <img
+            [src]="heroDepartamentos[0].URL_Imagen"
+            [alt]="heroDepartamentos[0].Titulo"
+          >
+
+        </div>
+
+
+        <!-- SI HAY MENOS DE 3 -->
+
+        <div
+          class="property-image property-image-bottom duplicated-image"
+          *ngIf="
+            heroDepartamentos.length > 0 &&
+            heroDepartamentos.length < 3
+          "
+        >
+
+          <img
+            [src]="
+              heroDepartamentos[
+                heroDepartamentos.length - 1
+              ].URL_Imagen
+            "
+            alt="Departamento DepaYa"
+          >
+
+        </div>
+
+
+        <!-- SIN DEPARTAMENTOS -->
+
+        <div
+          class="hero-empty"
+          *ngIf="
+            heroDepartamentos.length === 0
+          "
+        >
+
+          <div class="building-art">
+
+            <div class="building building-one">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <div class="building building-two">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+            <div class="building building-three">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- FLOATING BADGE -->
+
+        <div class="floating-card floating-card-one">
+
+          <div class="floating-icon">
+            🏠
+          </div>
+
+          <div>
+            <strong>
+              {{
+              listaDepartamentos.length
+              }}
+              opciones
+            </strong>
+
+            <span>
+              disponibles ahora
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="floating-card floating-card-two">
+
+          <div class="floating-check">
+            ✓
+          </div>
+
+          <div>
+            <strong>
+              Encuentra y reserva
+            </strong>
+
+            <span>
+              en pocos pasos
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
+
   </section>
 
 
-  <!-- BUSCADOR -->
-  <section class="search-section">
-    <div class="search-box">
-      <span class="search-icon">🔍</span>
+  <!-- =========================================================
+       CONTENIDO
+  ========================================================== -->
 
-      <input
-        type="text"
-        [(ngModel)]="busqueda"
-        (input)="buscar()"
-        placeholder="Buscar por departamento, distrito, categoría o descripción..."
-      />
+  <main class="explorar-content">
+
+
+    <!-- =======================================================
+         FILTROS
+    ======================================================== -->
+
+    <section class="filters-panel">
+
+      <div class="filter-heading">
+
+        <div>
+
+          <span class="section-label">
+            PERSONALIZA TU BÚSQUEDA
+          </span>
+
+          <h2>
+            Encuentra exactamente lo que necesitas
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="clear-button"
+          (click)="limpiarFiltros()"
+        >
+
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+
+            <path
+              d="M3 12a9 9 0 1 0 3-6.7"
+            />
+
+            <path
+              d="M3 4v6h6"
+            />
+
+          </svg>
+
+          Limpiar filtros
+
+        </button>
+
+      </div>
+
+
+      <div class="filters-grid">
+
+        <!-- DISTRITO -->
+
+        <div class="filter-group">
+
+          <label>
+            Distrito
+          </label>
+
+          <div class="filter-control">
+
+            <span>
+              📍
+            </span>
+
+            <select
+              [(ngModel)]="ciudadSeleccionada"
+              (change)="buscar()"
+            >
+
+              <option value="">
+                Todos los distritos
+              </option>
+
+              <option
+                *ngFor="
+                  let ciudad of ciudades
+                "
+                [value]="ciudad"
+              >
+                {{ ciudad }}
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- HUÉSPEDES -->
+
+        <div class="filter-group">
+
+          <label for="huespedesExplorar">
+            Huéspedes
+          </label>
+
+          <div class="filter-control">
+
+            <span>
+              👥
+            </span>
+
+            <input
+              id="huespedesExplorar"
+              type="number"
+              min="1"
+              step="1"
+              [(ngModel)]="huespedes"
+              (ngModelChange)="normalizarHuespedes()"
+              placeholder="Cantidad"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- CATEGORÍAS -->
+
+        <div class="category-section">
+
+          <label>
+            Categoría
+          </label>
+
+          <div class="category-buttons">
+
+            <button
+              *ngFor="
+                let categoria of categorias
+              "
+              type="button"
+              [class.active]="
+                categoriaSeleccionada ===
+                categoria
+              "
+              (click)="
+                seleccionarCategoria(
+                  categoria
+                )
+              "
+            >
+              {{ categoria }}
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="filter-note">
+
+        <span>
+          ℹ
+        </span>
+
+        La cantidad de huéspedes se validará
+        automáticamente con la capacidad de cada propiedad.
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         RESULTADOS
+    ======================================================== -->
+
+    <section
+      class="results-header"
+      id="propiedades"
+    >
+
+      <div>
+
+        <span class="section-label">
+          ALOJAMIENTOS
+        </span>
+
+        <h2>
+          Departamentos disponibles
+        </h2>
+
+        <p>
+          {{
+          departamentosFiltrados.length
+          }}
+          {{
+          departamentosFiltrados.length === 1
+          ? 'propiedad encontrada'
+          : 'propiedades encontradas'
+          }}
+        </p>
+
+      </div>
+
+
+      <div
+        class="results-pill"
+        *ngIf="
+          departamentosFiltrados.length > 0
+        "
+      >
+
+        <span class="pulse-dot"></span>
+
+        Disponibles
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================================
+         LISTADO
+    ======================================================== -->
+
+    <section
+      class="departamentos-grid"
+      *ngIf="
+        departamentosFiltrados.length > 0
+      "
+    >
+
+      <article
+        *ngFor="
+          let departamento of departamentosFiltrados;
+          let i = index
+        "
+        class="departamento-item"
+        [style.--delay]="
+          (i * 70) + 'ms'
+        "
+      >
+
+        <div class="property-card-wrapper">
+
+          <app-departamento-card
+            [departamento]="departamento"
+          ></app-departamento-card>
+
+        </div>
+
+
+        <!-- CAPACIDAD -->
+
+        <div
+          class="capacity-warning"
+          *ngIf="
+            capacidadSuperada(
+              departamento
+            )
+          "
+          aria-live="polite"
+        >
+
+          <span class="capacity-warning-icon">
+            !
+          </span>
+
+          <div>
+
+            <strong>
+              Capacidad máxima superada
+            </strong>
+
+            <p>
+              {{
+              obtenerMensajeCapacidad(
+              departamento
+              )
+              }}
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- ACCIONES -->
+
+        <div class="card-actions">
+
+          <button
+            type="button"
+            class="detail-button"
+            (click)="
+              verDetalle(
+                departamento
+              )
+            "
+          >
+            Ver detalle
+          </button>
+
+
+          <button
+            type="button"
+            class="reserve-button"
+            [disabled]="
+              capacidadSuperada(
+                departamento
+              )
+            "
+            (click)="
+              reservar(
+                departamento
+              )
+            "
+          >
+
+            {{
+            capacidadSuperada(
+            departamento
+            )
+            ? 'Capacidad excedida'
+            : 'Reservar ahora'
+            }}
+
+            <span
+              *ngIf="
+                !capacidadSuperada(
+                  departamento
+                )
+              "
+            >
+              →
+            </span>
+
+          </button>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================================
+         SIN RESULTADOS
+    ======================================================== -->
+
+    <section
+      class="no-results"
+      *ngIf="
+        departamentosFiltrados.length === 0
+      "
+    >
+
+      <div class="no-results-icon">
+        ⌕
+      </div>
+
+      <span class="section-label">
+        SIN RESULTADOS
+      </span>
+
+      <h2>
+        No encontramos departamentos
+      </h2>
+
+      <p>
+        Prueba con otro distrito,
+        una categoría diferente o
+        modifica tu búsqueda.
+      </p>
+
 
       <button
         type="button"
-        (click)="buscar()"
+        (click)="limpiarFiltros()"
       >
-        Buscar
+        Ver todos los departamentos
       </button>
-    </div>
-  </section>
 
+    </section>
 
-  <!-- FILTROS -->
-  <section class="filters-section">
-
-    <div class="filter-group">
-      <label>Distrito</label>
-
-      <select
-        [(ngModel)]="ciudadSeleccionada"
-        (change)="buscar()"
-      >
-        <option value="">Todos los distritos</option>
-
-        <option
-          *ngFor="let ciudad of ciudades"
-          [value]="ciudad"
-        >
-          {{ ciudad }}
-        </option>
-      </select>
-    </div>
-
-
-    <div class="filter-group guest-filter">
-      <label for="huespedesExplorar">Huéspedes</label>
-
-      <input
-        id="huespedesExplorar"
-        type="number"
-        min="1"
-        step="1"
-        [(ngModel)]="huespedes"
-        (ngModelChange)="normalizarHuespedes()"
-        placeholder="Cantidad"
-      />
-
-      <small>
-        Te avisaremos si una propiedad no admite esa cantidad.
-      </small>
-    </div>
-
-
-    <div class="category-section">
-      <span class="category-title">Categorías</span>
-
-      <div class="category-buttons">
-        <button
-          *ngFor="let categoria of categorias"
-          type="button"
-          [class.active]="categoriaSeleccionada === categoria"
-          (click)="seleccionarCategoria(categoria)"
-        >
-          {{ categoria }}
-        </button>
-      </div>
-    </div>
-
-
-    <button
-      type="button"
-      class="clear-button"
-      (click)="limpiarFiltros()"
-    >
-      Limpiar filtros
-    </button>
-
-  </section>
-
-
-  <!-- RESULTADOS -->
-  <section class="results-header">
-    <div>
-      <h2>Departamentos disponibles</h2>
-
-      <p>
-        {{ departamentosFiltrados.length }} propiedades encontradas
-      </p>
-    </div>
-  </section>
-
-
-  <!-- LISTADO -->
-  <section
-    class="departamentos-grid"
-    *ngIf="departamentosFiltrados.length > 0"
-  >
-
-    <div
-      *ngFor="let departamento of departamentosFiltrados"
-      class="departamento-item"
-    >
-
-      <app-departamento-card
-        [departamento]="departamento"
-      ></app-departamento-card>
-
-
-      <!-- AVISO DE CAPACIDAD -->
-      <div
-        class="capacity-warning"
-        *ngIf="capacidadSuperada(departamento)"
-        aria-live="polite"
-      >
-        <span class="capacity-warning-icon">!</span>
-
-        <div>
-          <strong>Capacidad máxima superada</strong>
-          <p>{{ obtenerMensajeCapacidad(departamento) }}</p>
-        </div>
-      </div>
-
-
-      <div class="card-actions">
-        <button
-          type="button"
-          class="detail-button"
-          (click)="verDetalle(departamento)"
-        >
-          Ver detalle
-        </button>
-
-        <button
-          type="button"
-          class="reserve-button"
-          [disabled]="capacidadSuperada(departamento)"
-          (click)="reservar(departamento)"
-        >
-          {{
-          capacidadSuperada(departamento)
-          ? 'Capacidad excedida'
-          : 'Reservar ahora'
-          }}
-        </button>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- SIN RESULTADOS -->
-  <section
-    class="no-results"
-    *ngIf="departamentosFiltrados.length === 0"
-  >
-    <div class="no-results-icon">🔍</div>
-
-    <h2>No encontramos departamentos</h2>
-
-    <p>
-      Intenta cambiar los filtros
-      o realizar otra búsqueda.
-    </p>
-
-    <button
-      type="button"
-      (click)="limpiarFiltros()"
-    >
-      Ver todos los departamentos
-    </button>
-  </section>
+  </main>
 
 </div>

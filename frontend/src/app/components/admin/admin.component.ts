@@ -444,6 +444,90 @@ export class AdminComponent implements OnInit {
   }
 
   // ============================================================
+  // ESTADO / REACTIVACIÓN DEL PROPIETARIO
+  // ============================================================
+
+  propietarioNecesitaReactivacion(usuario: Usuario): boolean {
+    return (
+      usuario.rol === 'PROPIETARIO' &&
+      (usuario.Activo === false || usuario.PublicacionesHabilitadas === false)
+    );
+  }
+
+  obtenerTextoEstadoUsuario(usuario: Usuario): string {
+    if (usuario.Activo === false) {
+      return 'Cuenta inactiva';
+    }
+
+    if (usuario.rol === 'PROPIETARIO' && usuario.PublicacionesHabilitadas === false) {
+      return 'Publicaciones desactivadas';
+    }
+
+    return 'Activo';
+  }
+
+  obtenerClaseEstadoUsuario(usuario: Usuario): string {
+    if (usuario.Activo === false) {
+      return 'cuenta-inactiva';
+    }
+
+    if (usuario.rol === 'PROPIETARIO' && usuario.PublicacionesHabilitadas === false) {
+      return 'publicaciones-inactivas';
+    }
+
+    return 'cuenta-activa';
+  }
+
+  reactivarPropietario(usuario: Usuario): void {
+    this.limpiarMensajes();
+
+    if (usuario.id == null) {
+      this.error = 'No se pudo identificar al propietario.';
+      return;
+    }
+
+    if (usuario.rol !== 'PROPIETARIO') {
+      this.error = 'La reactivación de publicaciones aplica a propietarios.';
+      return;
+    }
+
+    if (!this.propietarioNecesitaReactivacion(usuario)) {
+      this.error = 'La cuenta del propietario ya se encuentra activa.';
+      return;
+    }
+
+    const nombreCompleto = `${usuario.nombre} ${usuario.apellido || ''}`.trim();
+
+    const confirmar = window.confirm(
+      `¿Reactivar al propietario ${nombreCompleto}?\n\n` +
+        `Se habilitará nuevamente su cuenta, la publicación de nuevos departamentos ` +
+        `y se reactivarán sus departamentos desactivados.`,
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    const usuarioReactivado = this.authService.reactivarUsuario(usuario.id);
+
+    if (!usuarioReactivado) {
+      this.error = 'No se pudo reactivar la cuenta del propietario.';
+      return;
+    }
+
+    const departamentosReactivados = this.departamentoService.reactivarDepartamentosPropietario(
+      usuario.email,
+    );
+
+    this.cargarTodo();
+
+    this.mensaje =
+      departamentosReactivados === 1
+        ? `Cuenta reactivada correctamente. Se reactivó 1 departamento de ${nombreCompleto}.`
+        : `Cuenta reactivada correctamente. Se reactivaron ${departamentosReactivados} departamentos de ${nombreCompleto}.`;
+  }
+
+  // ============================================================
   // ELIMINAR USUARIO
   // ============================================================
 

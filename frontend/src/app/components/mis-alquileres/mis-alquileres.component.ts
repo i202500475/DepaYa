@@ -30,6 +30,8 @@ export class MisAlquileresComponent implements OnInit {
 
   busquedaActual = '';
 
+  imagenesDepartamentos = new Map<number, string>();
+
   constructor(
     private reservaService: ReservaService,
 
@@ -68,6 +70,8 @@ export class MisAlquileresComponent implements OnInit {
 
       this.alquileres = [];
 
+      this.imagenesDepartamentos.clear();
+
       return;
     }
 
@@ -83,13 +87,21 @@ export class MisAlquileresComponent implements OnInit {
 
     const idsPropios = new Set<number>(departamentosPropios.map((departamento) => departamento.id));
 
+    this.imagenesDepartamentos.clear();
+
+    departamentosPropios.forEach((departamento) => {
+      if (departamento.URL_Imagen) {
+        this.imagenesDepartamentos.set(Number(departamento.id), departamento.URL_Imagen);
+      }
+    });
+
     // ==========================================================
     // RESERVAS DEL PROPIETARIO
     // ==========================================================
 
     this.todosLosAlquileres = this.reservaService
       .buscarPorPropietario(this.propietarioEmail)
-      .filter((reserva) => idsPropios.has(reserva.departamentoId))
+      .filter((reserva) => idsPropios.has(Number(reserva.departamentoId)))
       .sort((a, b) => new Date(b.fechaReserva).getTime() - new Date(a.fechaReserva).getTime());
 
     this.alquileres = [...this.todosLosAlquileres];
@@ -124,6 +136,85 @@ export class MisAlquileresComponent implements OnInit {
         ciudad.includes(busqueda)
       );
     });
+  }
+
+  // ============================================================
+  // RESUMEN
+  // ============================================================
+
+  get totalReservas(): number {
+    return this.todosLosAlquileres.length;
+  }
+
+  get totalConfirmadas(): number {
+    return this.todosLosAlquileres.filter((reserva) => reserva.estado === 'CONFIRMADA').length;
+  }
+
+  get totalPendientes(): number {
+    return this.todosLosAlquileres.filter((reserva) => reserva.estado === 'PENDIENTE').length;
+  }
+
+  get huespedesProximos(): number {
+    const hoy = this.obtenerFechaHoy();
+
+    return this.todosLosAlquileres
+      .filter(
+        (reserva) =>
+          (reserva.estado === 'CONFIRMADA' || reserva.estado === 'PENDIENTE') &&
+          reserva.fechaFin >= hoy,
+      )
+      .reduce((total, reserva) => total + this.obtenerCantidadHuespedes(reserva), 0);
+  }
+
+  // ============================================================
+  // FECHA ACTUAL YYYY-MM-DD
+  // ============================================================
+
+  private obtenerFechaHoy(): string {
+    const ahora = new Date();
+
+    const anio = ahora.getFullYear();
+
+    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+
+    const dia = String(ahora.getDate()).padStart(2, '0');
+
+    return `${anio}-${mes}-${dia}`;
+  }
+
+  // ============================================================
+  // IMAGEN DEL DEPARTAMENTO
+  // ============================================================
+
+  obtenerImagen(alquiler: Reserva): string {
+    return this.imagenesDepartamentos.get(Number(alquiler.departamentoId)) || '';
+  }
+
+  // ============================================================
+  // HUÉSPEDES
+  // ============================================================
+
+  tieneHuespedesRegistrados(alquiler: Reserva): boolean {
+    return Number.isFinite(Number(alquiler.huespedes))
+      && Number(alquiler.huespedes) >= 1;
+  }
+
+  obtenerCantidadHuespedes(alquiler: Reserva): number {
+    if (!this.tieneHuespedesRegistrados(alquiler)) {
+      return 0;
+    }
+
+    return Math.floor(Number(alquiler.huespedes));
+  }
+
+  textoHuespedes(alquiler: Reserva): string {
+    const cantidad = this.obtenerCantidadHuespedes(alquiler);
+
+    if (cantidad <= 0) {
+      return 'No registrado';
+    }
+
+    return cantidad === 1 ? '1 huésped' : `${cantidad} huéspedes`;
   }
 
   // ============================================================

@@ -1,20 +1,29 @@
 import { Routes } from '@angular/router';
 
 import { InicioComponent } from './components/inicio/inicio.component';
+
 import { LoginComponent } from './components/login/login.component';
+
 import { RegistroComponent } from './components/registro/registro.component';
 
 import { AdminComponent } from './components/admin/admin.component';
 
 import { ExplorarComponent } from './components/explorar/explorar.component';
 
+import { DetalleDepartamentoComponent } from './components/detalle-departamento/detalle-departamento.component';
+
 import { DepartamentoFormularioComponent } from './components/departamento-formulario/departamento-formulario.component';
 
 import { MisDepartamentosComponent } from './components/mis-departamentos/mis-departamentos.component';
+
 import { MisAlquileresComponent } from './components/mis-alquileres/mis-alquileres.component';
+
 import { MisPagosComponent } from './components/mis-pagos/mis-pagos.component';
 
+import { PropietarioComponent } from './components/propietario/propietario.component';
+
 import { MisReservasComponent } from './components/mis-reservas/mis-reservas.component';
+
 import { ReservaFormularioComponent } from './components/reserva-formulario/reserva-formulario.component';
 
 import { authGuard, adminGuard, propietarioGuard, inquilinoGuard } from './guards/auth.guard';
@@ -26,7 +35,9 @@ export const routes: Routes = [
 
   {
     path: 'admin',
+
     component: AdminComponent,
+
     canActivate: [authGuard, adminGuard],
   },
 
@@ -34,35 +45,71 @@ export const routes: Routes = [
   // PROPIETARIO
   // ============================================================
 
-  // Al entrar a /propietario,
-  // llevar directamente a Mis departamentos.
   {
     path: 'propietario',
+
     redirectTo: 'mis-departamentos',
+
     pathMatch: 'full',
   },
 
+  // ============================================================
+  // MIS DEPARTAMENTOS
+  // ============================================================
+
   {
     path: 'mis-departamentos',
+
     component: MisDepartamentosComponent,
+
     canActivate: [authGuard, propietarioGuard],
   },
+
+  // ============================================================
+  // MIS ALQUILERES
+  // ============================================================
 
   {
     path: 'mis-alquileres',
+
     component: MisAlquileresComponent,
+
     canActivate: [authGuard, propietarioGuard],
   },
+
+  // ============================================================
+  // MIS PAGOS
+  // ============================================================
 
   {
     path: 'mis-pagos',
+
     component: MisPagosComponent,
+
     canActivate: [authGuard, propietarioGuard],
   },
 
+  // ============================================================
+  // PUBLICAR
+  // ============================================================
+
   {
     path: 'publicar',
+
     component: DepartamentoFormularioComponent,
+
+    canActivate: [authGuard, propietarioGuard],
+  },
+
+  // ============================================================
+  // MI CUENTA DEL PROPIETARIO
+  // ============================================================
+
+  {
+    path: 'mi-cuenta',
+
+    component: PropietarioComponent,
+
     canActivate: [authGuard, propietarioGuard],
   },
 
@@ -72,19 +119,45 @@ export const routes: Routes = [
 
   {
     path: 'explorar',
+
     component: ExplorarComponent,
+
     canActivate: [authGuard, inquilinoGuard],
   },
+
+  // ============================================================
+  // DETALLE DEL DEPARTAMENTO
+  // ============================================================
+
+  {
+    path: 'detalle',
+
+    component: DetalleDepartamentoComponent,
+
+    canActivate: [authGuard, inquilinoGuard],
+  },
+
+  // ============================================================
+  // RESERVAR
+  // ============================================================
 
   {
     path: 'reservar',
+
     component: ReservaFormularioComponent,
+
     canActivate: [authGuard, inquilinoGuard],
   },
 
+  // ============================================================
+  // MIS RESERVAS
+  // ============================================================
+
   {
     path: 'mis-reservas',
+
     component: MisReservasComponent,
+
     canActivate: [authGuard, inquilinoGuard],
   },
 
@@ -94,6 +167,7 @@ export const routes: Routes = [
 
   {
     path: 'login',
+
     component: LoginComponent,
   },
 
@@ -103,6 +177,7 @@ export const routes: Routes = [
 
   {
     path: 'registro',
+
     component: RegistroComponent,
   },
 
@@ -112,12 +187,15 @@ export const routes: Routes = [
 
   {
     path: '',
+
     component: InicioComponent,
+
     pathMatch: 'full',
   },
 
   {
     path: 'inicio',
+
     component: InicioComponent,
   },
 
@@ -127,6 +205,7 @@ export const routes: Routes = [
 
   {
     path: '**',
+
     redirectTo: '',
   },
 ];
