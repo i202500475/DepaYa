@@ -1305,11 +1305,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-usuarios\\ms-usuarios.csproj",
+      "projectUniqueName": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-usuarios\\ms-usuarios.csproj",
       "projectName": "ms-usuarios",
-      "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-usuarios\\ms-usuarios.csproj",
+      "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-usuarios\\ms-usuarios.csproj",
       "packagesPath": "C:\\Users\\SaraA\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-usuarios\\obj\\",
+      "outputPath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-usuarios\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

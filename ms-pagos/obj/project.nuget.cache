@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZdgG7XHCAbk=",
+  "dgSpecHash": "uyY0EOvAvMc=",
   "success": true,
-  "projectFilePath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-pagos\\ms-pagos.csproj",
+  "projectFilePath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-pagos\\ms-pagos.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SaraA\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.10\\microsoft.aspnetcore.authentication.jwtbearer.10.0.10.nupkg.sha512",
     "C:\\Users\\SaraA\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.10\\microsoft.aspnetcore.openapi.10.0.10.nupkg.sha512",

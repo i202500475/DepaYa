@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj": {}
+    "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-auth\\ms-auth.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj": {
+    "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-auth\\ms-auth.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj",
+        "projectUniqueName": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-auth\\ms-auth.csproj",
         "projectName": "ms-auth",
-        "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\ms-auth.csproj",
+        "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-auth\\ms-auth.csproj",
         "packagesPath": "C:\\Users\\SaraA\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-auth\\obj\\",
+        "outputPath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-auth\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

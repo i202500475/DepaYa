@@ -782,9 +782,9 @@
        PAGOS Y COMISIONES
   ========================================================== -->
 
-  <section class="admin-section">
+  <section class="admin-section finance-section">
 
-    <div class="section-header">
+    <div class="section-header finance-section-header">
 
       <div>
 
@@ -793,23 +793,471 @@
         </span>
 
         <h2>
-          Pagos y comisiones
+          Pagos, comisiones y liquidaciones
         </h2>
 
         <p>
-          Distribución de ingresos entre DepaYa
-          y los propietarios.
+          Control financiero, análisis, liquidación a propietarios
+          y reportes exportables a Excel.
         </p>
+
+      </div>
+
+
+      <div class="finance-header-actions">
+
+        <div class="section-count">
+          {{ pagosFiltradosReporte.length }}
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-export-excel"
+          [disabled]="
+            pagosFiltradosReporte.length === 0 ||
+            rangoFechasReporteInvalido
+          "
+          (click)="exportarReporteExcel()"
+        >
+          <span class="excel-icon">
+            X
+          </span>
+
+          Exportar Excel
+        </button>
 
       </div>
 
     </div>
 
 
-    <!-- RESUMEN FINANCIERO -->
+    <!-- ======================================================
+         INDICADORES EJECUTIVOS
+    ======================================================= -->
+
+    <div class="finance-kpi-grid">
+
+      <article class="finance-kpi-card">
+
+        <div class="finance-kpi-icon">
+          ✓
+        </div>
+
+        <div>
+          <span>Pagos completados</span>
+
+          <strong>
+            {{ totalPagosCompletadosReporte }}
+          </strong>
+
+          <small>
+            Registros activos
+          </small>
+        </div>
+
+      </article>
+
+
+      <article class="finance-kpi-card">
+
+        <div class="finance-kpi-icon">
+          S/
+        </div>
+
+        <div>
+          <span>Ticket promedio</span>
+
+          <strong>
+            S/ {{ ticketPromedioReporte | number:'1.2-2' }}
+          </strong>
+
+          <small>
+            Por pago completado
+          </small>
+        </div>
+
+      </article>
+
+
+      <article class="finance-kpi-card">
+
+        <div class="finance-kpi-icon">
+          ◈
+        </div>
+
+        <div>
+          <span>Método más usado</span>
+
+          <strong>
+            {{ metodoMasUsadoReporte }}
+          </strong>
+
+          <small>
+            Según filtros actuales
+          </small>
+        </div>
+
+      </article>
+
+
+      <article class="finance-kpi-card">
+
+        <div class="finance-kpi-icon">
+          ↗
+        </div>
+
+        <div>
+          <span>Ingresos del mes</span>
+
+          <strong>
+            S/ {{ ingresosMesActual | number:'1.2-2' }}
+          </strong>
+
+          <small>
+            Mes calendario actual
+          </small>
+        </div>
+
+      </article>
+
+
+      <article class="finance-kpi-card liquidation-kpi">
+
+        <div class="finance-kpi-icon">
+          ⇄
+        </div>
+
+        <div>
+          <span>Pendiente de liquidar</span>
+
+          <strong>
+            S/ {{ montoPendienteLiquidarReporte | number:'1.2-2' }}
+          </strong>
+
+          <small>
+            {{ totalPendientesLiquidarReporte }} pago(s)
+          </small>
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <!-- ======================================================
+         FILTROS DEL REPORTE
+    ======================================================= -->
+
+    <div class="finance-report-panel">
+
+      <div class="report-panel-heading">
+
+        <div>
+
+          <span>
+            CENTRO DE REPORTES
+          </span>
+
+          <strong>
+            Busca, filtra y prepara el reporte financiero
+          </strong>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-clear-report"
+          (click)="limpiarFiltrosFinancieros()"
+        >
+          ↻ Limpiar filtros
+        </button>
+
+      </div>
+
+
+      <div class="finance-search-wide">
+
+        <label for="busquedaPago">
+          Buscar pago
+        </label>
+
+        <div class="finance-search-control">
+
+          <span>
+            🔎
+          </span>
+
+          <input
+            id="busquedaPago"
+            type="text"
+            [(ngModel)]="busquedaPago"
+            placeholder="Reserva, departamento, inquilino, correo, DNI del propietario..."
+          >
+
+        </div>
+
+      </div>
+
+
+      <div class="finance-filters finance-filters-pro">
+
+        <div class="report-filter">
+
+          <label for="fechaDesdeReporte">
+            Desde
+          </label>
+
+          <input
+            id="fechaDesdeReporte"
+            type="date"
+            [(ngModel)]="fechaDesdeReporte"
+          >
+
+        </div>
+
+
+        <div class="report-filter">
+
+          <label for="fechaHastaReporte">
+            Hasta
+          </label>
+
+          <input
+            id="fechaHastaReporte"
+            type="date"
+            [(ngModel)]="fechaHastaReporte"
+          >
+
+        </div>
+
+
+        <div class="report-filter">
+
+          <label for="estadoPagoReporte">
+            Estado del pago
+          </label>
+
+          <select
+            id="estadoPagoReporte"
+            [(ngModel)]="estadoPagoReporte"
+          >
+            <option value="">
+              Todos los estados
+            </option>
+
+            <option value="COMPLETADO">
+              Completado
+            </option>
+
+            <option value="PROCESANDO">
+              Procesando
+            </option>
+
+            <option value="REEMBOLSO_PENDIENTE">
+              Reembolso pendiente
+            </option>
+
+            <option value="REEMBOLSADO">
+              Reembolsado
+            </option>
+
+            <option value="CANCELADO">
+              Cancelado
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="report-filter">
+
+          <label for="metodoPagoReporte">
+            Método
+          </label>
+
+          <select
+            id="metodoPagoReporte"
+            [(ngModel)]="metodoPagoReporte"
+          >
+            <option value="">
+              Todos los métodos
+            </option>
+
+            <option value="YAPE">
+              Yape
+            </option>
+
+            <option value="PLIN">
+              Plin
+            </option>
+
+            <option value="VISA">
+              Visa
+            </option>
+
+            <option value="MASTERCARD">
+              Mastercard
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="report-filter">
+
+          <label for="propietarioPagoReporte">
+            Propietario
+          </label>
+
+          <select
+            id="propietarioPagoReporte"
+            [(ngModel)]="propietarioPagoReporte"
+          >
+            <option value="">
+              Todos los propietarios
+            </option>
+
+            <option
+              *ngFor="let propietario of propietariosFinancieros"
+              [value]="propietario.email"
+            >
+              {{ propietario.nombre }} · DNI {{ propietario.dni }}
+            </option>
+          </select>
+
+        </div>
+
+
+        <div class="report-filter">
+
+          <label for="estadoLiquidacionReporte">
+            Liquidación
+          </label>
+
+          <select
+            id="estadoLiquidacionReporte"
+            [(ngModel)]="estadoLiquidacionReporte"
+          >
+            <option value="">
+              Todas
+            </option>
+
+            <option value="PENDIENTE">
+              Pendiente
+            </option>
+
+            <option value="LIQUIDADO">
+              Liquidado
+            </option>
+
+            <option value="NO_APLICA">
+              No aplica
+            </option>
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="report-date-error"
+        *ngIf="rangoFechasReporteInvalido"
+      >
+        <span>!</span>
+
+        La fecha “Desde” no puede ser posterior a la fecha “Hasta”.
+      </div>
+
+
+      <div
+        class="report-result-info"
+        *ngIf="!rangoFechasReporteInvalido"
+      >
+        <span class="report-result-dot"></span>
+
+        <strong>
+          {{ pagosFiltradosReporte.length }}
+        </strong>
+
+        registro(s) coinciden con los filtros actuales.
+        El Excel exportará exactamente estos registros.
+      </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         RESUMEN DEL PROPIETARIO
+    ======================================================= -->
+
+    <div
+      class="owner-report-card"
+      *ngIf="propietarioSeleccionadoResumen as propietario"
+    >
+
+      <div class="owner-report-profile">
+
+        <div class="owner-report-avatar">
+          P
+        </div>
+
+        <div>
+          <span>
+            REPORTE POR PROPIETARIO
+          </span>
+
+          <h3>
+            {{ propietario.nombre }}
+          </h3>
+
+          <p>
+            DNI {{ propietario.dni }} · {{ propietario.email }}
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="owner-report-metrics">
+
+        <div>
+          <span>Pagos</span>
+          <strong>{{ propietario.pagos }}</strong>
+        </div>
+
+        <div>
+          <span>Ingresos brutos</span>
+          <strong>S/ {{ propietario.bruto | number:'1.2-2' }}</strong>
+        </div>
+
+        <div>
+          <span>Comisión DepaYa</span>
+          <strong>S/ {{ propietario.comision | number:'1.2-2' }}</strong>
+        </div>
+
+        <div>
+          <span>Neto propietario</span>
+          <strong>S/ {{ propietario.neto | number:'1.2-2' }}</strong>
+        </div>
+
+        <div>
+          <span>Pendiente de liquidar</span>
+          <strong>S/ {{ propietario.pendienteLiquidar | number:'1.2-2' }}</strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ======================================================
+         RESUMEN FINANCIERO
+    ======================================================= -->
 
     <div class="admin-finance-cards">
-
 
       <article class="admin-finance-card">
 
@@ -820,13 +1268,13 @@
         <strong>
           S/
           {{
-          totalIngresos
+          totalIngresosReporte
           | number:'1.2-2'
           }}
         </strong>
 
         <small>
-          Total activo pagado por inquilinos
+          Total completado según filtros
         </small>
 
       </article>
@@ -841,14 +1289,14 @@
         <strong>
           S/
           {{
-          totalComisionesDepaYa
+          totalComisionesDepaYaReporte
           | number:'1.2-2'
           }}
         </strong>
 
         <small>
           {{ porcentajeComisionDepaYa }}%
-          por reserva completada
+          de pagos completados
         </small>
 
       </article>
@@ -863,13 +1311,13 @@
         <strong>
           S/
           {{
-          totalNetoPropietarios
+          totalNetoPropietariosReporte
           | number:'1.2-2'
           }}
         </strong>
 
         <small>
-          90% de las reservas activas
+          90% de pagos completados
         </small>
 
       </article>
@@ -882,7 +1330,7 @@
         </span>
 
         <strong>
-          {{ totalReembolsosPendientes }}
+          {{ totalReembolsosPendientesReporte }}
         </strong>
 
         <small>
@@ -894,53 +1342,197 @@
     </div>
 
 
-    <!-- TABLA PAGOS -->
+    <!-- ======================================================
+         ANALÍTICA
+    ======================================================= -->
+
+    <div class="finance-analytics-grid">
+
+      <article class="finance-analytics-card finance-chart-card">
+
+        <div class="analytics-card-header">
+
+          <div>
+            <span>
+              EVOLUCIÓN
+            </span>
+
+            <h3>
+              Ingresos y comisiones por mes
+            </h3>
+          </div>
+
+          <div class="chart-legend">
+
+            <span>
+              <i class="legend-total"></i>
+              Ingresos
+            </span>
+
+            <span>
+              <i class="legend-commission"></i>
+              Comisión
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="finance-bar-chart">
+
+          <div
+            class="finance-bar-group"
+            *ngFor="let punto of graficoMensualReporte"
+          >
+
+            <div class="finance-bar-values">
+
+              <small>
+                S/ {{ punto.total | number:'1.0-0' }}
+              </small>
+
+            </div>
+
+            <div class="finance-bars">
+
+              <div
+                class="finance-bar total-bar"
+                [style.height.%]="punto.porcentajeTotal"
+                [title]="
+                  'Ingresos: S/ ' +
+                  (punto.total | number:'1.2-2')
+                "
+              ></div>
+
+              <div
+                class="finance-bar commission-bar"
+                [style.height.%]="punto.porcentajeComision"
+                [title]="
+                  'Comisión: S/ ' +
+                  (punto.comision | number:'1.2-2')
+                "
+              ></div>
+
+            </div>
+
+            <strong>
+              {{ punto.etiqueta }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <article class="finance-analytics-card">
+
+        <div class="analytics-card-header">
+
+          <div>
+            <span>
+              MÉTODOS DE PAGO
+            </span>
+
+            <h3>
+              Distribución de transacciones
+            </h3>
+          </div>
+
+        </div>
+
+
+        <div class="payment-distribution">
+
+          <div
+            class="payment-distribution-row"
+            *ngFor="let item of resumenMetodosReporte"
+          >
+
+            <div class="payment-distribution-top">
+
+              <strong>
+                {{ item.nombre }}
+              </strong>
+
+              <span>
+                {{ item.cantidad }}
+                ·
+                {{ item.porcentaje | number:'1.0-1' }}%
+              </span>
+
+            </div>
+
+            <div class="payment-progress">
+
+              <div
+                [class.yape-progress]="item.metodo === 'YAPE'"
+                [class.plin-progress]="item.metodo === 'PLIN'"
+                [class.visa-progress]="item.metodo === 'VISA'"
+                [class.mastercard-progress]="item.metodo === 'MASTERCARD'"
+                [style.width.%]="item.porcentaje"
+              ></div>
+
+            </div>
+
+            <small>
+              S/ {{ item.total | number:'1.2-2' }} completado
+            </small>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <!-- ======================================================
+         TABLA PAGOS
+    ======================================================= -->
+
+    <div class="finance-table-title">
+
+      <div>
+        <span>
+          DETALLE DE PAGOS
+        </span>
+
+        <h3>
+          Historial financiero
+        </h3>
+      </div>
+
+      <small>
+        {{ pagosFiltradosReporte.length }} resultado(s)
+      </small>
+
+    </div>
+
 
     <div class="table-container">
 
-      <table>
+      <table class="finance-table finance-table-pro">
 
         <thead>
 
         <tr>
 
           <th>#</th>
-
-          <th>
-            Departamento
-          </th>
-
-          <th>
-            Inquilino
-          </th>
-
-          <th>
-            Propietario
-          </th>
-
-          <th>
-            Total
-          </th>
-
-          <th>
-            Comisión DepaYa
-          </th>
-
-          <th>
-            Neto propietario
-          </th>
-
-          <th>
-            Método
-          </th>
-
-          <th>
-            Estado
-          </th>
-
-          <th class="center">
-            Acción
-          </th>
+          <th>Fecha</th>
+          <th>Departamento</th>
+          <th>Inquilino</th>
+          <th>Propietario</th>
+          <th>Total</th>
+          <th>Comisión DepaYa</th>
+          <th>Neto propietario</th>
+          <th>Método</th>
+          <th>Estado</th>
+          <th>Liquidación</th>
+          <th class="center">Acciones</th>
 
         </tr>
 
@@ -951,17 +1543,24 @@
 
         <tr
           *ngFor="
-              let pago of pagos;
-              let i = index
-            "
+            let pago of pagosFiltradosReporte;
+            let i = index
+          "
           [class.refund-row]="
-              pago.estado ===
-              'REEMBOLSO_PENDIENTE'
-            "
+            pago.estado === 'REEMBOLSO_PENDIENTE'
+          "
         >
 
           <td class="numero-tabla">
             {{ i + 1 }}
+          </td>
+
+
+          <td class="finance-date">
+            {{
+            pago.fecha
+            | date:'dd/MM/yyyy HH:mm'
+            }}
           </td>
 
 
@@ -995,8 +1594,18 @@
           </td>
 
 
-          <td class="correo">
-            {{ pago.propietarioEmail }}
+          <td>
+
+            <span class="dni-owner">
+              DNI {{ obtenerDniPropietario(pago.propietarioEmail) }}
+            </span>
+
+            <br>
+
+            <small>
+              {{ pago.propietarioEmail }}
+            </small>
+
           </td>
 
 
@@ -1009,16 +1618,11 @@
           </td>
 
 
-          <!-- COMISIÓN -->
-
           <td>
 
             <strong
               class="admin-commission"
-              *ngIf="
-                  pago.estado ===
-                  'COMPLETADO'
-                "
+              *ngIf="pago.estado === 'COMPLETADO'"
             >
               S/
               {{
@@ -1027,30 +1631,21 @@
               }}
             </strong>
 
-
             <span
               class="amount-cancelled"
-              *ngIf="
-                  pago.estado !==
-                  'COMPLETADO'
-                "
+              *ngIf="pago.estado !== 'COMPLETADO'"
             >
-                S/ 0.00
-              </span>
+              S/ 0.00
+            </span>
 
           </td>
 
-
-          <!-- NETO PROPIETARIO -->
 
           <td>
 
             <strong
               class="owner-net"
-              *ngIf="
-                  pago.estado ===
-                  'COMPLETADO'
-                "
+              *ngIf="pago.estado === 'COMPLETADO'"
             >
               S/
               {{
@@ -1059,75 +1654,43 @@
               }}
             </strong>
 
-
             <span
               class="amount-cancelled"
-              *ngIf="
-                  pago.estado !==
-                  'COMPLETADO'
-                "
+              *ngIf="pago.estado !== 'COMPLETADO'"
             >
-                S/ 0.00
-              </span>
+              S/ 0.00
+            </span>
 
           </td>
 
 
-          <!-- MÉTODO -->
-
           <td>
 
-              <span
-                class="payment-method"
-                [class.yape]="
-                  pago.metodo === 'YAPE'
-                "
-                [class.plin]="
-                  pago.metodo === 'PLIN'
-                "
-                [class.visa]="
-                  pago.metodo === 'VISA'
-                "
-                [class.mastercard]="
-                  pago.metodo === 'MASTERCARD'
-                "
-              >
-                {{
-                  obtenerMetodoPago(
-                    pago
-                  )
-                }}
-              </span>
+            <span
+              class="payment-method"
+              [class.yape]="pago.metodo === 'YAPE'"
+              [class.plin]="pago.metodo === 'PLIN'"
+              [class.visa]="pago.metodo === 'VISA'"
+              [class.mastercard]="pago.metodo === 'MASTERCARD'"
+            >
+              {{ obtenerMetodoPago(pago) }}
+            </span>
 
           </td>
 
 
-          <!-- ESTADO -->
-
           <td>
 
-              <span
-                class="estado"
-                [ngClass]="
-                  obtenerClasePago(
-                    pago.estado
-                  )
-                "
-              >
-                {{
-                  obtenerTextoPago(
-                    pago
-                  )
-                }}
-              </span>
-
+            <span
+              class="estado"
+              [ngClass]="obtenerClasePago(pago.estado)"
+            >
+              {{ obtenerTextoPago(pago) }}
+            </span>
 
             <small
               class="refund-mini"
-              *ngIf="
-                  pago.estado ===
-                  'REEMBOLSO_PENDIENTE'
-                "
+              *ngIf="pago.estado === 'REEMBOLSO_PENDIENTE'"
             >
               Hasta 48 horas
             </small>
@@ -1135,46 +1698,78 @@
           </td>
 
 
-          <!-- ACCIÓN -->
+          <td>
+
+            <span
+              class="liquidation-status"
+              [class.liquidation-pending]="
+                obtenerEstadoLiquidacion(pago) === 'PENDIENTE'
+              "
+              [class.liquidation-done]="
+                obtenerEstadoLiquidacion(pago) === 'LIQUIDADO'
+              "
+              [class.liquidation-na]="
+                obtenerEstadoLiquidacion(pago) === 'NO_APLICA'
+              "
+            >
+              {{ obtenerTextoLiquidacion(pago) }}
+            </span>
+
+            <small
+              class="liquidation-date"
+              *ngIf="obtenerFechaLiquidacion(pago)"
+            >
+              {{ obtenerFechaLiquidacion(pago) }}
+            </small>
+
+          </td>
+
 
           <td class="center">
 
-            <button
-              type="button"
-              class="btn-refund"
-              *ngIf="
-                  pago.estado ===
-                  'REEMBOLSO_PENDIENTE'
-                "
-              (click)="devolverPago(pago)"
-            >
-              ↩ Devolver
-            </button>
+            <div class="finance-row-actions">
+
+              <button
+                type="button"
+                class="btn-view-payment"
+                (click)="abrirDetallePago(pago)"
+                title="Ver detalle del pago"
+              >
+                👁 Ver
+              </button>
 
 
-            <span
-              class="refund-done"
-              *ngIf="
-                  pago.estado ===
-                  'REEMBOLSADO'
+              <button
+                type="button"
+                class="btn-liquidate"
+                *ngIf="
+                  pago.estado === 'COMPLETADO' &&
+                  obtenerEstadoLiquidacion(pago) === 'PENDIENTE'
                 "
-            >
+                (click)="marcarLiquidado(pago)"
+              >
+                ✓ Liquidar
+              </button>
+
+
+              <button
+                type="button"
+                class="btn-refund"
+                *ngIf="pago.estado === 'REEMBOLSO_PENDIENTE'"
+                (click)="devolverPago(pago)"
+              >
+                ↩ Devolver
+              </button>
+
+
+              <span
+                class="refund-done"
+                *ngIf="pago.estado === 'REEMBOLSADO'"
+              >
                 ✓ Devuelto
               </span>
 
-
-            <span
-              class="no-action"
-              *ngIf="
-                  pago.estado !==
-                  'REEMBOLSO_PENDIENTE'
-                  &&
-                  pago.estado !==
-                  'REEMBOLSADO'
-                "
-            >
-                —
-              </span>
+            </div>
 
           </td>
 
@@ -1182,14 +1777,18 @@
 
 
         <tr
-          *ngIf="pagos.length === 0"
+          *ngIf="pagosFiltradosReporte.length === 0"
         >
 
           <td
-            colspan="10"
+            colspan="12"
             class="empty-table"
           >
-            Todavía no hay pagos registrados.
+            {{
+            pagos.length === 0
+            ? 'Todavía no hay pagos registrados.'
+            : 'No hay pagos que coincidan con los filtros seleccionados.'
+            }}
           </td>
 
         </tr>
@@ -1201,7 +1800,9 @@
     </div>
 
 
-    <!-- POLÍTICA -->
+    <!-- ======================================================
+         POLÍTICA
+    ======================================================= -->
 
     <div class="admin-commission-policy">
 
@@ -1222,11 +1823,11 @@
         </b>
 
         sobre cada reserva completada.
-
         El <b>90%</b> restante corresponde al propietario.
-
+        El estado de liquidación permite controlar si ese neto
+        ya fue transferido al propietario.
         Si se realiza un reembolso completo,
-        ambos importes se anulan.
+        los importes financieros de ese pago se anulan.
 
       </p>
 
@@ -1491,6 +2092,291 @@
         : 'Crear usuario'
         }}
       </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ===========================================================
+     MODAL DETALLE DEL PAGO
+=========================================================== -->
+
+<div
+  class="payment-detail-backdrop"
+  *ngIf="pagoSeleccionado as pago"
+  (click)="cerrarDetallePago()"
+>
+
+  <div
+    class="payment-detail-modal"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="payment-detail-header">
+
+      <div>
+
+        <span>
+          DEPAYA · DETALLE FINANCIERO
+        </span>
+
+        <h2>
+          Pago de la reserva #{{ pago.reservaId }}
+        </h2>
+
+        <p>
+          {{ pago.departamento }}
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="payment-detail-close"
+        (click)="cerrarDetallePago()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="payment-detail-body">
+
+      <div class="payment-detail-amount">
+
+        <div>
+          <span>
+            Total pagado
+          </span>
+
+          <strong>
+            S/ {{ pago.monto | number:'1.2-2' }}
+          </strong>
+        </div>
+
+        <span
+          class="estado"
+          [ngClass]="obtenerClasePago(pago.estado)"
+        >
+          {{ obtenerTextoPago(pago) }}
+        </span>
+
+      </div>
+
+
+      <div class="payment-detail-grid">
+
+        <article>
+
+          <span>
+            Inquilino
+          </span>
+
+          <strong>
+            {{ pago.inquilinoNombre }}
+          </strong>
+
+          <small>
+            {{ pago.inquilinoEmail }}
+          </small>
+
+        </article>
+
+
+        <article>
+
+          <span>
+            Propietario
+          </span>
+
+          <strong>
+            DNI {{ obtenerDniPropietario(pago.propietarioEmail) }}
+          </strong>
+
+          <small>
+            {{ pago.propietarioEmail }}
+          </small>
+
+        </article>
+
+
+        <article>
+
+          <span>
+            Método
+          </span>
+
+          <strong>
+            {{ obtenerMetodoPago(pago) }}
+          </strong>
+
+          <small>
+            {{ pago.fecha | date:'dd/MM/yyyy HH:mm' }}
+          </small>
+
+        </article>
+
+
+        <article>
+
+          <span>
+            Liquidación
+          </span>
+
+          <strong>
+            {{ obtenerTextoLiquidacion(pago) }}
+          </strong>
+
+          <small>
+            {{
+            obtenerFechaLiquidacion(pago) ||
+            'Sin fecha de liquidación'
+            }}
+          </small>
+
+        </article>
+
+      </div>
+
+
+      <div
+        class="payment-stay-card"
+        *ngIf="reservaPagoSeleccionado as reserva"
+      >
+
+        <div class="payment-stay-title">
+
+          <span>
+            ESTADÍA
+          </span>
+
+          <strong>
+            Datos de la reserva
+          </strong>
+
+        </div>
+
+
+        <div class="payment-stay-grid">
+
+          <div>
+            <span>Ingreso</span>
+            <strong>{{ reserva.fechaInicio | date:'dd/MM/yyyy' }}</strong>
+          </div>
+
+          <div>
+            <span>Salida</span>
+            <strong>{{ reserva.fechaFin | date:'dd/MM/yyyy' }}</strong>
+          </div>
+
+          <div>
+            <span>Noches</span>
+            <strong>{{ reserva.noches }}</strong>
+          </div>
+
+          <div>
+            <span>Huéspedes</span>
+            <strong>
+              {{
+              reserva.huespedes !== undefined
+              ? reserva.huespedes
+              : 'No registrado'
+              }}
+            </strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="payment-detail-breakdown">
+
+        <div>
+          <span>
+            Total de la operación
+          </span>
+
+          <strong>
+            S/ {{ pago.monto | number:'1.2-2' }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Comisión DepaYa · {{ porcentajeComisionDepaYa }}%
+          </span>
+
+          <strong class="detail-commission">
+            S/ {{ calcularComisionDepaYa(pago) | number:'1.2-2' }}
+          </strong>
+        </div>
+
+        <div>
+          <span>
+            Neto del propietario
+          </span>
+
+          <strong class="detail-owner-net">
+            S/ {{ calcularNetoPropietario(pago) | number:'1.2-2' }}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="payment-detail-actions">
+
+        <button
+          type="button"
+          class="btn-liquidate detail-action-main"
+          *ngIf="
+            pago.estado === 'COMPLETADO' &&
+            obtenerEstadoLiquidacion(pago) === 'PENDIENTE'
+          "
+          (click)="marcarLiquidado(pago)"
+        >
+          ✓ Marcar como liquidado
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-reopen-liquidation"
+          *ngIf="
+            pago.estado === 'COMPLETADO' &&
+            obtenerEstadoLiquidacion(pago) === 'LIQUIDADO'
+          "
+          (click)="reabrirLiquidacion(pago)"
+        >
+          ↻ Volver a pendiente
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-refund"
+          *ngIf="pago.estado === 'REEMBOLSO_PENDIENTE'"
+          (click)="devolverPago(pago)"
+        >
+          ↩ Procesar reembolso
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-detail-close-secondary"
+          (click)="cerrarDetallePago()"
+        >
+          Cerrar
+        </button>
+
+      </div>
 
     </div>
 

@@ -1,0 +1,65 @@
+name: .NET CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.OS }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.OS }}-nuget-
+
+      - name: Restore all projects
+        run: |
+          set -e
+          for proj in $(find . -name '*.csproj'); do
+            echo "Restoring $proj"
+            dotnet restore "$proj"
+          done
+
+      - name: Build all projects
+        run: |
+          set -e
+          for proj in $(find . -name '*.csproj'); do
+            echo "Building $proj"
+            dotnet build "$proj" --configuration Release --no-restore
+          done
+
+      - name: Run tests (if any)
+        run: |
+          set -e
+          TESTS_FOUND=false
+          for proj in $(find . -name '*Tests*.csproj' -o -name '*.Tests.csproj'); do
+            TESTS_FOUND=true
+            echo "Testing $proj"
+            dotnet test "$proj" --no-build --verbosity normal
+          done
+          if [ "$TESTS_FOUND" = "false" ]; then
+            echo "No test projects found."
+          fi
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-build-artifacts
+          path: |
+            **/bin/Release/net10.0/**

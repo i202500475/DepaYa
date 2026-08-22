@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Pvf8n9COqrI=",
+  "dgSpecHash": "ggQFKPld7gk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-departamentos\\ms-departamentos.csproj",
+  "projectFilePath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-departamentos\\ms-departamentos.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\SaraA\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\10.0.10\\microsoft.aspnetcore.authentication.jwtbearer.10.0.10.nupkg.sha512",
     "C:\\Users\\SaraA\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.10\\microsoft.aspnetcore.openapi.10.0.10.nupkg.sha512",
@@ -29,9 +29,9 @@
       "code": "NU1903",
       "level": "Warning",
       "message": "El paquete \"Microsoft.OpenApi\" 2.0.0 tiene una vulnerabilidad de gravedad alta conocida, https://github.com/advisories/GHSA-v5pm-xwqc-g5wc",
-      "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-departamentos\\ms-departamentos.csproj",
+      "projectPath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-departamentos\\ms-departamentos.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\SaraA\\Downloads\\DepaYa\\DepaYa\\ms-departamentos\\ms-departamentos.csproj",
+      "filePath": "C:\\Users\\SaraA\\Downloads\\DepaYa (1)\\DepaYa\\ms-departamentos\\ms-departamentos.csproj",
       "libraryId": "Microsoft.OpenApi",
       "targetGraphs": [
         "net10.0"
