@@ -1,0 +1,32 @@
+﻿# .NET / Visual Studio artifacts
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+project.assets.json
+project.nuget.cache
+*.csproj.nuget.dgspec.json
+*.genruntimeconfig.cache
+*.sourcelink.json
+
+# IDE files
+.vs/
+.vscode/
+.idea/
+.classpath
+.project
+
+# Node
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.pyc
+
+# Caches / logs / miscellaneous
+*.cache
+*.log
+*.eml
